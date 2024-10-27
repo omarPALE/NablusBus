@@ -1,0 +1,104 @@
+
+.login-main-continer{
+  width: fit-content;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  justify-items: center;
+  margin-left:35%;
+  margin-top:2%;
+  box-shadow: rgba(9, 11, 17, 0.5) 0px 5px 15px 0px, rgba(19, 23, 32, 0.08) 0px 15px 35px -5px;
+  background-color: rgba(19, 23, 32, 0.08);
+}
+.header{
+
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background-color: #dddddd;
+ 
+}
+
+.content{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background-color: #dddddd;
+}
+
+.form-control{
+width: fit-content;
+}
+
+.form-text {
+  max-width: 370px;
+}
+
+.btn btn-primary{
+  margin-top: 30px;
+
+}
+Footer{
+  background-color: #dddddd;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.content-holder{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 20px;
+  background-color: #f4dcdc;
+}
+
+.content-img{
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 20px;
+
+}
+
+.sign-in-logo{
+  border-radius:50%;
+  margin: 2%;
+  margin-bottom: 0;
+}
+.form-text{
+  margin-top: 5px;
+  margin-bottom: 10px;
+
+}
+
+.dropdown-list{
+  background-color: #ffffff;
+  border-bottom-color: rgba(0, 0, 0, 0.65)
+}
+
+.nav-link:active{
+  --bs-btn-color: #fff;
+  --bs-btn-hover-color: #fff;
+
+  --bs-btn-active-color: #fff;
+
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  --bs-btn-disabled-color: #fff;
+}
+.nav-link :hover{
+  --bs-btn-color: #fff;
+
+  --bs-btn-hover-color: #fff;
+
+  --bs-btn-active-color: #fff;
+
+  --bs-btn-disabled-color: #fff;
+
+}
