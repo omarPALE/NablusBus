@@ -1,7 +1,12 @@
 // Import PropTypes and Dropdown from 'react-bootstrap'
 import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom";
 
 export default function Nav(props) {
+  const navigate = useNavigate();
+  const homeNav = () => {
+    navigate("/home");
+  };
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary">
       <div className="container-fluid">
@@ -12,7 +17,7 @@ export default function Nav(props) {
           height="30"
           className="d-inline-block align-top"
         />
-        <a className="navbar-brand" href="#">
+        <a className="navbar-brand" onClick={homeNav}>
           Nablus Bus
         </a>
         <button
@@ -38,9 +43,14 @@ export default function Nav(props) {
                 Home
               </a>
             </li>
-            <li className="nav-item">
+            <li>
               <a className="nav-link" href="#">
-                Link
+                Subscribtion
+              </a>
+            </li>
+            <li>
+              <a className="nav-link" href="#">
+                Ticket
               </a>
             </li>
             <li className="nav-item dropdown">
@@ -72,16 +82,6 @@ export default function Nav(props) {
                   </li>
                 </ul>
               </div>
-            </li>
-            <li>
-              <a className="nav-link" href="#">
-                Subscribtion
-              </a>
-            </li>
-            <li>
-              <a className="nav-link" href="#">
-                Ticket
-              </a>
             </li>
           </ul>
 
