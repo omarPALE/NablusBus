@@ -2,12 +2,19 @@ import { useState } from "react";
 import styled from "styled-components";
 
 const FormContainer = styled.div`
-  width: 300px;
+  width: 600px;
   margin: 0 auto;
   padding: 20px;
   border: 1px dashed #ddd;
   border-radius: 5px;
   background-color: #f9f9f9;
+`;
+
+const InputRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 10px 0;
 `;
 
 const InputField = styled.input`
@@ -28,26 +35,22 @@ const InputField = styled.input`
 
 const Placeholder = styled.span`
   position: absolute;
-  top: 50%;
+  top: ${({ isDateField, isFocusedOrFilled }) =>
+    isDateField || isFocusedOrFilled ? "-10px" : "50%"};
   left: 10px;
-  transform: translateY(-50%);
-  font-size: 16px;
-  color: #aaa;
+  transform: ${({ isDateField, isFocusedOrFilled }) =>
+    isDateField || isFocusedOrFilled ? "translateY(0)" : "translateY(-50%)"};
+  font-size: ${({ isDateField, isFocusedOrFilled }) =>
+    isDateField || isFocusedOrFilled ? "12px" : "16px"};
+  color: ${({ isDateField, isFocusedOrFilled }) =>
+    isDateField || isFocusedOrFilled ? "#007bff" : "#aaa"};
   transition: all 0.2s ease-in-out;
   pointer-events: none;
-
-  ${({ isFocusedOrFilled }) =>
-    isFocusedOrFilled &&
-    `
-    top: -10px;
-    font-size: 12px;
-    color: #007bff;
-  `}
 `;
 
 const InputWrapper = styled.div`
   position: relative;
-  margin: 10px 0;
+  flex: 1; /* Ensure inputs share space equally */
 `;
 
 const ShowPasswordIcon = styled.span`
@@ -77,28 +80,50 @@ const SignupForm = () => {
 
   return (
     <FormContainer>
+      <InputRow>
+        {[
+          { name: "firstName", label: "First Name", type: "text" },
+          { name: "lastName", label: "Last Name", type: "text" },
+        ].map(({ name, label, type }) => (
+          <InputWrapper key={name}>
+            <Placeholder
+              isFocusedOrFilled={focusStates[name] || values[name]}
+              isDateField={name === "date"}
+            >
+              {label}
+            </Placeholder>
+            <InputField
+              type={type}
+              value={values[name] || ""}
+              onFocus={() => handleFocus(name)}
+              onBlur={() => handleBlur(name)}
+              onChange={(e) => handleChange(name, e.target.value)}
+            />
+          </InputWrapper>
+        ))}
+      </InputRow>
       {[
+        { name: "date", label: "Birth Date", type: "date" },
+        { name: "phone", label: "Phone Number", type: "text" },
         { name: "email", label: "Email", type: "email" },
         {
           name: "password",
           label: "Password",
           type: showPassword ? "text" : "password",
         },
-        { name: "address", label: "Address", type: "text" },
-        { name: "town", label: "Town", type: "text" },
-        { name: "state", label: "State", type: "text" },
-        { name: "zip", label: "Zip", type: "text" },
-        { name: "country", label: "Country", type: "text" },
       ].map(({ name, label, type }) => (
         <InputWrapper key={name}>
-          <Placeholder isFocusedOrFilled={focusStates[name] || values[name]}>
+          <Placeholder
+            isFocusedOrFilled={focusStates[name] || values[name]}
+            isDateField={name === "date"}
+          >
             {label}
           </Placeholder>
           <InputField
             type={type}
             value={values[name] || ""}
-            onFocus={() => handleFocus(name)}
-            onBlur={() => handleBlur(name)}
+            onFocus={() => name !== "date" && handleFocus(name)}
+            onBlur={() => name !== "date" && handleBlur(name)}
             onChange={(e) => handleChange(name, e.target.value)}
           />
           {name === "password" && (

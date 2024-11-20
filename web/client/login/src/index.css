@@ -10,7 +10,9 @@
     rgba(19, 23, 32, 0.08) 0px 15px 35px -5px;
   background-color: rgba(19, 23, 32, 0.08);
 }
-
+.SignupForm {
+  margin-left: 50%;
+}
 .main-continer {
   background-color: #f4dcdc;
   height: 100%;
