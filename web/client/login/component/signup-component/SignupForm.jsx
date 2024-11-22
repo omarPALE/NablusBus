@@ -1,5 +1,7 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
+import { Button } from "react-bootstrap";
 
 const FormContainer = styled.div`
   width: 600px;
@@ -43,7 +45,7 @@ const Placeholder = styled.span`
   font-size: ${({ isDateField, isFocusedOrFilled }) =>
     isDateField || isFocusedOrFilled ? "12px" : "16px"};
   color: ${({ isDateField, isFocusedOrFilled }) =>
-    isDateField || isFocusedOrFilled ? "#007bff" : "#aaa"};
+    isDateField || isFocusedOrFilled ? "000" : "#aaa"};
   transition: all 0.2s ease-in-out;
   pointer-events: none;
 `;
@@ -62,11 +64,25 @@ const ShowPasswordIcon = styled.span`
 `;
 
 const SignupForm = () => {
+  const navigate = useNavigate();
   const [focusStates, setFocusStates] = useState({});
   const [values, setValues] = useState({});
   const [showPassword, setShowPassword] = useState([false]);
   const [confirmShowPassword, setConfirmShowPassword] = useState([false]);
+  const firstnameEl = useRef(null);
+  const lastnameEl = useRef(null);
+  const phoneEl = useRef(null);
+  const emailEl = useRef(null);
+  const passwordEl = useRef(null);
+  const confirmPasswordEl = useRef(null);
+  const formEl = useRef(null);
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Email:", emailEl.current.value);
+    console.log("Password:", passwordEl.current.value);
+    console.log("Confirm Password:", confirmPasswordEl.current.value);
+  };
   const handleFocus = (field) => {
     setFocusStates({ ...focusStates, [field]: true });
   };
@@ -80,12 +96,74 @@ const SignupForm = () => {
   };
 
   return (
-    <FormContainer className="sign--up--continer">
-      <InputRow>
+    <form id="form" onSubmit={handleSubmit}>
+      <FormContainer className="sign--up--continer" id="form">
+        <InputRow>
+          {[
+            {
+              name: "firstName",
+              label: "First Name",
+              type: "text",
+              id: "firstName",
+              ref: firstnameEl,
+            },
+            {
+              name: "lastName",
+              label: "Last Name",
+              type: "text",
+              id: "lastName",
+              ref: lastnameEl,
+            },
+          ].map(({ name, label, type, ref }) => (
+            <InputWrapper key={name}>
+              <Placeholder
+                isFocusedOrFilled={focusStates[name] || values[name]}
+                isDateField={name === "date"}
+              >
+                {label}
+              </Placeholder>
+              <InputField
+                ref={ref}
+                type={type}
+                value={values[name] || ""}
+                onFocus={() => handleFocus(name)}
+                onBlur={() => handleBlur(name)}
+                onChange={(e) => handleChange(name, e.target.value)}
+              />
+            </InputWrapper>
+          ))}
+        </InputRow>
         {[
-          { name: "firstName", label: "First Name", type: "text" },
-          { name: "lastName", label: "Last Name", type: "text" },
-        ].map(({ name, label, type }) => (
+          { name: "date", label: "Birth Date", type: "date" },
+          {
+            name: "phone",
+            label: "Phone Number",
+            type: "text",
+            id: "phone",
+            ref: phoneEl,
+          },
+          {
+            name: "email",
+            label: "Email",
+            type: "email",
+            id: "email",
+            ref: emailEl,
+          },
+          {
+            name: "password",
+            label: "Password",
+            type: showPassword ? "text" : "password",
+            id: "password",
+            ref: passwordEl,
+          },
+          {
+            name: "confirmPassword",
+            label: "confirm password",
+            type: confirmShowPassword ? "text" : "password",
+            id: "confirmPassword",
+            ref: confirmPasswordEl,
+          },
+        ].map(({ name, label, type, ref }) => (
           <InputWrapper key={name}>
             <Placeholder
               isFocusedOrFilled={focusStates[name] || values[name]}
@@ -94,60 +172,53 @@ const SignupForm = () => {
               {label}
             </Placeholder>
             <InputField
+              ref={ref}
               type={type}
               value={values[name] || ""}
-              onFocus={() => handleFocus(name)}
-              onBlur={() => handleBlur(name)}
+              onFocus={() => name !== "date" && handleFocus(name)}
+              onBlur={() => name !== "date" && handleBlur(name)}
               onChange={(e) => handleChange(name, e.target.value)}
             />
+            {name === "password" && (
+              <ShowPasswordIcon onClick={() => setShowPassword(!showPassword)}>
+                {showPassword ? "🙈" : "👁️"}
+              </ShowPasswordIcon>
+            )}
+            {name === "confirmPassword" && (
+              <ShowPasswordIcon
+                onClick={() => setConfirmShowPassword(!confirmShowPassword)}
+              >
+                {confirmShowPassword ? "🙈" : "👁️"}
+              </ShowPasswordIcon>
+            )}
           </InputWrapper>
         ))}
-      </InputRow>
-      {[
-        { name: "date", label: "Birth Date", type: "date" },
-        { name: "phone", label: "Phone Number", type: "text" },
-        { name: "email", label: "Email", type: "email" },
-        {
-          name: "password",
-          label: "Password",
-          type: showPassword ? "text" : "password",
-        },
-        {
-          name: "confirmPassword",
-          label: "confirm password",
-          type: confirmShowPassword ? "text" : "password",
-        },
-      ].map(({ name, label, type }) => (
-        <InputWrapper key={name}>
-          <Placeholder
-            isFocusedOrFilled={focusStates[name] || values[name]}
-            isDateField={name === "date"}
-          >
-            {label}
-          </Placeholder>
-          <InputField
-            type={type}
-            value={values[name] || ""}
-            onFocus={() => name !== "date" && handleFocus(name)}
-            onBlur={() => name !== "date" && handleBlur(name)}
-            onChange={(e) => handleChange(name, e.target.value)}
-          />
-          {name === "password" && (
-            <ShowPasswordIcon onClick={() => setShowPassword(!showPassword)}>
-              {showPassword ? "🙈" : "👁️"}
-            </ShowPasswordIcon>
-          )}
-          {name === "confirmPassword" && (
-            <ShowPasswordIcon
-              onClick={() => setConfirmShowPassword(!confirmShowPassword)}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Button type="submit" className="btn btn-primary">
+            Sign Up
+          </Button>
+          <p>
+            Already have an account?{" "}
+            <a
+              onClick={() => navigate("/login")}
+              style={{ cursor: "pointer", textDecoration: "underline" }}
             >
-              {confirmShowPassword ? "🙈" : "👁️"}
-            </ShowPasswordIcon>
-          )}
-        </InputWrapper>
-      ))}
-    </FormContainer>
+              Log In
+            </a>
+          </p>
+        </div>
+      </FormContainer>
+    </form>
   );
 };
 
 export default SignupForm;
+
+/*  it is very important to use Ref with Dom element  and Attach the ref to the input or var attention attatch them by name not as string  */
