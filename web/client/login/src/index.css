@@ -1,3 +1,20 @@
+:root {
+  --main-color: #e8e6e6;
+  --secondry-color: #f9f9f9;
+  --font-size: 16px;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0; /* Remove default margin */
+  padding: 0; /* Remove default padding */
+  background-color: var(--main-color);
+}
+.navbar {
+  padding: 0px;
+  z-index: 1;
+}
 .login-main-continer {
   width: fit-content;
   height: fit-content;
@@ -14,7 +31,7 @@
   margin-left: 50%;
 }
 .main-continer {
-  background-color: #f4dcdc;
+  background-color: var(--main-color);
   height: 100%;
 }
 
@@ -23,7 +40,7 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  background-color: #f9f9f9;
+  background-color: var(--secondry-color);
 }
 
 .content {
@@ -32,7 +49,7 @@
   justify-content: center;
   align-items: center;
   padding: 20px;
-  background-color: #dddddd;
+  background-color: var(--secondry-color);
 }
 
 .form-control {
@@ -47,7 +64,7 @@
   margin-top: 30px;
 }
 Footer {
-  background-color: #dddddd;
+  background-color: var(--secondry-color);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -55,22 +72,23 @@ Footer {
 }
 
 .navbar > .container-fluid {
-  background-color: #f4dcdc;
+  background-color: var(--main-color);
 }
 .content-holder {
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 20px;
-  background-color: #f4dcdc;
+  padding: 0px;
+  background-color: var(--main-color);
 }
 
 .content-img {
-  width: 300px;
-  height: 300px;
-  border-radius: 50%;
+  width: 800px;
+  height: 500px;
+  /* border-radius: 50%; */
   overflow: hidden;
-  margin: 20px;
+  padding: 0px;
+  margin: 0px;
 }
 
 .sign-in-logo {
@@ -111,4 +129,80 @@ Footer {
   display: flex;
   flex-direction: column;
   margin: 10px;
+}
+.btn-outline-success {
+  --bs-btn-color: #000000;
+  --bs-btn-border-color: #000000;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #e85506;
+  --bs-btn-hover-border-color: #e85506;
+  --bs-btn-focus-shadow-rgb: 25, 135, 84;
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: #e85506;
+  --bs-btn-active-border-color: #e85506;
+  --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+  --bs-btn-disabled-color: #e85506;
+  --bs-btn-disabled-bg: transparent;
+  --bs-btn-disabled-border-color: #e85506;
+  --bs-gradient: none;
+  margin-right: 5px;
+  border: none;
+}
+
+.navbar-brand {
+  cursor: pointer;
+}
+
+/* home page style */
+
+.diagonal-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two equal columns */
+  gap: 20px; /* Space between rows/columns */
+  align-items: center; /* Center items vertically */
+}
+
+.content-holder {
+  display: contents; /* Remove the wrapper's visual block */
+}
+
+.content-holder:nth-child(2n) img {
+  grid-column: 1 / 2; /* Place image in the first column for even rows */
+  justify-self: end; /* Align to the end of the grid */
+}
+
+.content-holder:nth-child(2n) p {
+  grid-column: 2 / 3; /* Place text in the second column for even rows */
+}
+
+.content-img {
+  width: 750px; /* Set a fixed width for images */
+  height: auto;
+}
+
+p {
+  margin: 0;
+  padding: 0 10px;
+}
+.hidden {
+  top: -100px; /* Hides the navbar */
+}
+
+.container-fluid {
+  position: fixed; /* Fixed at the top */
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000; /*Make sure it's above other content*/
+  background-color: #df6915; /* Replace with your navbar color */
+  transition: top 0.3s ease-in-out; /* Smooth transition for hiding/showing */
+}
+
+/*sign up styling*/
+.ecHMvD {
+  width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
 }

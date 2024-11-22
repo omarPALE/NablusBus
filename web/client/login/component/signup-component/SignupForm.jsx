@@ -28,8 +28,8 @@ const InputField = styled.input`
   transition: all 0.2s ease-in-out;
 
   &:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    border-color: #000000;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
   }
 `;
 
@@ -64,7 +64,8 @@ const ShowPasswordIcon = styled.span`
 const SignupForm = () => {
   const [focusStates, setFocusStates] = useState({});
   const [values, setValues] = useState({});
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState([false]);
+  const [confirmShowPassword, setConfirmShowPassword] = useState([false]);
 
   const handleFocus = (field) => {
     setFocusStates({ ...focusStates, [field]: true });
@@ -79,7 +80,7 @@ const SignupForm = () => {
   };
 
   return (
-    <FormContainer>
+    <FormContainer className="sign--up--continer">
       <InputRow>
         {[
           { name: "firstName", label: "First Name", type: "text" },
@@ -111,6 +112,11 @@ const SignupForm = () => {
           label: "Password",
           type: showPassword ? "text" : "password",
         },
+        {
+          name: "confirmPassword",
+          label: "confirm password",
+          type: confirmShowPassword ? "text" : "password",
+        },
       ].map(({ name, label, type }) => (
         <InputWrapper key={name}>
           <Placeholder
@@ -129,6 +135,13 @@ const SignupForm = () => {
           {name === "password" && (
             <ShowPasswordIcon onClick={() => setShowPassword(!showPassword)}>
               {showPassword ? "🙈" : "👁️"}
+            </ShowPasswordIcon>
+          )}
+          {name === "confirmPassword" && (
+            <ShowPasswordIcon
+              onClick={() => setConfirmShowPassword(!confirmShowPassword)}
+            >
+              {confirmShowPassword ? "🙈" : "👁️"}
             </ShowPasswordIcon>
           )}
         </InputWrapper>

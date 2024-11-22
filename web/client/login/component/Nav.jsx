@@ -17,7 +17,7 @@ export default function Nav(props) {
           height="30"
           className="d-inline-block align-top"
         />
-        <a className="navbar-brand" onClick={homeNav}>
+        <a className="navbar-brand" onClick={homeNav} cursor="pointer">
           Nablus Bus
         </a>
         <button
@@ -33,16 +33,6 @@ export default function Nav(props) {
         </button>
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-            <li className="nav-item">
-              <a
-                className="nav-link active"
-                aria-current="page"
-                href="/home"
-                onClick={props.handleHome}
-              >
-                Home
-              </a>
-            </li>
             <li>
               <a className="nav-link" href="#">
                 Subscribtion
@@ -51,6 +41,16 @@ export default function Nav(props) {
             <li>
               <a className="nav-link" href="#">
                 Ticket
+              </a>
+            </li>
+            <li className="nav-item">
+              <a
+                className="nav-link active"
+                aria-current="page"
+                href="/tracking"
+                onClick={props.handleHome}
+              >
+                Tracking
               </a>
             </li>
             <li className="nav-item dropdown">
@@ -84,18 +84,6 @@ export default function Nav(props) {
               </div>
             </li>
           </ul>
-
-          <form className="d-flex" role="search">
-            <input
-              className="form-control me-2"
-              type="search"
-              placeholder="Search"
-              aria-label="Search"
-            />
-            <button className="btn btn-outline-success" type="submit">
-              Search
-            </button>
-          </form>
           <button
             className="btn btn-outline-success"
             onClick={props.handleSignIn}
