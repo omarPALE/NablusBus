@@ -43,16 +43,6 @@ export default function Nav(props) {
                 Ticket
               </a>
             </li>
-            <li className="nav-item">
-              <a
-                className="nav-link active"
-                aria-current="page"
-                href="/tracking"
-                onClick={props.handleHome}
-              >
-                Tracking
-              </a>
-            </li>
             <li className="nav-item dropdown">
               <div className="dropdown">
                 <a
@@ -62,22 +52,22 @@ export default function Nav(props) {
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                 >
-                  Dropdown link
+                  Tracking
                 </a>
                 <ul className="dropdown-menu">
                   <li>
                     <a className="dropdown-item" href="#">
-                      Action
+                      South Line
                     </a>
                   </li>
                   <li>
                     <a className="dropdown-item" href="#">
-                      Another action
+                      North Line
                     </a>
                   </li>
                   <li>
                     <a className="dropdown-item" href="#">
-                      Something else here
+                      East Line
                     </a>
                   </li>
                 </ul>
