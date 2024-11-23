@@ -200,9 +200,6 @@ p {
 }
 
 /*sign up styling*/
-.ecHMvD {
-  border: none !important;
-}
 
 .valid {
   border-color: green;
@@ -210,4 +207,55 @@ p {
 
 .invalid {
   border-color: red;
+}
+
+.error input {
+  border-color: red;
+}
+
+.error small {
+  color: red;
+  font-size: 10px; /* Make the font smaller than the input text */
+  margin-bottom: 7px; /* Add spacing above the error message */
+  display: block; /* Ensure the error message appears below the input */
+  visibility: visible; /* Make the error message visible */
+}
+
+.success input {
+  border-color: green;
+}
+
+.success small {
+  visibility: hidden;
+}
+
+.InputWrapper {
+  position: relative; /* For absolute positioning of the icon */
+  margin-bottom: 40px; /* Add space between fields for error messages */
+}
+
+.InputWrapper Input {
+  width: 100%;
+  padding-right: 40px; /* Add space for the icon */
+  box-sizing: border-box; /* Prevent padding from affecting width */
+}
+
+.InputWrapper Icon {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%); /* Keep the icon vertically centered */
+  pointer-events: none;
+}
+
+.InputWrapper {
+  min-height: 70px; /* Ensure space for input, icon, and error message */
+}
+.cdkrFB {
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+.ecHMvD,
+.cksbTF {
+  border: none !important;
 }
