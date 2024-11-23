@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
