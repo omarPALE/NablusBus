@@ -69,20 +69,25 @@ const SignupForm = () => {
   const [values, setValues] = useState({});
   const [showPassword, setShowPassword] = useState([false]);
   const [confirmShowPassword, setConfirmShowPassword] = useState([false]);
-  const firstnameEl = useRef(null);
-  const lastnameEl = useRef(null);
-  const phoneEl = useRef(null);
-  const emailEl = useRef(null);
-  const passwordEl = useRef(null);
-  const confirmPasswordEl = useRef(null);
-  const formEl = useRef(null);
+
+  const formRefs = useRef({
+    firstnameEl: null,
+    lastnameEl: null,
+    phoneEl: null,
+    emailEl: null,
+    passwordEl: null,
+    confirmPasswordEl: null,
+    formEl: null,
+  });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Email:", emailEl.current.value);
-    console.log("Password:", passwordEl.current.value);
-    console.log("Confirm Password:", confirmPasswordEl.current.value);
+    console.log(formRefs);
+    console.log("Email:", formRefs.current.emailEl.value);
+    console.log("Password:", formRefs.current.passwordEl.value);
+    console.log("Confirm Password:", formRefs.current.confirmPasswordEl.value);
   };
+
   const handleFocus = (field) => {
     setFocusStates({ ...focusStates, [field]: true });
   };
@@ -94,27 +99,28 @@ const SignupForm = () => {
   const handleChange = (field, value) => {
     setValues({ ...values, [field]: value });
   };
-
   return (
-    <form id="form" onSubmit={handleSubmit}>
-      <FormContainer className="sign--up--continer" id="form">
+    <form
+      id="form"
+      onSubmit={handleSubmit}
+      ref={(el) => (formRefs.current.formEl = el)}
+    >
+      <FormContainer className="sign--up--continer">
         <InputRow>
           {[
             {
               name: "firstName",
               label: "First Name",
               type: "text",
-              id: "firstName",
-              ref: firstnameEl,
+              refName: "firstnameEl",
             },
             {
               name: "lastName",
               label: "Last Name",
               type: "text",
-              id: "lastName",
-              ref: lastnameEl,
+              refName: "lastnameEl",
             },
-          ].map(({ name, label, type, ref }) => (
+          ].map(({ name, label, type, refName }) => (
             <InputWrapper key={name}>
               <Placeholder
                 isFocusedOrFilled={focusStates[name] || values[name]}
@@ -123,7 +129,7 @@ const SignupForm = () => {
                 {label}
               </Placeholder>
               <InputField
-                ref={ref}
+                ref={(el) => (formRefs.current[refName] = el)}
                 type={type}
                 value={values[name] || ""}
                 onFocus={() => handleFocus(name)}
@@ -134,36 +140,31 @@ const SignupForm = () => {
           ))}
         </InputRow>
         {[
-          { name: "date", label: "Birth Date", type: "date" },
           {
             name: "phone",
             label: "Phone Number",
             type: "text",
-            id: "phone",
-            ref: phoneEl,
+            refName: "phoneEl",
           },
           {
             name: "email",
             label: "Email",
             type: "email",
-            id: "email",
-            ref: emailEl,
+            refName: "emailEl",
           },
           {
             name: "password",
             label: "Password",
             type: showPassword ? "text" : "password",
-            id: "password",
-            ref: passwordEl,
+            refName: "passwordEl",
           },
           {
             name: "confirmPassword",
-            label: "confirm password",
+            label: "Confirm Password",
             type: confirmShowPassword ? "text" : "password",
-            id: "confirmPassword",
-            ref: confirmPasswordEl,
+            refName: "confirmPasswordEl",
           },
-        ].map(({ name, label, type, ref }) => (
+        ].map(({ name, label, type, refName }) => (
           <InputWrapper key={name}>
             <Placeholder
               isFocusedOrFilled={focusStates[name] || values[name]}
@@ -172,7 +173,7 @@ const SignupForm = () => {
               {label}
             </Placeholder>
             <InputField
-              ref={ref}
+              ref={(el) => (formRefs.current[refName] = el)}
               type={type}
               value={values[name] || ""}
               onFocus={() => name !== "date" && handleFocus(name)}
