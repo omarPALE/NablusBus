@@ -4,12 +4,17 @@ export default function Content() {
       <img src="../../img/home.jpg" width="100%"></img>
       <div className="diagonal-layout">
         <div className="content-holder" dir="rtl" lang="ar">
-          <p>
-            {" "}
+          <h3 className="content-title">تجربة تنقل مميزة</h3>
+          <p className="content-description">
             اتنقل وانت مرتاح وما تهمل هم الجو 🚌✅ باصات حديثة ومكيفة بالإضافة
             الى الراحة الي بتوفرلكم اياها
           </p>
-          <img src="../../img/markiting.jpg" className="content-img" />
+          <button className="content-button">تعرف علينا</button>
+          <img
+            src="../../img/markiting.jpg"
+            className="content-img"
+            alt="Marketing Image"
+          />
         </div>
 
         <div className="content-holder" dir="rtl" lang="ar">

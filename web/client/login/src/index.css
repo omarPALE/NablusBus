@@ -36,34 +36,6 @@ body {
   height: 100%;
 }
 
-.header {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  background-color: var(--secondry-color);
-}
-
-.content {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-  background-color: var(--secondry-color);
-}
-
-.form-control {
-  width: fit-content;
-}
-
-.form-text {
-  max-width: 370px;
-}
-
-.btn btn-primary {
-  margin-top: 30px;
-}
 Footer {
   background-color: var(--secondry-color);
   display: flex;
@@ -74,32 +46,6 @@ Footer {
 
 .navbar > .container-fluid {
   background-color: var(--main-color);
-}
-.content-holder {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 0px;
-  background-color: var(--main-color);
-}
-
-.content-img {
-  width: 800px;
-  height: 500px;
-  /* border-radius: 50%; */
-  overflow: hidden;
-  padding: 0px;
-  margin: 0px;
-}
-
-.sign-in-logo {
-  border-radius: 50%;
-  margin: 2%;
-  margin-bottom: 0;
-}
-.form-text {
-  margin-top: 5px;
-  margin-bottom: 10px;
 }
 
 .dropdown-list {
@@ -155,39 +101,6 @@ Footer {
 }
 
 /* home page style */
-
-.diagonal-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr; /* Two equal columns */
-  gap: 20px; /* Space between rows/columns */
-  align-items: center; /* Center items vertically */
-}
-
-.content-holder {
-  display: contents; /* Remove the wrapper's visual block */
-}
-
-.content-holder:nth-child(2n) img {
-  grid-column: 1 / 2; /* Place image in the first column for even rows */
-  justify-self: end; /* Align to the end of the grid */
-}
-
-.content-holder:nth-child(2n) p {
-  grid-column: 2 / 3; /* Place text in the second column for even rows */
-}
-
-.content-img {
-  width: 750px; /* Set a fixed width for images */
-  height: auto;
-}
-
-p {
-  margin: 0;
-  padding: 0 10px;
-}
-.hidden {
-  top: -100px; /* Hides the navbar */
-}
 
 .container-fluid {
   position: fixed; /* Fixed at the top */

@@ -1,0 +1,93 @@
+.diagonal-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Two equal columns */
+  gap: 20px; /* Space between rows/columns */
+  align-items: center; /* Center items vertically */
+}
+/* .content-holder {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  padding: 0px;
+  background-color: var(--main-color);
+}
+
+.content-img {
+  width: 800px;
+  height: 500px;
+  /* border-radius: 50%; */
+  overflow: hidden;
+  padding: 0px;
+  margin: 0px;
+} */
+
+.content-holder {
+  display: contents; /* Remove the wrapper's visual block */
+}
+
+.content-holder:nth-child(2n) img {
+  grid-column: 1 / 2; /* Place image in the first column for even rows */
+  justify-self: end; /* Align to the end of the grid */
+}
+
+.content-holder:nth-child(2n) p {
+  grid-column: 2 / 3; /* Place text in the second column for even rows */
+  grid-row: auto;
+}
+.content-holder:nth-child(2n) h3 {
+  grid-column: 2/ 3; /* Place text in the second column for even rows */
+  grid-row: auto;
+}
+
+.content-img {
+  width: 750px; /* Set a fixed width for images */
+  height: auto;
+}
+
+p {
+  margin: 0;
+  padding: 0 10px;
+}
+
+.content-holder {
+  font-family: Arial, sans-serif;
+  text-align: right; /* Aligns text for RTL */
+  margin: 20px;
+}
+
+.content-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.content-description {
+  font-size: 18px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.content-button {
+  background-color: #007bff;
+  color: #ffffff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.content-button:hover {
+  background-color: #0056b3;
+}
+
+.content-img {
+  width: 100%;
+  margin-top: 10px;
+  border-radius: 5px;
+}
+
+.hidden {
+  top: -100px; /* Hides the navbar */
+}
