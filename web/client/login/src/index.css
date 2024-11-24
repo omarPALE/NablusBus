@@ -3,6 +3,7 @@
   --secondry-color: #f9f9f9;
   --font-size: 16px;
 }
+/* home page style */
 
 html,
 body {
@@ -44,15 +45,26 @@ Footer {
   align-items: center;
 }
 
-.navbar > .container-fluid {
-  background-color: var(--main-color);
-}
-
 .dropdown-list {
   background-color: #ffffff;
   border-bottom-color: rgba(0, 0, 0, 0.65);
 }
+.dropdown-toggle {
+  color: black;
+  background-color: #f1662f;
+  border: none;
+}
 
+.dropdown-toggle :hover {
+  background-color: #f1662f;
+}
+.btn-secondary {
+  --bs-btn-hover-bg: #f1662f;
+  --bs-btn-active-bg: #f1662f;
+}
+.nav-link {
+  color: #ffffff;
+}
 .nav-link:active {
   --bs-btn-color: #fff;
   --bs-btn-hover-color: #fff;
@@ -98,17 +110,18 @@ Footer {
 
 .navbar-brand {
   cursor: pointer;
+  color: #000000;
+  padding-left: 10px;
 }
 
-/* home page style */
-
+/* Nav bar styles */
 .container-fluid {
   position: fixed; /* Fixed at the top */
   top: 0;
   left: 0;
   width: 100%;
   z-index: 1000; /*Make sure it's above other content*/
-  background-color: #df6915; /* Replace with your navbar color */
+  background-color: #f1662f; /* Replace with your navbar color */
   transition: top 0.3s ease-in-out; /* Smooth transition for hiding/showing */
 }
 

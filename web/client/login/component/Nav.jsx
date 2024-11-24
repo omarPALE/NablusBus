@@ -4,9 +4,12 @@ import { useNavigate } from "react-router-dom";
 
 export default function Nav(props) {
   const navigate = useNavigate();
+ 
   const homeNav = () => {
     navigate("/home");
   };
+
+
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary">
       <div className="container-fluid">
@@ -34,12 +37,15 @@ export default function Nav(props) {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li>
-              <a className="nav-link" href="#">
+              <a className="btn btn-outline-success" href="#">
                 Subscribtion
               </a>
             </li>
             <li>
-              <a className="nav-link" href="#">
+              <a
+                className="btn btn-outline-success"
+                onClick={() => navigate("ticket")}
+              >
                 Ticket
               </a>
             </li>
