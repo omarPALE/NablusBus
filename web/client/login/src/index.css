@@ -3,6 +3,7 @@
   --secondry-color: #f9f9f9;
   --font-size: 16px;
 }
+/* home page style */
 
 html,
 body {
@@ -36,34 +37,6 @@ body {
   height: 100%;
 }
 
-.header {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  background-color: var(--secondry-color);
-}
-
-.content {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-  background-color: var(--secondry-color);
-}
-
-.form-control {
-  width: fit-content;
-}
-
-.form-text {
-  max-width: 370px;
-}
-
-.btn btn-primary {
-  margin-top: 30px;
-}
 Footer {
   background-color: var(--secondry-color);
   display: flex;
@@ -72,41 +45,26 @@ Footer {
   align-items: center;
 }
 
-.navbar > .container-fluid {
-  background-color: var(--main-color);
-}
-.content-holder {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 0px;
-  background-color: var(--main-color);
-}
-
-.content-img {
-  width: 800px;
-  height: 500px;
-  /* border-radius: 50%; */
-  overflow: hidden;
-  padding: 0px;
-  margin: 0px;
-}
-
-.sign-in-logo {
-  border-radius: 50%;
-  margin: 2%;
-  margin-bottom: 0;
-}
-.form-text {
-  margin-top: 5px;
-  margin-bottom: 10px;
-}
-
 .dropdown-list {
   background-color: #ffffff;
   border-bottom-color: rgba(0, 0, 0, 0.65);
 }
+.dropdown-toggle {
+  color: black;
+  background-color: var(--main-color-hover);
+  border: none;
+}
 
+.dropdown-toggle :hover {
+  background-color: var(--main-color-hover);
+}
+.btn-secondary {
+  --bs-btn-hover-bg: var(--main-color-hover);
+  --bs-btn-active-bg: var(--main-color-hover);
+}
+.nav-link {
+  color: #ffffff;
+}
 .nav-link:active {
   --bs-btn-color: #fff;
   --bs-btn-hover-color: #fff;
@@ -152,57 +110,22 @@ Footer {
 
 .navbar-brand {
   cursor: pointer;
+  color: #000000;
+  padding-left: 10px;
 }
 
-/* home page style */
-
-.diagonal-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr; /* Two equal columns */
-  gap: 20px; /* Space between rows/columns */
-  align-items: center; /* Center items vertically */
-}
-
-.content-holder {
-  display: contents; /* Remove the wrapper's visual block */
-}
-
-.content-holder:nth-child(2n) img {
-  grid-column: 1 / 2; /* Place image in the first column for even rows */
-  justify-self: end; /* Align to the end of the grid */
-}
-
-.content-holder:nth-child(2n) p {
-  grid-column: 2 / 3; /* Place text in the second column for even rows */
-}
-
-.content-img {
-  width: 750px; /* Set a fixed width for images */
-  height: auto;
-}
-
-p {
-  margin: 0;
-  padding: 0 10px;
-}
-.hidden {
-  top: -100px; /* Hides the navbar */
-}
-
+/* Nav bar styles */
 .container-fluid {
   position: fixed; /* Fixed at the top */
   top: 0;
   left: 0;
   width: 100%;
   z-index: 1000; /*Make sure it's above other content*/
-  background-color: #df6915; /* Replace with your navbar color */
+  background-color: var(--main-color-hover); /* Replace with your navbar color */
   transition: top 0.3s ease-in-out; /* Smooth transition for hiding/showing */
 }
 
 /*sign up styling*/
-.ecHMvD {
-  border: none !important;
-}
 
 .valid {
   border-color: green;
@@ -210,4 +133,55 @@ p {
 
 .invalid {
   border-color: red;
+}
+
+.error input {
+  border-color: red;
+}
+
+.error small {
+  color: red;
+  font-size: 10px; /* Make the font smaller than the input text */
+  margin-bottom: 7px; /* Add spacing above the error message */
+  display: block; /* Ensure the error message appears below the input */
+  visibility: visible; /* Make the error message visible */
+}
+
+.success input {
+  border-color: green;
+}
+
+.success small {
+  visibility: hidden;
+}
+
+.InputWrapper {
+  position: relative; /* For absolute positioning of the icon */
+  margin-bottom: 40px; /* Add space between fields for error messages */
+}
+
+.InputWrapper Input {
+  width: 100%;
+  padding-right: 40px; /* Add space for the icon */
+  box-sizing: border-box; /* Prevent padding from affecting width */
+}
+
+.InputWrapper Icon {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%); /* Keep the icon vertically centered */
+  pointer-events: none;
+}
+
+.InputWrapper {
+  min-height: 70px; /* Ensure space for input, icon, and error message */
+}
+.cdkrFB {
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+.ecHMvD,
+.cksbTF {
+  border: none !important;
 }

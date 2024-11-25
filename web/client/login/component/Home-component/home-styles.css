@@ -1,0 +1,66 @@
+.diagonal-layout {
+  display: flex;
+  flex-direction: column; /* Arrange cards vertically */
+  gap: 40px; /* Increase space between cards */
+  align-items: center; /* Center cards horizontally */
+  font-family: Arial, sans-serif;
+}
+
+.content-holder {
+  display: flex;
+  align-items: center;
+  flex-direction: row; /* Arrange image and text side by side */
+  gap: 40px; /* Increase space between image and text */
+  padding: 20px;
+  background-color: var(--main-color);
+  border-radius: 10px;
+  width: 90%; /* Make cards responsive */
+  max-width: 1200px; /* Larger width for cards */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a subtle shadow */
+  opacity: 0;
+  transform: translateY(50px); /* Move down initially */
+  transition: opacity 1s ease, transform 1.5s ease;
+  will-change: opacity, transform;
+}
+
+.content-holder.animate {
+  opacity: 1;
+  transform: translateY(0); /* Reset position */
+}
+
+.content-holder img {
+  height: 500px; /* Larger image height */
+  width: 800px; /* Maintain aspect ratio */
+  border-radius: 10px; /* Larger border radius */
+}
+
+.content-details {
+  display: flex;
+  flex-direction: column; /* Arrange text and button vertically */
+  gap: 20px; /* Increase space between text elements */
+}
+
+.content-title {
+  font-size: 48px; /* Larger title font size */
+  font-weight: bold;
+}
+
+.content-description {
+  font-size: 32px; /* Larger subtitle font size */
+  line-height: 1.8;
+}
+
+.content-button {
+  background-color: #007bff;
+  color: #ffffff;
+  padding: 20px 40px; /* Larger button size */
+  border: none;
+  border-radius: 10px; /* Larger border radius */
+  font-size: 24px; /* Larger font size */
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.content-button:hover {
+  background-color: #0056b3;
+}

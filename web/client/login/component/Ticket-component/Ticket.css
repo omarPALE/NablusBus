@@ -1,0 +1,292 @@
+/* General Layout */
+body {
+  background-color: #eee;
+}
+
+:root {
+  --main-color-hover: #ff6600;
+  --secondry-color: #f9f9f9;
+  --font-size: 16px;
+}
+
+#generic_price_table {
+  background-color: #f0eded;
+  margin: 50px 0;
+  font-family: "Raleway", sans-serif;
+}
+
+.price-heading {
+  text-align: center;
+}
+
+.price-heading h1 {
+  color: #130f0f;
+  margin: 0;
+  padding: 0 0 50px 0;
+}
+
+/* Pricing Card */
+#generic_price_table .generic_content {
+  background-color: #fff;
+  text-align: center;
+  overflow: hidden;
+  position: relative;
+  border-radius: 8px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+#generic_price_table .generic_content:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Plan Header */
+.generic_head_price {
+  margin: 0 0 20px;
+  background-color: #131111;
+  padding: 20px;
+  border-bottom: 2px solid #e4e4e4;
+  transition: background-color 0.3s;
+}
+
+.generic_head_price .head {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #fffafa;
+}
+
+/* Highlight for Active Plan */
+.generic_content.active .generic_head_price {
+  background-color: #0a0604;
+  color: #0000;
+}
+.generic_content:hover .generic_head_price,
+.generic_content:hover .generic_head_price .head {
+  background-color: var(--main-color-hover);
+  color: black;
+}
+/* Price Section */
+.generic_price_tag .price {
+  font-family: "Lato", sans-serif;
+  font-size: 60px;
+  font-weight: 300;
+  color: #fffafa;
+  margin: 10px 0;
+}
+
+.generic_price_tag .price .sign,
+.generic_price_tag .price .cent,
+.generic_price_tag .price .month {
+  font-size: 18px;
+  font-weight: 400;
+  color: #555;
+}
+
+.generic_content:hover .generic_price_tag .price {
+  color: #070000;
+}
+
+/* Feature List */
+.generic_feature_list ul {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+}
+
+.generic_feature_list ul li {
+  font-size: 16px;
+  padding: 10px 0;
+  color: #555;
+}
+
+/* Button */
+.generic_price_btn a {
+  display: inline-block;
+  padding: 12px 30px;
+  background-color: #131111;
+  color: #fff;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 50px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Hover Effect for Button and Header */
+.generic_content:hover .generic_price_btn a {
+  background-color: var(--main-color-hover);
+  color: #080000;
+}
+
+/* Feature List */
+.generic_feature_list ul {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+}
+
+.generic_feature_list ul li {
+  font-size: 16px;
+  padding: 10px 15px; /* Add padding for a better hover effect */
+  color: #555;
+  transition: all 0.2s ease-in-out;
+  position: relative; /* For the left border effect */
+}
+
+/* Hover Effect */
+.generic_feature_list ul li:hover {
+  background-color: #e4e4e4; /* Light gray background on hover */
+  color: #333; /* Slightly darker text color */
+  border-left: 5px solid var(--main-color-hover); /* Green border on the left */
+  padding-left: 10px; /* Adjust padding to compensate for border */
+}
+
+/* Initial hidden state */
+.pricing-section,
+.ticket-container {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 1.5s ease, transform 2.5s ease;
+}
+
+/* Visible state (animated) */
+.pricing-section.animate,
+.ticket-container.animate {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Ticket Section */
+.ticket-title {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.ticket-title h2 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.ticket-section {
+  margin: 50px auto;
+  padding: 200px;
+  display: flex;
+  justify-content: center;
+}
+
+.ticket-container {
+  max-width: 900px;
+  width: 100%;
+  background: #fff;
+  border: 2px solid #e4e4e4;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.ticket-header {
+  background: var(--main-color-hover);
+  color: #fff;
+  text-align: center;
+  padding: 10px 20px;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.ticket-body {
+  padding: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ticket-details {
+  display: flex;
+  flex: 2;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding-right: 20px;
+}
+
+.ticket-info {
+  flex: 1 1 30%;
+  padding: 10px;
+  font-size: 1rem;
+  color: #333;
+}
+
+.ticket-info p {
+  margin: 5px 0;
+}
+
+.ticket-barcode {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-left: 2px dashed #e4e4e4;
+  padding-left: 20px;
+}
+
+.barcode {
+  width: 200px;
+  height: 50px;
+  background: repeating-linear-gradient(
+    90deg,
+    #000,
+    #000 2px,
+    transparent 2px,
+    transparent 4px
+  );
+  margin-top: 10px;
+}
+
+.ticket-barcode button {
+  font-size: 1rem;
+  font-weight: bold;
+  color: black;
+  margin: 0;
+}
+
+/* Initial hidden state */
+.ticket-container {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+/* Visible state (animated) */
+.ticket-container.animate {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.qr-code-btn {
+  background-color: #ff6600; /* Orange background */
+  color: #fff; /* White text */
+  font-size: 1rem; /* Medium font size */
+  font-weight: bold;
+  padding: 10px 20px; /* Add padding for a nice button size */
+  border: none; /* Remove default button border */
+  border-radius: 5px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor on hover */
+  text-transform: uppercase; /* Uppercase text */
+  transition: all 0.3s ease; /* Smooth hover effect */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+}
+
+.qr-code-btn:hover {
+  background-color: #e65c00; /* Darker orange on hover */
+  transform: translateY(-2px); /* Slightly lift the button */
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
+}
+
+.qr-code-btn:active {
+  transform: translateY(1px); /* Press effect */
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow when pressed */
+}
