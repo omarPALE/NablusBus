@@ -4,11 +4,10 @@ import { useNavigate } from "react-router-dom";
 
 export default function Nav(props) {
   const navigate = useNavigate();
- 
+
   const homeNav = () => {
     navigate("/home");
   };
-
 
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary">
@@ -37,18 +36,19 @@ export default function Nav(props) {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li>
-              <a className="btn btn-outline-success" href="#">
-                Subscribtion
-              </a>
-            </li>
-            <li>
               <a
                 className="btn btn-outline-success"
                 onClick={() => navigate("ticket")}
               >
+                Subscribtion
+              </a>
+            </li>
+            <li>
+              <a className="btn btn-outline-success" href="#">
                 Ticket
               </a>
             </li>
+
             <li className="nav-item dropdown">
               <div className="dropdown">
                 <a

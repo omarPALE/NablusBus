@@ -1,17 +1,19 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./Ticket.css"; // Ensure the correct path to your CSS file
-
+import TicketSection from "./Ticket-section";
 const PricingTable = () => {
   const [pricingData, setPricingData] = useState([]);
+  const ticketRef = useRef(null);
+  const pricingRef = useRef(null);
 
   useEffect(() => {
     const fetchData = async () => {
       const data = [
         {
           id: 1,
-          plan: "Basic",
-          price: 99.99,
-          bandwidth: "2GB",
+          plan: "Multi-Trip",
+          price: 20,
+          FareType: "Low",
           storage: "150GB",
           accounts: 12,
           domains: 7,
@@ -19,9 +21,9 @@ const PricingTable = () => {
         },
         {
           id: 2,
-          plan: "Standard",
-          price: 199.99,
-          bandwidth: "4GB",
+          plan: "Single Trip",
+          price: 3,
+          FareType: "Full",
           storage: "300GB",
           accounts: 24,
           domains: 15,
@@ -29,9 +31,9 @@ const PricingTable = () => {
         },
         {
           id: 3,
-          plan: "Unlimited",
+          plan: "Student",
           price: 299.99,
-          bandwidth: "Unlimited",
+          FareType: "Unlimited",
           storage: "Unlimited",
           accounts: "Unlimited",
           domains: "Unlimited",
@@ -44,9 +46,34 @@ const PricingTable = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const observerOptions = {
+      threshold: 0.5, // 50% of the element must be visible to trigger the animation
+      rootMargin: "0px 0px -100px 0px", // Adds an offset to delay animation triggering
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("animate");
+        } else {
+          entry.target.classList.remove("animate");
+        }
+      });
+    }, observerOptions);
+
+    if (pricingRef.current) observer.observe(pricingRef.current);
+    if (ticketRef.current) observer.observe(ticketRef.current);
+
+    return () => {
+      if (pricingRef.current) observer.unobserve(pricingRef.current);
+      if (ticketRef.current) observer.unobserve(ticketRef.current);
+    };
+  }, []);
+
   return (
     <div id="generic_price_table">
-      <section>
+      <section className="pricing-section" ref={pricingRef}>
         <div className="container">
           <div className="row">
             <div className="price-heading clearfix">
@@ -68,21 +95,21 @@ const PricingTable = () => {
                     </div>
                     <div className="generic_price_tag clearfix">
                       <span className="price">
-                        <span className="sign">$</span>
+                        <span className="sign">NIS</span>
                         <span className="currency">
                           {Math.floor(plan.price)}
                         </span>
                         <span className="cent">
                           .{Math.round((plan.price % 1) * 100)}
                         </span>
-                        <span className="month">/MON</span>
+                        <span className="month">/Trip</span>
                       </span>
                     </div>
                   </div>
                   <div className="generic_feature_list">
                     <ul>
                       <li>
-                        <span>{plan.bandwidth}</span> Bandwidth
+                        Fare Type <span>{plan.FareType}</span>
                       </li>
                       <li>
                         <span>{plan.storage}</span> Storage
@@ -107,6 +134,7 @@ const PricingTable = () => {
           </div>
         </div>
       </section>
+      <TicketSection />
     </div>
   );
 };

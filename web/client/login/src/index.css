@@ -51,16 +51,16 @@ Footer {
 }
 .dropdown-toggle {
   color: black;
-  background-color: #f1662f;
+  background-color: var(--main-color-hover);
   border: none;
 }
 
 .dropdown-toggle :hover {
-  background-color: #f1662f;
+  background-color: var(--main-color-hover);
 }
 .btn-secondary {
-  --bs-btn-hover-bg: #f1662f;
-  --bs-btn-active-bg: #f1662f;
+  --bs-btn-hover-bg: var(--main-color-hover);
+  --bs-btn-active-bg: var(--main-color-hover);
 }
 .nav-link {
   color: #ffffff;
@@ -121,7 +121,7 @@ Footer {
   left: 0;
   width: 100%;
   z-index: 1000; /*Make sure it's above other content*/
-  background-color: #f1662f; /* Replace with your navbar color */
+  background-color: var(--main-color-hover); /* Replace with your navbar color */
   transition: top 0.3s ease-in-out; /* Smooth transition for hiding/showing */
 }
 
