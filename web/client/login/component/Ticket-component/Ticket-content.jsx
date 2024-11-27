@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import "./Ticket.css"; // Ensure the correct path to your CSS file
 import TicketSection from "./Ticket-section";
+import TicketBenefits from "./Description-component";
+
 const PricingTable = () => {
   const [pricingData, setPricingData] = useState([]);
   const ticketRef = useRef(null);
@@ -48,7 +50,7 @@ const PricingTable = () => {
 
   useEffect(() => {
     const observerOptions = {
-      threshold: 0.5, // 50% of the element must be visible to trigger the animation
+      threshold: 0.3, // 50% of the element must be visible to trigger the animation
       rootMargin: "0px 0px -100px 0px", // Adds an offset to delay animation triggering
     };
 
@@ -126,7 +128,7 @@ const PricingTable = () => {
                     </ul>
                   </div>
                   <div className="generic_price_btn clearfix">
-                    <a href="">Sign up</a>
+                    <a href="">Get</a>
                   </div>
                 </div>
               </div>
@@ -135,6 +137,7 @@ const PricingTable = () => {
         </div>
       </section>
       <TicketSection />
+      <TicketBenefits />
     </div>
   );
 };

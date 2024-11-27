@@ -204,6 +204,13 @@ const SignupForm = () => {
 
   const handleChange = (field, value) => {
     setValues({ ...values, [field]: value });
+    checkUsername("firstnameEl", "First Name"),
+      checkUsername("lastnameEl", "Last Name"),
+      checkUsername("date", "Birth date"),
+      checkEmail(),
+      checkPassword(),
+      checkConfirmPassword(),
+      checkPhone();
   };
 
   /**
@@ -374,7 +381,7 @@ const SignupForm = () => {
                 type={type}
                 value={values[name] || ""}
                 onFocus={() => handleFocus(name)}
-                onBlur={handleSubmit}
+                // onBlur={handleSubmit}
                 onChange={(e) => handleChange(name, e.target.value)}
               />
               <small></small>
@@ -420,7 +427,7 @@ const SignupForm = () => {
               type={type}
               value={values[name] || ""}
               onFocus={() => name !== "date" && handleFocus(name)}
-              onBlur={handleSubmit}
+              // onBlur={handleSubmit}
               onChange={(e) => handleChange(name, e.target.value)}
             />
             <small style={{ fontSize: "5" }}></small>
