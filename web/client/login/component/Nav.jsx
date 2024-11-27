@@ -40,7 +40,7 @@ export default function Nav(props) {
                 className="btn btn-outline-success"
                 onClick={() => navigate("ticket")}
               >
-                Subscribtion
+                Subscription
               </a>
             </li>
             <li>
