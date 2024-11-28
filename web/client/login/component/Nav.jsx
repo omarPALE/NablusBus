@@ -38,13 +38,16 @@ export default function Nav(props) {
             <li>
               <a
                 className="btn btn-outline-success"
-                onClick={() => navigate("ticket")}
+                onClick={() => navigate("subscription")}
               >
                 Subscription
               </a>
             </li>
             <li>
-              <a className="btn btn-outline-success" href="#">
+              <a
+                className="btn btn-outline-success"
+                onClick={() => navigate("ticket")}
+              >
                 Ticket
               </a>
             </li>

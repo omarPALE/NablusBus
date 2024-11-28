@@ -170,7 +170,7 @@ body {
 
 .ticket-section {
   margin: 50px auto;
-  padding: 200px;
+  padding: 50px;
   display: flex;
   justify-content: center;
 }
@@ -297,10 +297,10 @@ ticket Description
 */
 
 #ticket-benefits {
-  padding: 20px;
+  padding: 60px;
   background-color: #f9f9f9;
   border-radius: 10px;
-  margin-top: 30px;
+  margin-top: -60px;
   opacity: 0; /* Start hidden */
   transform: translateY(50px); /* Start slightly below */
   transition: all 0.6s ease-out; /* Smooth transition */
@@ -342,19 +342,19 @@ ticket Description
 #ticket-benefits.visible .benefit-card:nth-child(1) {
   opacity: 1;
   transform: translateY(0);
-  transition-delay: 1s;
+  transition-delay: 0.8s;
 }
 
 #ticket-benefits.visible .benefit-card:nth-child(2) {
   opacity: 1;
   transform: translateY(0);
-  transition-delay: 1.4s;
+  transition-delay: 1.2s;
 }
 
 #ticket-benefits.visible .benefit-card:nth-child(3) {
   opacity: 1;
   transform: translateY(0);
-  transition-delay: 1.8s;
+  transition-delay: 1.6s;
 }
 
 #ticket-benefits .benefit-card h3 {

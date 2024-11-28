@@ -1,7 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 import "./Ticket.css"; // Ensure the correct path to your CSS file
-import TicketSection from "./Ticket-section";
-import TicketBenefits from "./Description-component";
 
 const PricingTable = () => {
   const [pricingData, setPricingData] = useState([]);
@@ -136,8 +134,6 @@ const PricingTable = () => {
           </div>
         </div>
       </section>
-      <TicketSection />
-      <TicketBenefits />
     </div>
   );
 };

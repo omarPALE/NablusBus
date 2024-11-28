@@ -1,0 +1,85 @@
+/* General Styles */
+.ticket-management-container {
+  margin: 25px auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+}
+
+.ticket-management-container h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Ticket Card Styles */
+.ticket-card {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* Header Styles */
+.ticket-header {
+  background-color: #ff6a00;
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 10px 15px;
+  text-align: center;
+}
+
+/* Ticket Body */
+.ticket-body {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px;
+  align-items: center;
+}
+
+/* Ticket Info */
+.ticket-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #333;
+}
+
+.info-row p {
+  margin: 0;
+}
+
+.info-row p strong {
+  color: #555;
+}
+
+/* Ticket Actions */
+.ticket-actions {
+  margin-left: 20px;
+}
+
+.qr-btn {
+  background-color: #ff6a00;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.qr-btn:hover {
+  background-color: #e65c00;
+  transform: scale(1.05);
+  transition: all 0.2s ease-in-out;
+}
