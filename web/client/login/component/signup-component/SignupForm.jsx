@@ -3,6 +3,8 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import axios from "axios";
+import PropTypes from "prop-types";
+
 const FormContainer = styled.div`
   width: 600px;
   margin: 0 auto;
@@ -133,13 +135,18 @@ const showSuccess = (input) => {
   error.textContent = "";
 };
 
-const SignupForm = () => {
+const SignupForm = (props) => {
   const navigate = useNavigate();
   const [focusStates, setFocusStates] = useState({});
   const [values, setValues] = useState({});
   const [showPassword, setShowPassword] = useState([true]);
   const [confirmShowPassword, setConfirmShowPassword] = useState([false]);
   const [message, setMessage] = useState("");
+
+  // props.setUserState(() => ({
+  //   ...props.userState,
+  //   isLoggedIn: false,
+  // }));
   const formRefs = useRef({
     firstnameEl: null,
     lastnameEl: null,
@@ -191,15 +198,6 @@ const SignupForm = () => {
     // Submit to the server if the form is valid
     if (isFormValid) {
       try {
-        /*
-          firstnameEl: null,
-    lastnameEl: null,
-    phoneEl: null,
-    emailEl: null,
-    passwordEl: null,
-    confirmPasswordEl: null,
-    formEl: null,
-    */
         const formData = {
           firstname: formRefs.current.firstnameEl.value, // Replace with the actual ref for username
           lastName: formRefs.current.lastnameEl.value, // Replace with the actual ref for
@@ -207,14 +205,37 @@ const SignupForm = () => {
           email: formRefs.current.emailEl.value, // Replace with the actual ref for email
           password: formRefs.current.passwordEl.value, // Replace with the actual ref for password
         };
+        props.setUserState(() => ({
+          ...props.userState,
+          loggedIn: true,
+        }));
+        console.log(
+          "hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii:" + props.userState.loggedIn
+        );
         const response = await axios.post(
           "http://localhost:5000/users/add",
           formData
         );
+
         setMessage("Sign up successful!");
         console.log(response.data); // Handle the returned data
       } catch (err) {
-        setMessage("Error signing up. Please try again.");
+        props.setUserState(() => ({
+          ...props.userState,
+          loggedIn: false,
+        }));
+        if (
+          err.response &&
+          err.response.data &&
+          err.response.data.includes("duplicate key value violates")
+        ) {
+          // Show a popup or alert if duplicate key error
+          alert(
+            "This username or email is already in use. Please try another."
+          );
+        } else {
+          setMessage("Error signing up. Please try again.");
+        }
         console.error(err.message);
       }
     }
@@ -496,7 +517,10 @@ const SignupForm = () => {
     </form>
   );
 };
-
+SignupForm.propTypes = {
+  setUserState: PropTypes.func.isRequired,
+  userState: PropTypes.func.isRequired,
+};
 export default SignupForm;
 
 /*  it is very important to use Ref with Dom element  and Attach the ref to the input or var attention attatch them by name not as string  */

@@ -38,8 +38,12 @@ router.post("/add", async (req, res) => {
     );
     res.status(201).json(result.rows[0]); // Respond with the inserted user
   } catch (err) {
-    console.error("Error inserting user:", err.message);
-    res.status(500).send("Server Error");
+    if (err.code === "23505") {
+      res.status(400).send("duplicate key value violates");
+    } else {
+      console.error("Error inserting user:", err.message);
+      res.status(500).send("Server Error");
+    }
   }
 });
 //update user
