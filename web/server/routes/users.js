@@ -1,9 +1,10 @@
 import express from "express";
 import pool from "../db.js";
-
+import cors from "cors";
 const router = express.Router();
 // Middleware
 router.use(express.json());
+router.use(cors());
 
 // Fetch all users
 router.get("/", async (req, res) => {
@@ -18,7 +19,18 @@ router.get("/", async (req, res) => {
 
 //add user
 router.post("/add", async (req, res) => {
-  const { username, email, password, role } = req.body;
+  const {
+    firstName,
+    lastName,
+    phone,
+    email,
+    password,
+    role = "passenger",
+  } = req.body;
+
+  const username = firstName + " " + lastName;
+
+  const age = Math.floor(Math.random() * 100) + 18; // Generate a random age between 18 and 100
   try {
     const result = await pool.query(
       "INSERT INTO users (username, email, password, role, age) VALUES ($1, $2, $3, $4, $5) RETURNING *",

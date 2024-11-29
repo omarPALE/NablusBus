@@ -1,11 +1,13 @@
 import express from "express";
 import pool from "./db.js";
 import usersRouter from "./routes/users.js";
+import cors from "cors";
 
 const app = express();
 app.use("/users", usersRouter);
 // Middleware
 app.use(express.json());
+app.use(cors());
 // Test the database connection
 pool.query("SELECT NOW()", (err, res) => {
   if (err) {

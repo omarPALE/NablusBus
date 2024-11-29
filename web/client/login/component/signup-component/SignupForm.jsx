@@ -139,7 +139,7 @@ const SignupForm = () => {
   const [values, setValues] = useState({});
   const [showPassword, setShowPassword] = useState([true]);
   const [confirmShowPassword, setConfirmShowPassword] = useState([false]);
-
+  const [message, setMessage] = useState("");
   const formRefs = useRef({
     firstnameEl: null,
     lastnameEl: null,
@@ -158,7 +158,7 @@ const SignupForm = () => {
    * @param {React.FormEvent<HTMLFormElement>} e - The form submission event.
    * @returns {void}
    */
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Log the formRefs object
@@ -190,7 +190,33 @@ const SignupForm = () => {
 
     // Submit to the server if the form is valid
     if (isFormValid) {
-      console.log("heeeeeeeeeeeeeeeeeeeeeee");
+      try {
+        /*
+          firstnameEl: null,
+    lastnameEl: null,
+    phoneEl: null,
+    emailEl: null,
+    passwordEl: null,
+    confirmPasswordEl: null,
+    formEl: null,
+    */
+        const formData = {
+          firstname: formRefs.current.firstnameEl.value, // Replace with the actual ref for username
+          lastName: formRefs.current.lastnameEl.value, // Replace with the actual ref for
+          phone: formRefs.current.phoneEl.value, // Replace with the actual ref for email
+          email: formRefs.current.emailEl.value, // Replace with the actual ref for email
+          password: formRefs.current.passwordEl.value, // Replace with the actual ref for password
+        };
+        const response = await axios.post(
+          "http://localhost:5000/users/add",
+          formData
+        );
+        setMessage("Sign up successful!");
+        console.log(response.data); // Handle the returned data
+      } catch (err) {
+        setMessage("Error signing up. Please try again.");
+        console.error(err.message);
+      }
     }
   };
 
