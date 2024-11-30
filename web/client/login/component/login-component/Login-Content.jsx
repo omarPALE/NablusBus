@@ -38,29 +38,33 @@ export default function LoginContent(props) {
     e.preventDefault();
 
     try {
-      const response = await axios.get("http://localhost:5000/users/email", {
-        params: {
-          email: signInInfo.email,
-          password: signInInfo.password,
-        },
+      // Send POST request
+      const response = await axios.post("http://localhost:5000/users/email", {
+        email: signInInfo.email,
+        password: signInInfo.password,
       });
 
       if (response.status === 200) {
+        const { email, username } = response.data;
+
+        // Update user state
         props.setUserState(() => ({
           ...props.userState,
           loggedIn: true,
-          email: signInInfo.email,
+          email: email,
+          username: username,
         }));
+
+        console.log("user info : " + username);
         navigate("/home");
       }
     } catch (err) {
-      if (err.response.status === 401) {
+      if (err.response?.status === 401) {
         setError("Incorrect password. Please try again."); // Set error message
         setIsPasswordInvalid(true); // Add red border
-      } else if (err.response.status === 404) {
+      } else if (err.response?.status === 404) {
         setError("User not found. Please sign up."); // Set error message
         setIsEmailInvalid(true); // Add red border
-        setError("User not found. Please sign up.");
       } else {
         setError("An error occurred. Please try again later.");
         console.error("An error occurred:", err.message);

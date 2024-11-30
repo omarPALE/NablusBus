@@ -7,8 +7,8 @@ export default function Nav(props) {
   const navigate = useNavigate();
   console.log(props.userState);
   const user = {
-    name: "Omar",
-    email: "omar@example.com",
+    name: props.userState.username,
+    email: props.userState.email,
     avatar: "https://via.placeholder.com/150", // Optional profile picture URL
   };
   return (
@@ -77,7 +77,9 @@ export default function Nav(props) {
               Sign Up
             </button>
           )}
-          {props.userState?.loggedIn && <ProfileMenu user={user} />}
+          {props.userState?.loggedIn && (
+            <ProfileMenu name={user.name} email={user.email} />
+          )}
         </div>
       </div>
     </nav>

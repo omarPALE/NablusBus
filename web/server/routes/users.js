@@ -76,35 +76,31 @@ router.delete("/delete/:id", async (req, res) => {
   }
 });
 //get by email
-router.get("/email", async (req, res) => {
-  const resEmail = req.query.email; // Extract email and password from request body
-  const resPassword = req.query.password; //
+router.post("/email", async (req, res) => {
+  const { email, password } = req.body;
 
   try {
     const result = await pool.query(
-      "SELECT email, password FROM users WHERE email = $1",
-      [resEmail]
+      "SELECT email, password, username FROM users WHERE email = $1",
+      [email]
     );
+
     if (result.rows.length > 0) {
-      console.log("data base password: ", resPassword);
-      console.log("data base password: ", result.rows[0].password);
       const isPasswordValid = await bcrypt.compare(
-        resPassword,
+        password,
         result.rows[0].password
       );
-      console.log("compar result is : ", isPasswordValid);
 
       if (isPasswordValid) {
-        // Respond with success status and user details
-        return res
-          .status(200)
-          .json({ message: "Authentication successful", email: resEmail });
+        return res.status(200).json({
+          message: "Authentication successful",
+          email: result.rows[0].email,
+          username: result.rows[0].username,
+        });
       } else {
-        // Respond with invalid credentials message
         return res.status(401).json({ message: "Invalid password" });
       }
     } else {
-      // Respond with user not found message
       return res.status(404).json({ message: "User not found" });
     }
   } catch (err) {
