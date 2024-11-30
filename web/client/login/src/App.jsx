@@ -5,33 +5,18 @@ import SignUp from "../component/SignUp";
 import Subscription from "../component/Subscription";
 import TicketManagement from "../component/MyTicket-component/MyTicketContent";
 import ScrollToTop from "../component/ScrolToTop";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { useState } from "react";
 
 function App() {
-  const navigate = useNavigate();
   const [userState, setUserState] = useState({
     loggedIn: false,
   });
-  const handleSignIn = () => {
-    navigate("/login"); // Redirect to sign in page
-  };
-  const handleSignUp = () => {
-    navigate("/signup"); // Redirect to sign Up page
-  };
-  const handleHome = () => {
-    navigate("/home"); // Redirect from home to sign in page
-  };
   console.log("hi from app ==>>> " + userState.loggedIn);
 
   return (
     <div className="main-continer">
-      <Nav
-        userState={userState}
-        handleSignIn={handleSignIn}
-        handleHome={handleHome}
-        handleSignUp={handleSignUp}
-      />
+      <Nav userState={userState} />
       <ScrollToTop />
       <Routes>
         <Route

@@ -5,10 +5,6 @@ import { useNavigate } from "react-router-dom";
 export default function Nav(props) {
   const navigate = useNavigate();
 
-  const homeNav = () => {
-    navigate("/home");
-  };
-
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary">
       <div className="container-fluid">
@@ -19,7 +15,11 @@ export default function Nav(props) {
           height="30"
           className="d-inline-block align-top"
         />
-        <a className="navbar-brand" onClick={homeNav} cursor="pointer">
+        <a
+          className="navbar-brand"
+          onClick={() => navigate("/home")}
+          cursor="pointer"
+        >
           Nablus Bus
         </a>
         <button
@@ -85,13 +85,13 @@ export default function Nav(props) {
           </ul>
           <button
             className="btn btn-outline-success"
-            onClick={props.handleSignIn}
+            onClick={() => navigate("/login")}
           >
             Sign In
           </button>
           <button
             className="btn btn-outline-success"
-            onClick={props.handleSignUp}
+            onClick={() => navigate("/signup")}
           >
             Sign Up
           </button>

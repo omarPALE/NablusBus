@@ -1,6 +1,8 @@
 import PropTypes from "prop-types";
+import useNavigate from "react-router-dom";
+export default function LoginContent(props) {
+  const navigate = useNavigate();
 
-export default function Content(props) {
   return (
     <div className="content">
       <div className="mb-3">
@@ -30,15 +32,15 @@ export default function Content(props) {
         <button
           type="button"
           className="btn btn-outline-secondary"
-          onClick={props.handleSignIn}
+          onClick={() => navigate("/login")}
         >
           Log in
         </button>
         <p>Don&apos;t have an account?</p>
         <button
-          className="btn btn-primary"
+          className="btn b.tn-primary"
           type="submit"
-          onClick={props.handleSignUp}
+          onClick={() => navigate("/signup")}
         >
           Sign up
         </button>
@@ -47,7 +49,7 @@ export default function Content(props) {
   );
 }
 
-Content.propTypes = {
+LoginContent.propTypes = {
   handleSignIn: PropTypes.func.isRequired,
   handleSignUp: PropTypes.func.isRequired,
 };
