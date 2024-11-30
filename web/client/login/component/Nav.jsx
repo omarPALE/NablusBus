@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function Nav(props) {
   const navigate = useNavigate();
-
+  console.log(props.userState);
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary">
       <div className="container-fluid">
@@ -83,18 +83,22 @@ export default function Nav(props) {
               </div>
             </li>
           </ul>
-          <button
-            className="btn btn-outline-success"
-            onClick={() => navigate("/login")}
-          >
-            Sign In
-          </button>
-          <button
-            className="btn btn-outline-success"
-            onClick={() => navigate("/signup")}
-          >
-            Sign Up
-          </button>
+          {!props.userState?.loggedIn && (
+            <button
+              className="btn btn-outline-success"
+              onClick={() => navigate("/login")}
+            >
+              Sign In
+            </button>
+          )}
+          {!props.userState?.loggedIn && (
+            <button
+              className="btn btn-outline-success"
+              onClick={() => navigate("/signup")}
+            >
+              Sign Up
+            </button>
+          )}
         </div>
       </div>
     </nav>
@@ -102,7 +106,5 @@ export default function Nav(props) {
 }
 
 Nav.propTypes = {
-  handleSignIn: PropTypes.func.isRequired,
-  handleHome: PropTypes.func.isRequired,
-  handleSignUp: PropTypes.func.isRequired,
+  userState: PropTypes.func.isRequired,
 };

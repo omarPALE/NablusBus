@@ -105,7 +105,7 @@ export default function LoginContent(props) {
           Log in
         </button>
 
-        <p>Don't have an account?</p>
+        <p>Don&apos;t have an account?</p>
         <button
           className="btn btn-primary"
           type="submit"

@@ -28,14 +28,14 @@ router.post("/add", async (req, res) => {
     password,
     role = "passenger",
   } = req.body;
-
+  const hashedPassword = await bcrypt.hash(password, 10);
   const username = firstName + " " + lastName;
 
   const age = Math.floor(Math.random() * 100) + 18; // Generate a random age between 18 and 100
   try {
     const result = await pool.query(
       "INSERT INTO users (username, email, password, role, age) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-      [username, email, password, role, age]
+      [username, email, hashedPassword, role, age]
     );
     res.status(201).json(result.rows[0]); // Respond with the inserted user
   } catch (err) {
@@ -51,10 +51,12 @@ router.post("/add", async (req, res) => {
 router.put("/update/:id", async (req, res) => {
   const { id } = req.params;
   const { username, email, password, role } = req.body;
+  const hashedPassword = await bcrypt.hash(password, 10);
+
   try {
     await pool.query(
       "UPDATE users SET username = $1, email = $2, password = $3, role=$4 WHERE id = $5",
-      [username, email, password, role, id]
+      [username, email, hashedPassword, role, id]
     );
     res.send("User updated successfully");
   } catch (err) {
@@ -77,17 +79,20 @@ router.delete("/delete/:id", async (req, res) => {
 router.get("/email", async (req, res) => {
   const resEmail = req.query.email; // Extract email and password from request body
   const resPassword = req.query.password; //
+
   try {
     const result = await pool.query(
       "SELECT email, password FROM users WHERE email = $1",
       [resEmail]
     );
     if (result.rows.length > 0) {
+      console.log("data base password: ", resPassword);
       console.log("data base password: ", result.rows[0].password);
       const isPasswordValid = await bcrypt.compare(
         resPassword,
         result.rows[0].password
       );
+      console.log("compar result is : ", isPasswordValid);
 
       if (isPasswordValid) {
         // Respond with success status and user details

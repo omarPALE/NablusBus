@@ -28,6 +28,10 @@ function App() {
           element={<Home setUserState={setUserState} userState={userState} />}
         />
         <Route
+          path="/"
+          element={<Home setUserState={setUserState} userState={userState} />}
+        />
+        <Route
           path="/signup"
           element={<SignUp setUserState={setUserState} userState={userState} />}
         />
