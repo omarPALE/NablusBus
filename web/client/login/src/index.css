@@ -12,10 +12,7 @@ body {
   padding: 0; /* Remove default padding */
   background-color: var(--main-color);
 }
-.navbar {
-  padding: 0px;
-  z-index: 1010;
-}
+
 .login-main-continer {
   width: fit-content;
   height: fit-content;
@@ -95,11 +92,6 @@ Footer {
   border: none;
 }
 
-.navbar-brand {
-  cursor: pointer;
-  color: #000000;
-  padding-left: 10px;
-}
 
 /* Nav bar styles */
 .container-fluid {
@@ -171,4 +163,50 @@ Footer {
 .ecHMvD,
 .cksbTF {
   border: none !important;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--main-color);
+  padding: 10px 20px;
+}
+
+.navbar-brand {
+  font-size: 20px;
+  color: black;
+  text-decoration: none;
+  margin-right: 20px;
+}
+
+.navbar-nav {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-nav li {
+  margin-right: 20px;
+}
+
+.navbar-nav li:last-child {
+  margin-right: 0;
+}
+
+.navbar a,
+.navbar button {
+  display: inline-block;
+  vertical-align: middle;
+  text-decoration: none;
+  margin: 0 10px;
+  color: black;
+}
+
+.profile-menu-container {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
 }
