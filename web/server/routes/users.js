@@ -1,6 +1,7 @@
 import express from "express";
 import pool from "../db.js";
 import cors from "cors";
+import bcrypt from "bcrypt";
 const router = express.Router();
 // Middleware
 router.use(express.json());
@@ -67,6 +68,40 @@ router.delete("/delete/:id", async (req, res) => {
   try {
     await pool.query("DELETE FROM users WHERE id = $1", [id]);
     res.send("User deleted successfully");
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+//get by email
+router.get("/email", async (req, res) => {
+  const resEmail = req.query.email; // Extract email and password from request body
+  const resPassword = req.query.password; //
+  try {
+    const result = await pool.query(
+      "SELECT email, password FROM users WHERE email = $1",
+      [resEmail]
+    );
+    if (result.rows.length > 0) {
+      console.log("data base password: ", result.rows[0].password);
+      const isPasswordValid = await bcrypt.compare(
+        resPassword,
+        result.rows[0].password
+      );
+
+      if (isPasswordValid) {
+        // Respond with success status and user details
+        return res
+          .status(200)
+          .json({ message: "Authentication successful", email: resEmail });
+      } else {
+        // Respond with invalid credentials message
+        return res.status(401).json({ message: "Invalid password" });
+      }
+    } else {
+      // Respond with user not found message
+      return res.status(404).json({ message: "User not found" });
+    }
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");

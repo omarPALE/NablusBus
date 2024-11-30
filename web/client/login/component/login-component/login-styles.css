@@ -1,26 +1,55 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #f8f9fa; /* Light grey background */
+  height: 100vh; /* Full viewport height */
+}
+
 .content {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: stretch;
   padding: 20px;
   background-color: var(--secondry-color);
+  width: 600px;
+  margin: 50px auto;
+  border: 1px solid #ffffff;
+  border-radius: 8px;
 }
 
 .form-control {
-  width: fit-content;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
 }
 
 .form-text {
   max-width: 370px;
+  min-height: 20px;
   margin-top: 5px;
+  font-size: 0.9em;
+  color: #6c757d;
   margin-bottom: 10px;
 }
 
-.btn btn-primary {
-  margin-top: 30px;
+.form-text.error {
+  color: red;
+  font-weight: bold;
 }
 
+.btn.btn-outline-secondary {
+  margin-top: 30px;
+  width: 100%;
+  padding: 10px;
+}
+.btn.btn-primary {
+  margin-top: 30px;
+  width: 100%;
+  padding: 10px;
+}
 .header {
   display: flex;
   flex-direction: row;
@@ -33,4 +62,24 @@
   border-radius: 50%;
   margin: 2%;
   margin-bottom: 0;
+}
+
+input.form-control {
+  box-sizing: border-box; /* Prevent resizing due to border */
+  width: 100%; /* Ensure input fields span the card's width */
+  padding: 8px;
+}
+
+input.form-control.error {
+  border: 1px solid red;
+  background-color: #ffe6e6;
+}
+
+input.form-control:focus {
+  outline: none;
+  border: 1px solid #007bff;
+}
+
+button {
+  margin-top: 20px;
 }
