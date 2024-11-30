@@ -49,6 +49,7 @@ export default function LoginContent(props) {
         props.setUserState(() => ({
           ...props.userState,
           loggedIn: true,
+          email: signInInfo.email,
         }));
         navigate("/home");
       }

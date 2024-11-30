@@ -1,0 +1,54 @@
+/* Dropdown container */
+.custom-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown menu */
+.custom-dropdown-menu {
+  position: absolute;
+  top: 100%; /* Position below the button */
+  left: 0;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1050; /* Ensure it's above other elements */
+  list-style: none;
+  padding: 10px;
+  margin: 0;
+}
+
+/* Dropdown menu items */
+.custom-dropdown-menu li {
+  margin: 5px 0;
+}
+
+.custom-dropdown-menu a {
+  display: block;
+  padding: 5px 10px;
+  text-decoration: none;
+  color: #333;
+  border-radius: 4px;
+}
+
+/* Hover effect for menu items */
+.custom-dropdown-menu a:hover {
+  background-color: #f0f0f0;
+  color: #000;
+}
+
+/* Button styles */
+.custom-dropdown button {
+  background-color: var(--main-color-hover);
+  color: black;
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.custom-dropdown button:hover {
+  background-color: #e85506;
+  color: white;
+}

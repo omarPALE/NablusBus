@@ -1,10 +1,16 @@
 // Import PropTypes and Dropdown from 'react-bootstrap'
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
-
+import ProfileMenu from "./Home-component/ProfileMenu";
+import TrackingDropdown from "./TrackingDropDown/TrackingDropDown";
 export default function Nav(props) {
   const navigate = useNavigate();
   console.log(props.userState);
+  const user = {
+    name: "Omar",
+    email: "omar@example.com",
+    avatar: "https://via.placeholder.com/150", // Optional profile picture URL
+  };
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary">
       <div className="container-fluid">
@@ -51,36 +57,8 @@ export default function Nav(props) {
                 Ticket
               </a>
             </li>
-
-            <li className="nav-item dropdown">
-              <div className="dropdown">
-                <a
-                  className="btn btn-secondary dropdown-toggle"
-                  href="#"
-                  role="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  Tracking
-                </a>
-                <ul className="dropdown-menu">
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      South Line
-                    </a>
-                  </li>
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      North Line
-                    </a>
-                  </li>
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      East Line
-                    </a>
-                  </li>
-                </ul>
-              </div>
+            <li>
+              <TrackingDropdown />
             </li>
           </ul>
           {!props.userState?.loggedIn && (
@@ -99,6 +77,7 @@ export default function Nav(props) {
               Sign Up
             </button>
           )}
+          {props.userState?.loggedIn && <ProfileMenu user={user} />}
         </div>
       </div>
     </nav>

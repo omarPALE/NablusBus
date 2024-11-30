@@ -14,7 +14,7 @@ body {
 }
 .navbar {
   padding: 0px;
-  z-index: 1;
+  z-index: 1010;
 }
 .login-main-continer {
   width: fit-content;
@@ -45,19 +45,6 @@ Footer {
   align-items: center;
 }
 
-.dropdown-list {
-  background-color: #ffffff;
-  border-bottom-color: rgba(0, 0, 0, 0.65);
-}
-.dropdown-toggle {
-  color: black;
-  background-color: var(--main-color-hover);
-  border: none;
-}
-
-.dropdown-toggle :hover {
-  background-color: var(--main-color-hover);
-}
 .btn-secondary {
   --bs-btn-hover-bg: var(--main-color-hover);
   --bs-btn-active-bg: var(--main-color-hover);
@@ -121,9 +108,7 @@ Footer {
   left: 0;
   width: 100%;
   z-index: 1000; /*Make sure it's above other content*/
-  background-color: var(
-    --main-color-hover
-  ); /* Replace with your navbar color */
+  background-color: var(--main-color-hover);
   transition: top 0.3s ease-in-out; /* Smooth transition for hiding/showing */
 }
 

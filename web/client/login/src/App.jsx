@@ -11,6 +11,8 @@ import { useState } from "react";
 function App() {
   const [userState, setUserState] = useState({
     loggedIn: false,
+    email:"",
+    username:"",
   });
   console.log("hi from app ==>>> " + userState.loggedIn);
 
