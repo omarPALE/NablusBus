@@ -7,6 +7,7 @@ import TicketManagement from "../component/MyTicket-component/MyTicketContent";
 import ScrollToTop from "../component/ScrolToTop";
 import { Route, Routes } from "react-router-dom";
 import { useState } from "react";
+import DriverScanner from "../component/DriverScaner/DriverScanner";
 
 function App() {
   const [userState, setUserState] = useState({
@@ -51,6 +52,7 @@ function App() {
             />
           }
         />
+        <Route path="/scan" element={<DriverScanner />} />
       </Routes>
     </div>
   );

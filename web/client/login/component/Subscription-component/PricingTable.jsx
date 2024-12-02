@@ -1,10 +1,35 @@
 import { useState, useEffect, useRef } from "react";
-import "./Ticket.css"; // Ensure the correct path to your CSS file
+import axios from "axios";
+import "./Ticket.css";
+import TicketPopUp from "../pop-ups/Ticket-Popup";
 
 const PricingTable = () => {
   const [pricingData, setPricingData] = useState([]);
   const ticketRef = useRef(null);
   const pricingRef = useRef(null);
+
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [ticketData, setTicketData] = useState({
+    user_id: "",
+    type: "",
+    rides_left: 0,
+  });
+  const [responseMessage, setResponseMessage] = useState("");
+
+  const handleGenerateTicket = async () => {
+    try {
+      const response = await axios.post("http://localhost:5000/api/tickets", {
+        ...ticketData,
+      });
+      setResponseMessage(
+        `Ticket created successfully! Ticket ID: ${response.data.id}`
+      );
+      setIsPopupOpen(false); // Close the popup on success
+    } catch (error) {
+      console.error("Error generating ticket:", error);
+      setResponseMessage("Failed to create ticket. Please try again.");
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -77,7 +102,7 @@ const PricingTable = () => {
         <div className="container">
           <div className="row">
             <div className="price-heading clearfix">
-              <h1>Bus Ticket Priceing</h1>
+              <h1>Bus Ticket Pricing</h1>
             </div>
             {pricingData.map((plan) => (
               <div key={plan.id} className="col-md-4">
@@ -126,7 +151,9 @@ const PricingTable = () => {
                     </ul>
                   </div>
                   <div className="generic_price_btn clearfix">
-                    <a href="">Get</a>
+                    <a href="#" onClick={() => setIsPopupOpen(true)}>
+                      Create Ticket
+                    </a>
                   </div>
                 </div>
               </div>
@@ -134,6 +161,16 @@ const PricingTable = () => {
           </div>
         </div>
       </section>
+
+      {/* Render the PopUp component */}
+      <TicketPopUp
+        isPopupOpen={isPopupOpen}
+        setIsPopupOpen={setIsPopupOpen}
+        ticketData={ticketData}
+        setTicketData={setTicketData}
+        handleGenerateTicket={handleGenerateTicket}
+        responseMessage={responseMessage}
+      />
     </div>
   );
 };

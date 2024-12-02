@@ -171,12 +171,6 @@ const SignupForm = (props) => {
 
     // Log the formRefs object
     console.log(formRefs);
-
-    // Log the email, password, and confirm password values
-    console.log("Email:", formRefs.current.emailEl.value);
-    console.log("Password:", formRefs.current.passwordEl.value);
-    console.log("Confirm Password:", formRefs.current.confirmPasswordEl.value);
-
     // Validate form fields
     let isUsernameValid = checkUsername("firstnameEl", "First Name"),
       isLastNameValid = checkUsername("lastnameEl", "Last Name"),

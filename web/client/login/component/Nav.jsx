@@ -58,6 +58,14 @@ export default function Nav(props) {
               </a>
             </li>
             <li>
+              <a
+                className="btn btn-outline-success"
+                onClick={() => navigate("scan")}
+              >
+                Scanner
+              </a>
+            </li>
+            <li>
               <TrackingDropdown />
             </li>
           </ul>
