@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Content() {
   useEffect(() => {
@@ -22,6 +23,8 @@ export default function Content() {
     // Cleanup observer on unmount
     return () => observer.disconnect();
   }, []);
+  const navigate = useNavigate();
+
   return (
     <div className="">
       <img src="../../img/home.jpg" width="100%"></img>
@@ -59,7 +62,15 @@ export default function Content() {
             باصات نابلس الكبرى تقدم &quot;بطاقة وقار&quot;، مبادرة حصرية لتكريم
             كبار السن
           </h2>
-          <button className="content-button"> اطلب بطاقتك</button>
+          <button
+            className="content-button"
+            onClick={() => {
+              navigate("/subscription");
+            }}
+          >
+            {" "}
+            اطلب بطاقتك
+          </button>
           <img src="../../img/waqar.jpg" className="content-img3" />
         </div>
       </div>

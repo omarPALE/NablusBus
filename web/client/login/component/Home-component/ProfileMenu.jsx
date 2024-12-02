@@ -1,12 +1,22 @@
 import { useState } from "react";
 import "./profileMenu.css";
 import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom";
 
 export default function ProfileMenu(props) {
   const [showDropdown, setShowDropdown] = useState(false);
-
+  const navigate = useNavigate();
   const toggleDropdown = () => {
     setShowDropdown((prev) => !prev);
+  };
+  const logOut = () => {
+    props.setUserState((prevState) => ({
+      ...prevState,
+      loggedIn: false,
+      email: "",
+      username: "",
+    }));
+    navigate("/login");
   };
 
   return (
@@ -37,7 +47,9 @@ export default function ProfileMenu(props) {
           </div>
           <hr />
           <button className="profile-dropdown-item">Settings</button>
-          <button className="profile-dropdown-item">Log out</button>
+          <button className="profile-dropdown-item" onClick={logOut}>
+            Log out
+          </button>
         </div>
       )}
     </div>
@@ -45,7 +57,8 @@ export default function ProfileMenu(props) {
 }
 
 ProfileMenu.propTypes = {
-  avatar: PropTypes.string, // Should be a string
-  name: PropTypes.string, // Should be a string
-  email: PropTypes.string, // Should be a string
+  avatar: PropTypes.string, // Optional string
+  name: PropTypes.string.isRequired, // Required string
+  email: PropTypes.string.isRequired, // Required string
+  setUserState: PropTypes.func.isRequired, // Function
 };

@@ -5,12 +5,12 @@ import ProfileMenu from "./Home-component/ProfileMenu";
 import TrackingDropdown from "./TrackingDropDown/TrackingDropDown";
 export default function Nav(props) {
   const navigate = useNavigate();
-  console.log(props.userState);
   const user = {
     name: props.userState.username,
     email: props.userState.email,
     avatar: "https://via.placeholder.com/150", // Optional profile picture URL
   };
+
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary">
       <div className="container-fluid">
@@ -23,8 +23,8 @@ export default function Nav(props) {
         />
         <a
           className="navbar-brand"
-          onClick={() => navigate("/home")}
           cursor="pointer"
+          onClick={() => navigate("/home")}
         >
           Nablus Bus
         </a>
@@ -78,7 +78,11 @@ export default function Nav(props) {
             </button>
           )}
           {props.userState?.loggedIn && (
-            <ProfileMenu name={user.name} email={user.email} />
+            <ProfileMenu
+              name={user.name}
+              email={user.email}
+              setUserState={props.setUserState}
+            />
           )}
         </div>
       </div>
@@ -87,5 +91,10 @@ export default function Nav(props) {
 }
 
 Nav.propTypes = {
-  userState: PropTypes.func.isRequired,
+  userState: PropTypes.shape({
+    loggedIn: PropTypes.bool.isRequired,
+    email: PropTypes.string.isRequired,
+    username: PropTypes.string.isRequired,
+  }).isRequired,
+  setUserState: PropTypes.func.isRequired,
 };

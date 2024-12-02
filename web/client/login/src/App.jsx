@@ -11,14 +11,13 @@ import { useState } from "react";
 function App() {
   const [userState, setUserState] = useState({
     loggedIn: false,
-    email:"",
-    username:"",
+    email: "",
+    username: "",
   });
-  console.log("hi from app ==>>> " + userState.loggedIn);
 
   return (
     <div className="main-continer">
-      <Nav userState={userState} />
+      <Nav userState={userState} setUserState={setUserState} />
       <ScrollToTop />
       <Routes>
         <Route

@@ -3,9 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 
+
+
+
 export default function LoginContent(props) {
   const navigate = useNavigate();
-
   // State to manage sign-in information and errors
   const [signInInfo, setSignInInfo] = useState({
     email: "",
@@ -14,7 +16,6 @@ export default function LoginContent(props) {
   const [error, setError] = useState(""); // State to manage error message
   const [isPasswordInvalid, setIsPasswordInvalid] = useState(false); // State for red border
   const [isEmailInvalid, setIsEmailInvalid] = useState(false); // State for red border
-
   const handleEmailChange = (e) => {
     setSignInInfo((prevState) => ({
       ...prevState,

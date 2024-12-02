@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import axios from "axios";
 import PropTypes from "prop-types";
+import "./signUpStyles.css";
 
 const FormContainer = styled.div`
   width: 600px;
@@ -428,15 +429,78 @@ const SignupForm = (props) => {
                 type={type}
                 value={values[name] || ""}
                 onFocus={() => handleFocus(name)}
-                // onBlur={handleSubmit}
                 onChange={(e) => handleChange(name, e.target.value)}
               />
               <small></small>
             </InputWrapper>
           ))}
         </InputRow>
+        <div className="user-type-section">
+          <h3 className="user-type-title">Select User Type:</h3>
+          <div className="user-type-options">
+            <label className="user-type-label">
+              <input
+                type="radio"
+                name="userType"
+                value="Passenger"
+                onChange={() =>
+                  setValues({ ...values, userType: "Passenger", workId: "" })
+                }
+                checked={values.userType === "Passenger"}
+              />
+              Passenger
+            </label>
+            <label className="user-type-label">
+              <input
+                type="radio"
+                name="userType"
+                value="Driver"
+                onChange={() => setValues({ ...values, userType: "Driver" })}
+                checked={values.userType === "Driver"}
+              />
+              Driver
+            </label>
+            <label className="user-type-label">
+              <input
+                type="radio"
+                name="userType"
+                value="Administrator"
+                onChange={() =>
+                  setValues({
+                    ...values,
+                    userType: "Administrator",
+                    workId: "",
+                  })
+                }
+                checked={values.userType === "Administrator"}
+              />
+              Administrator
+            </label>
+          </div>
+          {values.userType === "Driver" && (
+            <div className="work-id-field">
+              <InputWrapper>
+                <Placeholder
+                  isFocusedOrFilled={focusStates.workId || values.workId}
+                >
+                  Work ID
+                </Placeholder>
+                <InputField
+                  ref={(el) => (formRefs.current.workIdEl = el)}
+                  type="text"
+                  value={values.workId || ""}
+                  onFocus={() => handleFocus("workId")}
+                  onChange={(e) => handleChange("workId", e.target.value)}
+                />
+                <small></small>
+              </InputWrapper>
+            </div>
+          )}
+        </div>
+
         {[
           { name: "date", label: "Birth Date", type: "date", refName: "date" },
+          {},
           {
             name: "phone",
             label: "Phone Number",
