@@ -1,12 +1,14 @@
 // Import PropTypes and Dropdown from 'react-bootstrap'
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
-
+import ProfileMenu from "./Home-component/ProfileMenu";
+import TrackingDropdown from "./TrackingDropDown/TrackingDropDown";
 export default function Nav(props) {
   const navigate = useNavigate();
-
-  const homeNav = () => {
-    navigate("/home");
+  const user = {
+    name: props.userState.username,
+    email: props.userState.email,
+    avatar: "https://via.placeholder.com/150", // Optional profile picture URL
   };
 
   return (
@@ -19,7 +21,11 @@ export default function Nav(props) {
           height="30"
           className="d-inline-block align-top"
         />
-        <a className="navbar-brand" onClick={homeNav} cursor="pointer">
+        <a
+          className="navbar-brand"
+          cursor="pointer"
+          onClick={() => navigate("/home")}
+        >
           Nablus Bus
         </a>
         <button
@@ -38,60 +44,54 @@ export default function Nav(props) {
             <li>
               <a
                 className="btn btn-outline-success"
-                onClick={() => navigate("ticket")}
+                onClick={() => navigate("subscription")}
               >
-                Subscribtion
+                Subscription
               </a>
             </li>
             <li>
-              <a className="btn btn-outline-success" href="#">
+              <a
+                className="btn btn-outline-success"
+                onClick={() => navigate("ticket")}
+              >
                 Ticket
               </a>
             </li>
-
-            <li className="nav-item dropdown">
-              <div className="dropdown">
-                <a
-                  className="btn btn-secondary dropdown-toggle"
-                  href="#"
-                  role="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
-                  Tracking
-                </a>
-                <ul className="dropdown-menu">
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      South Line
-                    </a>
-                  </li>
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      North Line
-                    </a>
-                  </li>
-                  <li>
-                    <a className="dropdown-item" href="#">
-                      East Line
-                    </a>
-                  </li>
-                </ul>
-              </div>
+            <li>
+              <a
+                className="btn btn-outline-success"
+                onClick={() => navigate("scan")}
+              >
+                Scanner
+              </a>
+            </li>
+            <li>
+              <TrackingDropdown />
             </li>
           </ul>
-          <button
-            className="btn btn-outline-success"
-            onClick={props.handleSignIn}
-          >
-            Sign In
-          </button>
-          <button
-            className="btn btn-outline-success"
-            onClick={props.handleSignUp}
-          >
-            Sign Up
-          </button>
+          {!props.userState?.loggedIn && (
+            <button
+              className="btn btn-outline-success"
+              onClick={() => navigate("/login")}
+            >
+              Sign In
+            </button>
+          )}
+          {!props.userState?.loggedIn && (
+            <button
+              className="btn btn-outline-success"
+              onClick={() => navigate("/signup")}
+            >
+              Sign Up
+            </button>
+          )}
+          {props.userState?.loggedIn && (
+            <ProfileMenu
+              name={user.name}
+              email={user.email}
+              setUserState={props.setUserState}
+            />
+          )}
         </div>
       </div>
     </nav>
@@ -99,7 +99,10 @@ export default function Nav(props) {
 }
 
 Nav.propTypes = {
-  handleSignIn: PropTypes.func.isRequired,
-  handleHome: PropTypes.func.isRequired,
-  handleSignUp: PropTypes.func.isRequired,
+  userState: PropTypes.shape({
+    loggedIn: PropTypes.bool.isRequired,
+    email: PropTypes.string.isRequired,
+    username: PropTypes.string.isRequired,
+  }).isRequired,
+  setUserState: PropTypes.func.isRequired,
 };

@@ -2,6 +2,9 @@ import { useState, useRef } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
+import axios from "axios";
+import PropTypes from "prop-types";
+import "./signUpStyles.css";
 
 const FormContainer = styled.div`
   width: 600px;
@@ -133,13 +136,18 @@ const showSuccess = (input) => {
   error.textContent = "";
 };
 
-const SignupForm = () => {
+const SignupForm = (props) => {
   const navigate = useNavigate();
   const [focusStates, setFocusStates] = useState({});
   const [values, setValues] = useState({});
   const [showPassword, setShowPassword] = useState([true]);
   const [confirmShowPassword, setConfirmShowPassword] = useState([false]);
+  const [message, setMessage] = useState("");
 
+  // props.setUserState(() => ({
+  //   ...props.userState,
+  //   isLoggedIn: false,
+  // }));
   const formRefs = useRef({
     firstnameEl: null,
     lastnameEl: null,
@@ -158,17 +166,11 @@ const SignupForm = () => {
    * @param {React.FormEvent<HTMLFormElement>} e - The form submission event.
    * @returns {void}
    */
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Log the formRefs object
     console.log(formRefs);
-
-    // Log the email, password, and confirm password values
-    console.log("Email:", formRefs.current.emailEl.value);
-    console.log("Password:", formRefs.current.passwordEl.value);
-    console.log("Confirm Password:", formRefs.current.confirmPasswordEl.value);
-
     // Validate form fields
     let isUsernameValid = checkUsername("firstnameEl", "First Name"),
       isLastNameValid = checkUsername("lastnameEl", "Last Name"),
@@ -190,7 +192,47 @@ const SignupForm = () => {
 
     // Submit to the server if the form is valid
     if (isFormValid) {
-      console.log("heeeeeeeeeeeeeeeeeeeeeee");
+      try {
+        const formData = {
+          firstname: formRefs.current.firstnameEl.value, // Replace with the actual ref for username
+          lastName: formRefs.current.lastnameEl.value, // Replace with the actual ref for
+          phone: formRefs.current.phoneEl.value, // Replace with the actual ref for email
+          email: formRefs.current.emailEl.value, // Replace with the actual ref for email
+          password: formRefs.current.passwordEl.value, // Replace with the actual ref for password
+        };
+        props.setUserState(() => ({
+          ...props.userState,
+          loggedIn: true,
+        }));
+        console.log(
+          "hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii:" + props.userState.loggedIn
+        );
+        const response = await axios.post(
+          "http://localhost:5000/users/add",
+          formData
+        );
+
+        setMessage("Sign up successful!");
+        console.log(response.data); // Handle the returned data
+      } catch (err) {
+        props.setUserState(() => ({
+          ...props.userState,
+          loggedIn: false,
+        }));
+        if (
+          err.response &&
+          err.response.data &&
+          err.response.data.includes("duplicate key value violates")
+        ) {
+          // Show a popup or alert if duplicate key error
+          alert(
+            "This username or email is already in use. Please try another."
+          );
+        } else {
+          setMessage("Error signing up. Please try again.");
+        }
+        console.error(err.message);
+      }
     }
   };
 
@@ -204,6 +246,13 @@ const SignupForm = () => {
 
   const handleChange = (field, value) => {
     setValues({ ...values, [field]: value });
+    checkUsername("firstnameEl", "First Name"),
+      checkUsername("lastnameEl", "Last Name"),
+      checkUsername("date", "Birth date"),
+      checkEmail(),
+      checkPassword(),
+      checkConfirmPassword(),
+      checkPhone();
   };
 
   /**
@@ -374,15 +423,78 @@ const SignupForm = () => {
                 type={type}
                 value={values[name] || ""}
                 onFocus={() => handleFocus(name)}
-                onBlur={handleSubmit}
                 onChange={(e) => handleChange(name, e.target.value)}
               />
               <small></small>
             </InputWrapper>
           ))}
         </InputRow>
+        <div className="user-type-section">
+          <h3 className="user-type-title">Select User Type:</h3>
+          <div className="user-type-options">
+            <label className="user-type-label">
+              <input
+                type="radio"
+                name="userType"
+                value="Passenger"
+                onChange={() =>
+                  setValues({ ...values, userType: "Passenger", workId: "" })
+                }
+                checked={values.userType === "Passenger"}
+              />
+              Passenger
+            </label>
+            <label className="user-type-label">
+              <input
+                type="radio"
+                name="userType"
+                value="Driver"
+                onChange={() => setValues({ ...values, userType: "Driver" })}
+                checked={values.userType === "Driver"}
+              />
+              Driver
+            </label>
+            <label className="user-type-label">
+              <input
+                type="radio"
+                name="userType"
+                value="Administrator"
+                onChange={() =>
+                  setValues({
+                    ...values,
+                    userType: "Administrator",
+                    workId: "",
+                  })
+                }
+                checked={values.userType === "Administrator"}
+              />
+              Administrator
+            </label>
+          </div>
+          {values.userType === "Driver" && (
+            <div className="work-id-field">
+              <InputWrapper>
+                <Placeholder
+                  isFocusedOrFilled={focusStates.workId || values.workId}
+                >
+                  Work ID
+                </Placeholder>
+                <InputField
+                  ref={(el) => (formRefs.current.workIdEl = el)}
+                  type="text"
+                  value={values.workId || ""}
+                  onFocus={() => handleFocus("workId")}
+                  onChange={(e) => handleChange("workId", e.target.value)}
+                />
+                <small></small>
+              </InputWrapper>
+            </div>
+          )}
+        </div>
+
         {[
           { name: "date", label: "Birth Date", type: "date", refName: "date" },
+          {},
           {
             name: "phone",
             label: "Phone Number",
@@ -420,7 +532,7 @@ const SignupForm = () => {
               type={type}
               value={values[name] || ""}
               onFocus={() => name !== "date" && handleFocus(name)}
-              onBlur={handleSubmit}
+              // onBlur={handleSubmit}
               onChange={(e) => handleChange(name, e.target.value)}
             />
             <small style={{ fontSize: "5" }}></small>
@@ -463,7 +575,10 @@ const SignupForm = () => {
     </form>
   );
 };
-
+SignupForm.propTypes = {
+  setUserState: PropTypes.func.isRequired,
+  userState: PropTypes.func.isRequired,
+};
 export default SignupForm;
 
 /*  it is very important to use Ref with Dom element  and Attach the ref to the input or var attention attatch them by name not as string  */

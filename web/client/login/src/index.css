@@ -12,10 +12,7 @@ body {
   padding: 0; /* Remove default padding */
   background-color: var(--main-color);
 }
-.navbar {
-  padding: 0px;
-  z-index: 1;
-}
+
 .login-main-continer {
   width: fit-content;
   height: fit-content;
@@ -26,7 +23,7 @@ body {
   margin-top: 2%;
   box-shadow: rgba(9, 11, 17, 0.5) 0px 5px 15px 0px,
     rgba(19, 23, 32, 0.08) 0px 15px 35px -5px;
-  background-color: rgba(19, 23, 32, 0.08);
+  background-color: var(--secondry-color);
   margin-top: 70px;
 }
 .SignupForm {
@@ -45,19 +42,6 @@ Footer {
   align-items: center;
 }
 
-.dropdown-list {
-  background-color: #ffffff;
-  border-bottom-color: rgba(0, 0, 0, 0.65);
-}
-.dropdown-toggle {
-  color: black;
-  background-color: var(--main-color-hover);
-  border: none;
-}
-
-.dropdown-toggle :hover {
-  background-color: var(--main-color-hover);
-}
 .btn-secondary {
   --bs-btn-hover-bg: var(--main-color-hover);
   --bs-btn-active-bg: var(--main-color-hover);
@@ -108,11 +92,6 @@ Footer {
   border: none;
 }
 
-.navbar-brand {
-  cursor: pointer;
-  color: #000000;
-  padding-left: 10px;
-}
 
 /* Nav bar styles */
 .container-fluid {
@@ -121,7 +100,7 @@ Footer {
   left: 0;
   width: 100%;
   z-index: 1000; /*Make sure it's above other content*/
-  background-color: var(--main-color-hover); /* Replace with your navbar color */
+  background-color: var(--main-color-hover);
   transition: top 0.3s ease-in-out; /* Smooth transition for hiding/showing */
 }
 
@@ -184,4 +163,50 @@ Footer {
 .ecHMvD,
 .cksbTF {
   border: none !important;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--main-color);
+  padding: 10px 20px;
+}
+
+.navbar-brand {
+  font-size: 20px;
+  color: black;
+  text-decoration: none;
+  margin-right: 20px;
+}
+
+.navbar-nav {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-nav li {
+  margin-right: 20px;
+}
+
+.navbar-nav li:last-child {
+  margin-right: 0;
+}
+
+.navbar a,
+.navbar button {
+  display: inline-block;
+  vertical-align: middle;
+  text-decoration: none;
+  margin: 0 10px;
+  color: black;
+}
+
+.profile-menu-container {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
 }

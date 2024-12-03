@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
+import PropTypes from "prop-types"; // Import PropTypes
 import QRCode from "react-qr-code"; // Using react-qr-code
 import "./pop-styles.css";
-const TicketSection = () => {
+const TicketSection = (props) => {
   const ticketRef = useRef(null);
   const [isPopupVisible, setPopupVisible] = useState(false);
   const [ticketInfo] = useState({
@@ -16,18 +17,19 @@ const TicketSection = () => {
   });
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("animate");
-          } else {
-            entry.target.classList.remove("animate");
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
+    const observerOptions = {
+      threshold: 0.7, // 50% of the element must be visible to trigger the animation
+      rootMargin: "0px 0px -100px 0px", // Adds an offset to delay animation triggering
+    };
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("animate");
+        } else {
+          entry.target.classList.remove("animate");
+        }
+      });
+    }, observerOptions);
 
     if (ticketRef.current) observer.observe(ticketRef.current);
 
@@ -52,32 +54,38 @@ const TicketSection = () => {
           <div className="ticket-details">
             <div className="ticket-info">
               <p>
-                <strong>Departure:</strong> {ticketInfo.departure}
+                <strong>Departure:</strong>{" "}
+                {ticketInfo.departure || props.departure}
               </p>
               <p>
-                <strong>Destination:</strong> {ticketInfo.destination}
+                <strong>Destination:</strong>{" "}
+                {ticketInfo.destination || props.destination}
               </p>
               <p>
-                <strong>Class:</strong> {ticketInfo.class}
-              </p>
-            </div>
-            <div className="ticket-info">
-              <p>
-                <strong>Seat Number:</strong> {ticketInfo.seatNumber}
-              </p>
-              <p>
-                <strong>Bus Number:</strong> {ticketInfo.busNumber}
-              </p>
-              <p>
-                <strong>Ticket Price:</strong> {ticketInfo.ticketPrice}
+                <strong>Class:</strong> {ticketInfo.class || props.classType}
               </p>
             </div>
             <div className="ticket-info">
               <p>
-                <strong>Departure Time:</strong> {ticketInfo.departureTime}
+                <strong>Seat Number:</strong>{" "}
+                {ticketInfo.seatNumber || props.seatNumber}
               </p>
               <p>
-                <strong>Date:</strong> {ticketInfo.date}
+                <strong>Bus Number:</strong>{" "}
+                {ticketInfo.busNumber || props.busNumber}
+              </p>
+              <p>
+                <strong>Ticket Price:</strong>{" "}
+                {ticketInfo.ticketPrice || props.ticketPrice}
+              </p>
+            </div>
+            <div className="ticket-info">
+              <p>
+                <strong>Departure Time:</strong>{" "}
+                {ticketInfo.departureTime || props.departureTime}
+              </p>
+              <p>
+                <strong>Date:</strong> {ticketInfo.date || props.date}
               </p>
             </div>
           </div>
@@ -112,4 +120,15 @@ const TicketSection = () => {
   );
 };
 
+// Define PropTypes for the component
+TicketSection.propTypes = {
+  departure: PropTypes.string.isRequired,
+  destination: PropTypes.string.isRequired,
+  classType: PropTypes.string.isRequired,
+  seatNumber: PropTypes.string.isRequired,
+  busNumber: PropTypes.string.isRequired,
+  ticketPrice: PropTypes.string.isRequired,
+  departureTime: PropTypes.string.isRequired,
+  date: PropTypes.string.isRequired,
+};
 export default TicketSection;
