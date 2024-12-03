@@ -81,7 +81,7 @@ router.post("/email", async (req, res) => {
 
   try {
     const result = await pool.query(
-      "SELECT email, password, username FROM users WHERE email = $1",
+      "SELECT email, password, username, id FROM users WHERE email = $1",
       [email]
     );
 
@@ -92,10 +92,12 @@ router.post("/email", async (req, res) => {
       );
 
       if (isPasswordValid) {
+        console.log("from data base response on email " + result.rows[0].id);
         return res.status(200).json({
           message: "Authentication successful",
           email: result.rows[0].email,
           username: result.rows[0].username,
+          id: result.rows[0].id,
         });
       } else {
         return res.status(401).json({ message: "Invalid password" });

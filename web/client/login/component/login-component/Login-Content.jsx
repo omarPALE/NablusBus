@@ -3,9 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 
-
-
-
 export default function LoginContent(props) {
   const navigate = useNavigate();
   // State to manage sign-in information and errors
@@ -46,14 +43,15 @@ export default function LoginContent(props) {
       });
 
       if (response.status === 200) {
-        const { email, username } = response.data;
-
+        const { email, username, id } = response.data;
+        console.log(id);
         // Update user state
         props.setUserState(() => ({
           ...props.userState,
           loggedIn: true,
           email: email,
           username: username,
+          user_id: id,
         }));
 
         console.log("user info : " + username);

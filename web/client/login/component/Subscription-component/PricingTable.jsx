@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import TicketPopUp from "../pop-ups/Ticket-Popup";
 import { useNavigate } from "react-router-dom";
 import PropType from "prop-types";
-import axios from "axios";
 import "./Ticket.css";
 const PricingTable = (props) => {
   const [pricingData, setPricingData] = useState([]);
@@ -14,52 +13,46 @@ const PricingTable = (props) => {
   const [isMsgPopupOpen, setIsMsgPopupOpen] = useState(false);
 
   const [ticketData, setTicketData] = useState({
-    userName: "",
-    user_id: "",
-    type: "",
+    userName: props.userState.username,
+    ticketType: "",
+    model: "",
     rides_left: 0,
-    qr_code: "",
+    qr_code: "123",
+    price: 3,
   });
-  const [responseMessage, setResponseMessage] = useState("");
-
-  const handleGenerateTicket = async () => {
-    try {
-      const response = await axios.post("http://localhost:5000/api/tickets", {
-        ...ticketData,
-      });
-      setResponseMessage(
-        `Ticket created successfully! Ticket ID: ${response.data.id}`
-      );
-      setIsPopupOpen(false); // Close the popup on success
-    } catch (error) {
-      console.error("Error generating ticket:", error);
-      setResponseMessage("Failed to create ticket. Please try again.");
-    }
-  };
 
   useEffect(() => {
     const fetchData = async () => {
       const data = [
         {
-          user_id: 1,
-          plan: "Multi Trip",
+          id: 1,
+          qr_code: "1234567890",
+          title: "Multi Trip",
+          model: "multi",
           price: 30,
           TicketType: "Half or Full",
-          trip_left: 10,
+          rides_left: 10,
+          touched: false, // Add touched flag
         },
         {
           id: 2,
-          plan: "Single Trip",
+          qr_code: "1234567890",
+          title: "Single Trip",
+          model: "single",
           price: 3,
           TicketType: "Half or Full",
-          trip_left: 1,
+          rides_left: 1,
+          touched: false, // Add touched flag
         },
         {
           id: 3,
-          plan: "Student",
+          qr_code: "",
+          title: "Student",
+          model: "package",
           price: 299.99,
           TicketType: "full",
-          trip_left: 100,
+          rides_left: 100,
+          touched: false, // Add touched flag
         },
       ];
       setPricingData(data);
@@ -93,7 +86,7 @@ const PricingTable = (props) => {
     };
   }, []);
 
-  const handleCreateTicket = () => {
+  const handleCreateTicket = (id) => {
     if (!props.userState.loggedIn) {
       setIsMsgPopupOpen(true);
       setTimeout(() => {
@@ -102,8 +95,23 @@ const PricingTable = (props) => {
       }, 1500); // Adjust the timeout as needed
     } else {
       // Proceed with creating the ticket
+      setPricingData((prevData) =>
+        prevData.map((ticket) =>
+          ticket.id === id
+            ? { ...ticket, touched: true }
+            : { ...ticket, touched: false }
+        )
+      );
       setIsPopupOpen(true);
     }
+  };
+
+  const handleTicketTypeChange = (id, value) => {
+    setPricingData((prevData) =>
+      prevData.map((ticket) =>
+        ticket.id === id ? { ...ticket, ticketType: value } : ticket
+      )
+    );
   };
 
   return (
@@ -125,7 +133,7 @@ const PricingTable = (props) => {
                     <div className="generic_head_content clearfix">
                       <div className="head_bg"></div>
                       <div className="head">
-                        <span>{plan.plan}</span>
+                        <span>{plan.title}</span>
                       </div>
                     </div>
                     <div className="generic_price_tag clearfix">
@@ -144,15 +152,57 @@ const PricingTable = (props) => {
                   <div className="generic_feature_list">
                     <ul>
                       <li>
-                        <span>{plan.TicketType}</span> way
+                        <div className="type-container">
+                          <div className="type-title">
+                            <strong>Type:</strong>
+                          </div>
+                          <div className="radio-group">
+                            <label>
+                              <input
+                                type="radio"
+                                name={`ticketType-${plan.id}`}
+                                value="half"
+                                checked={plan.ticketType === "half"}
+                                onChange={(e) =>
+                                  handleTicketTypeChange(
+                                    plan.id,
+                                    e.target.value
+                                  )
+                                }
+                              />
+                              Half
+                            </label>
+                            <label>
+                              <input
+                                type="radio"
+                                name={`ticketType-${plan.id}`}
+                                value="full"
+                                checked={plan.ticketType === "full"}
+                                onChange={(e) =>
+                                  handleTicketTypeChange(
+                                    plan.id,
+                                    e.target.value
+                                  )
+                                }
+                              />
+                              Full
+                            </label>
+                          </div>
+                        </div>
                       </li>
                       <li>
-                        <span>{plan.trip_left}</span> Trip
+                        <span>{plan.rides_left}</span> Trip
                       </li>
                     </ul>
                   </div>
                   <div className="generic_price_btn clearfix">
-                    <a href="#" onClick={handleCreateTicket}>
+                    <a
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleCreateTicket(plan.id);
+                      }}
+                    >
                       Create Ticket
                     </a>
                   </div>
@@ -170,8 +220,7 @@ const PricingTable = (props) => {
         ticketData={ticketData}
         userState={props.userState}
         setTicketData={setTicketData}
-        handleGenerateTicket={handleGenerateTicket}
-        responseMessage={responseMessage}
+        pricingData={pricingData}
       />
 
       {isMsgPopupOpen && (
