@@ -1,63 +1,50 @@
-import "./ticket-popups.css"; // Create a separate CSS file for styling the popup
+import "./ticket-popups.css"; // Import your CSS
 import PropTypes from "prop-types";
 
 const TicketPopUp = ({
   isPopupOpen,
   setIsPopupOpen,
   ticketData,
-  setTicketData,
+  userState,
   handleGenerateTicket,
   responseMessage,
 }) => {
-  if (!isPopupOpen) return null; // Don't render the popup if it isn't open
+  if (!isPopupOpen) return null; // Don't render the popup if it's not open
 
   return (
     <div className="popup-overlay">
       <div className="popup-content">
-        <h2>Create Ticket</h2>
+        <h2>Ticket Details</h2>
 
-        {/* Ticket Fields */}
-        <div className="form-group">
-          <label>
-            User ID:
-            <input
-              type="text"
-              value={ticketData.user_id}
-              onChange={(e) =>
-                setTicketData({ ...ticketData, user_id: e.target.value })
-              }
-            />
-          </label>
+        {/* User Information */}
+        <div className="info-section">
+          <p>
+            <strong>Passenger Name:</strong> {userState.username}
+          </p>
+          <p>
+            <strong>Email:</strong> {userState.email}
+          </p>
         </div>
 
-        <div className="form-group">
-          <label>
-            Ticket Type:
-            <select
-              value={ticketData.type}
-              onChange={(e) =>
-                setTicketData({ ...ticketData, type: e.target.value })
-              }
-            >
-              <option value="">Select Type</option>
-              <option value="multi-trip">Multi-Trip</option>
-              <option value="single-trip">Single Trip</option>
-              <option value="student">Student</option>
-            </select>
-          </label>
+        {/* Ticket Information */}
+        <div className="info-section">
+          <p>
+            <strong>Ticket Type:</strong> {ticketData.type}
+          </p>
+          <p>
+            <strong>Ticket Price:</strong> ${ticketData.price}
+          </p>
+          <p>
+            <strong>Rides Left:</strong> {ticketData.rides_left}
+          </p>
         </div>
 
-        <div className="form-group">
-          <label>
-            Rides Left:
-            <input
-              type="number"
-              value={ticketData.rides_left}
-              onChange={(e) =>
-                setTicketData({ ...ticketData, rides_left: e.target.value })
-              }
-            />
-          </label>
+        {/* Payment Details Card */}
+        <div className="payment-card">
+          <h3>Payment Method</h3>
+          <p>Card Number: **** **** **** 1234</p>
+          <p>Card Holder: John Doe</p>
+          <p>Expiry Date: 12/25</p>
         </div>
 
         {/* Confirm and Cancel Buttons */}
@@ -73,6 +60,7 @@ const TicketPopUp = ({
           </button>
         </div>
 
+        {/* Response Message */}
         {responseMessage && (
           <p className="response-message">{responseMessage}</p>
         )}
@@ -84,8 +72,15 @@ const TicketPopUp = ({
 TicketPopUp.propTypes = {
   isPopupOpen: PropTypes.bool.isRequired,
   setIsPopupOpen: PropTypes.func.isRequired,
-  ticketData: PropTypes.object.isRequired,
-  setTicketData: PropTypes.func.isRequired,
+  ticketData: PropTypes.shape({
+    type: PropTypes.string,
+    price: PropTypes.number,
+    rides_left: PropTypes.number,
+  }).isRequired,
+  userState: PropTypes.shape({
+    username: PropTypes.string,
+    email: PropTypes.string,
+  }).isRequired,
   handleGenerateTicket: PropTypes.func.isRequired,
   responseMessage: PropTypes.string,
 };

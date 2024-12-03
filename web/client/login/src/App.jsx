@@ -14,6 +14,7 @@ function App() {
     loggedIn: false,
     email: "",
     username: "",
+    userID: 0,
   });
 
   return (

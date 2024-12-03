@@ -1,18 +1,24 @@
 import { useState, useEffect, useRef } from "react";
+import TicketPopUp from "../pop-ups/Ticket-Popup";
+import { useNavigate } from "react-router-dom";
+import PropType from "prop-types";
 import axios from "axios";
 import "./Ticket.css";
-import TicketPopUp from "../pop-ups/Ticket-Popup";
-
-const PricingTable = () => {
+const PricingTable = (props) => {
   const [pricingData, setPricingData] = useState([]);
   const ticketRef = useRef(null);
   const pricingRef = useRef(null);
+  const navigate = useNavigate();
 
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [isPopupOpen, setIsPopupOpen] = useState(true);
+  const [isMsgPopupOpen, setIsMsgPopupOpen] = useState(false);
+
   const [ticketData, setTicketData] = useState({
+    userName: "",
     user_id: "",
     type: "",
     rides_left: 0,
+    qr_code: "",
   });
   const [responseMessage, setResponseMessage] = useState("");
 
@@ -35,34 +41,25 @@ const PricingTable = () => {
     const fetchData = async () => {
       const data = [
         {
-          id: 1,
-          plan: "Multi-Trip",
-          price: 20,
-          FareType: "Low",
-          storage: "150GB",
-          accounts: 12,
-          domains: 7,
-          support: "24/7",
+          user_id: 1,
+          plan: "Multi Trip",
+          price: 30,
+          TicketType: "Half or Full",
+          trip_left: 10,
         },
         {
           id: 2,
           plan: "Single Trip",
           price: 3,
-          FareType: "Full",
-          storage: "300GB",
-          accounts: 24,
-          domains: 15,
-          support: "24/7",
+          TicketType: "Half or Full",
+          trip_left: 1,
         },
         {
           id: 3,
           plan: "Student",
           price: 299.99,
-          FareType: "Unlimited",
-          storage: "Unlimited",
-          accounts: "Unlimited",
-          domains: "Unlimited",
-          support: "24/7",
+          TicketType: "full",
+          trip_left: 100,
         },
       ];
       setPricingData(data);
@@ -95,6 +92,19 @@ const PricingTable = () => {
       if (ticketRef.current) observer.unobserve(ticketRef.current);
     };
   }, []);
+
+  const handleCreateTicket = () => {
+    if (!props.userState.loggedIn) {
+      setIsMsgPopupOpen(true);
+      setTimeout(() => {
+        setIsMsgPopupOpen(false);
+        navigate("/login"); // Redirect to the sign-in page after showing the popup
+      }, 1500); // Adjust the timeout as needed
+    } else {
+      // Proceed with creating the ticket
+      setIsPopupOpen(true);
+    }
+  };
 
   return (
     <div id="generic_price_table">
@@ -134,24 +144,15 @@ const PricingTable = () => {
                   <div className="generic_feature_list">
                     <ul>
                       <li>
-                        Fare Type <span>{plan.FareType}</span>
+                        <span>{plan.TicketType}</span> way
                       </li>
                       <li>
-                        <span>{plan.storage}</span> Storage
-                      </li>
-                      <li>
-                        <span>{plan.accounts}</span> Accounts
-                      </li>
-                      <li>
-                        <span>{plan.domains}</span> Host Domain
-                      </li>
-                      <li>
-                        <span>{plan.support}</span> Support
+                        <span>{plan.trip_left}</span> Trip
                       </li>
                     </ul>
                   </div>
                   <div className="generic_price_btn clearfix">
-                    <a href="#" onClick={() => setIsPopupOpen(true)}>
+                    <a href="#" onClick={handleCreateTicket}>
                       Create Ticket
                     </a>
                   </div>
@@ -167,12 +168,25 @@ const PricingTable = () => {
         isPopupOpen={isPopupOpen}
         setIsPopupOpen={setIsPopupOpen}
         ticketData={ticketData}
+        userState={props.userState}
         setTicketData={setTicketData}
         handleGenerateTicket={handleGenerateTicket}
         responseMessage={responseMessage}
       />
+
+      {isMsgPopupOpen && (
+        <div className="popup-overlay">
+          <div className="popup-content">
+            <p>You need to sign in to create a ticket!</p>
+          </div>
+        </div>
+      )}
     </div>
   );
+};
+
+PricingTable.propTypes = {
+  userState: PropType.object,
 };
 
 export default PricingTable;
