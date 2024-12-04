@@ -15,13 +15,14 @@ const TicketPopUp = ({
   const [isTicketCreated, setIsTicketCreated] = useState(false);
 
   if (!isPopupOpen) return null; // Don't render the popup if it's not open
-  // Get the selected ticket based on the touched flag
+
   const selectedTicket = pricingData.find((ticket) => ticket.touched);
 
   const handleGenerateTicket = async () => {
     const undefinedFields = Object.entries(ticketData)
       .filter(([key, value]) => value === undefined)
       .map(([key]) => key);
+
     try {
       if (undefinedFields.length > 0) {
         console.log("The following fields are undefined:", undefinedFields);
@@ -47,10 +48,15 @@ const TicketPopUp = ({
           }
         );
         setResponseMessage(
-          `Ticket created successfully! Ticket ID: ${response.data.id}`
+          `🎉 Ticket created successfully! Ticket ID: ${response.data.id}`
         );
         setIsTicketCreated(true);
-        setIsPopupOpen(false); // Close the popup on success
+
+        // Automatically close the popup after 3 seconds
+        setTimeout(() => {
+          setIsPopupOpen(false);
+          setIsTicketCreated(false); // Reset the success state
+        }, 3000);
       } else {
         setResponseMessage("Please select a valid ticket.");
       }
@@ -70,58 +76,73 @@ const TicketPopUp = ({
   return (
     <div className="popup-overlay">
       <div className="popup-content">
-      
-        <h2>Ticket Details</h2>
-
-        {/* User Information */}
-        <div className="info-section">
-          <p>
-            <strong>Passenger Name:</strong> {userState.username}
-          </p>
-          <p>
-            <strong>Email:</strong> {userState.email}
-          </p>
-        </div>
-
-        {/* Ticket Information */}
-        {selectedTicket && (
-          <div className="info-section">
+        {isTicketCreated ? (
+          <div className="success-message">
+            <h2>🎉 Ticket Created Successfully! 🎉</h2>
             <p>
-              <strong>Ticket Type:</strong> {selectedTicket.ticketType}
+              Thank you, <strong>{userState.username}</strong>. Your ticket has
+              been created.
             </p>
             <p>
-              <strong>Price:</strong> ${selectedTicket.price}
-            </p>
-            <p>
-              <strong>Rides Left:</strong> {selectedTicket.rides_left}
+              <strong>Ticket ID:</strong>{" "}
+              {responseMessage.split("Ticket ID: ")[1]}
             </p>
           </div>
-        )}
+        ) : (
+          <>
+            <h2>Ticket Details</h2>
 
-        {/* Payment Details Card */}
-        <div className="payment-card">
-          <h3>Payment Method</h3>
-          <p>Card Number: **** **** **** 1234</p>
-          <p>Card Holder: John Doe</p>
-          <p>Expiry Date: 12/25</p>
-        </div>
+            {/* User Information */}
+            <div className="info-section">
+              <p>
+                <strong>Passenger Name:</strong> {userState.username}
+              </p>
+              <p>
+                <strong>Email:</strong> {userState.email}
+              </p>
+            </div>
 
-        {/* Confirm and Cancel Buttons */}
-        <div className="popup-buttons">
-          <button className="confirm-button" onClick={handleGenerateTicket}>
-            Confirm
-          </button>
-          <button
-            className="cancel-button"
-            onClick={() => setIsPopupOpen(false)}
-          >
-            Cancel
-          </button>
-        </div>
+            {/* Ticket Information */}
+            {selectedTicket && (
+              <div className="info-section">
+                <p>
+                  <strong>Ticket Type:</strong> {selectedTicket.ticketType}
+                </p>
+                <p>
+                  <strong>Price:</strong> ${selectedTicket.price}
+                </p>
+                <p>
+                  <strong>Rides Left:</strong> {selectedTicket.rides_left}
+                </p>
+              </div>
+            )}
 
-        {/* Response Message */}
-        {responseMessage && (
-          <p className="response-message">{responseMessage}</p>
+            {/* Payment Details Card */}
+            <div className="payment-card">
+              <h3>Payment Method</h3>
+              <p>Card Number: **** **** **** 1234</p>
+              <p>Card Holder: John Doe</p>
+              <p>Expiry Date: 12/25</p>
+            </div>
+
+            {/* Confirm and Cancel Buttons */}
+            <div className="popup-buttons">
+              <button className="confirm-button" onClick={handleGenerateTicket}>
+                Confirm
+              </button>
+              <button
+                className="cancel-button"
+                onClick={() => setIsPopupOpen(false)}
+              >
+                Cancel
+              </button>
+            </div>
+
+            {/* Response Message */}
+            {responseMessage && (
+              <p className="response-message">{responseMessage}</p>
+            )}
+          </>
         )}
       </div>
     </div>
