@@ -9,7 +9,7 @@ const PricingTable = (props) => {
   const pricingRef = useRef(null);
   const navigate = useNavigate();
 
-  const [isPopupOpen, setIsPopupOpen] = useState(true);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isMsgPopupOpen, setIsMsgPopupOpen] = useState(false);
 
   const [ticketData, setTicketData] = useState({

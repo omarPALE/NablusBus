@@ -12,24 +12,34 @@ const TicketPopUp = ({
   pricingData,
 }) => {
   const [responseMessage, setResponseMessage] = useState("");
+  const [isTicketCreated, setIsTicketCreated] = useState(false);
 
   if (!isPopupOpen) return null; // Don't render the popup if it's not open
   // Get the selected ticket based on the touched flag
   const selectedTicket = pricingData.find((ticket) => ticket.touched);
 
   const handleGenerateTicket = async () => {
+    const undefinedFields = Object.entries(ticketData)
+      .filter(([key, value]) => value === undefined)
+      .map(([key]) => key);
     try {
+      if (undefinedFields.length > 0) {
+        console.log("The following fields are undefined:", undefinedFields);
+      } else {
+        console.log("All fields in ticketData are defined");
+      }
+
       if (selectedTicket) {
-        setTicketData({
-          ...ticketData,
+        setTicketData((prevData) => ({
+          ...prevData,
           ticketType: selectedTicket.ticketType,
           model: selectedTicket.model,
           price: selectedTicket.price,
           rides_left: selectedTicket.rides_left,
-          user_id: userState.userID,
-        });
-        console.log("Requesting with ticketData:", ticketData);
+          user_id: userState.user_id,
+        }));
 
+        // Avoid accessing `ticketData` immediately after `setTicketData`.
         const response = await axios.post(
           "http://localhost:5000/api/addticket",
           {
@@ -39,22 +49,28 @@ const TicketPopUp = ({
         setResponseMessage(
           `Ticket created successfully! Ticket ID: ${response.data.id}`
         );
-        setResponseMessage(
-          `Ticket created successfully! Ticket ID: ${response.data.id}`
-        );
+        setIsTicketCreated(true);
         setIsPopupOpen(false); // Close the popup on success
       } else {
         setResponseMessage("Please select a valid ticket.");
       }
     } catch (error) {
-      console.error("Error generating ticket:", error);
-      setResponseMessage("Failed to create ticket. Please try again.");
+      if (undefinedFields.length > 0) {
+        setResponseMessage(
+          `The following fields are undefined: ${undefinedFields.join(", ")}`
+        );
+      }
+      console.error(
+        "Error generating ticket:",
+        error.response?.data || error.message
+      );
     }
   };
 
   return (
     <div className="popup-overlay">
       <div className="popup-content">
+      
         <h2>Ticket Details</h2>
 
         {/* User Information */}
