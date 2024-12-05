@@ -8,7 +8,6 @@ const PricingTable = (props) => {
   const ticketRef = useRef(null);
   const pricingRef = useRef(null);
   const navigate = useNavigate();
-
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isMsgPopupOpen, setIsMsgPopupOpen] = useState(false);
 
@@ -20,6 +19,9 @@ const PricingTable = (props) => {
     qr_code: "123",
     price: 3,
   });
+  useEffect(() => {
+    console.log("TicketSection qrCode received from parent:", props.qrCode);
+  }, [props.qrCode]); // Log qrCode when it changes
 
   useEffect(() => {
     const fetchData = async () => {
@@ -113,7 +115,6 @@ const PricingTable = (props) => {
       )
     );
   };
-
   return (
     <div id="generic_price_table">
       <section className="pricing-section" ref={pricingRef}>
@@ -214,14 +215,22 @@ const PricingTable = (props) => {
       </section>
 
       {/* Render the PopUp component */}
-      <TicketPopUp
-        isPopupOpen={isPopupOpen}
-        setIsPopupOpen={setIsPopupOpen}
-        ticketData={ticketData}
-        userState={props.userState}
-        setTicketData={setTicketData}
-        pricingData={pricingData}
-      />
+      {
+        props.qrCode ? (
+          <TicketPopUp
+            isPopupOpen={isPopupOpen}
+            setIsPopupOpen={setIsPopupOpen}
+            ticketData={ticketData}
+            userState={props.userState}
+            setTicketData={setTicketData}
+            pricingData={pricingData}
+            qr_code={props.qrCode}
+            setQRcode={props.setQRcode}
+          />
+        ) : (
+          <p>Loading QR Code...</p>
+        ) // Show a loading message until qrCode is defined)
+      }
 
       {isMsgPopupOpen && (
         <div className="popup-overlay">
@@ -236,6 +245,8 @@ const PricingTable = (props) => {
 
 PricingTable.propTypes = {
   userState: PropType.object,
+  qrCode: PropType.string,
+  setQRcode: PropType.func,
 };
 
 export default PricingTable;

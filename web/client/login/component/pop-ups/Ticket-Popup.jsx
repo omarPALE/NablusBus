@@ -1,7 +1,8 @@
 import "./ticket-popups.css"; // Import your CSS
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
+// import QRCode from "react-qr-code"; // Using react-qr-code
 
 const TicketPopUp = ({
   isPopupOpen,
@@ -10,9 +11,14 @@ const TicketPopUp = ({
   setTicketData,
   userState,
   pricingData,
+  qrCode,
 }) => {
   const [responseMessage, setResponseMessage] = useState("");
   const [isTicketCreated, setIsTicketCreated] = useState(false);
+
+  useEffect(() => {
+    console.log("TicketSection qrCode received:", qrCode);
+  }, [qrCode]); // Log qrCode when it changes
 
   if (!isPopupOpen) return null; // Don't render the popup if it's not open
 
@@ -20,7 +26,7 @@ const TicketPopUp = ({
 
   const handleGenerateTicket = async () => {
     const undefinedFields = Object.entries(ticketData)
-      .filter(([key, value]) => value === undefined)
+      .filter(([value]) => value === undefined)
       .map(([key]) => key);
 
     try {
@@ -38,8 +44,8 @@ const TicketPopUp = ({
           price: selectedTicket.price,
           rides_left: selectedTicket.rides_left,
           user_id: userState.user_id,
+          qr_code: qrValue,
         }));
-
         // Avoid accessing `ticketData` immediately after `setTicketData`.
         const response = await axios.post(
           "http://localhost:5000/api/addticket",
@@ -72,6 +78,16 @@ const TicketPopUp = ({
       );
     }
   };
+
+  const qrValue = JSON.stringify({
+    price: selectedTicket.ticketPrice,
+    departure: selectedTicket.departure || "Downtown",
+    destination: selectedTicket.destination || "Najah",
+    classType: selectedTicket.classType || "Full",
+    seatNumber: selectedTicket.seatNumber || "B16",
+    busNumber: selectedTicket.busNumber || "98",
+    rides_left: selectedTicket.rides_left,
+  });
 
   return (
     <div className="popup-overlay">
@@ -156,6 +172,7 @@ TicketPopUp.propTypes = {
   ticketData: PropTypes.object.isRequired,
   setTicketData: PropTypes.func.isRequired,
   userState: PropTypes.object,
+  qrCode: PropTypes.string,
 };
 
 export default TicketPopUp;

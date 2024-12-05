@@ -1,12 +1,19 @@
+import { useState } from "react";
 import TicketSection from "./Subscription-component/Ticket-section";
 import TicketBenefits from "./Subscription-component/Description-component";
 import PricingTable from "./Subscription-component/PricingTable";
 import PropType from "prop-types";
 export default function Subscription(props) {
+  const [qrCodeValue, setQrCodeValue] = useState("");
+
   return (
     <div>
-      <PricingTable userState={props.userState} />
-      <TicketSection />
+      <PricingTable
+        userState={props.userState}
+        qrCode={qrCodeValue}
+        setQRcode={setQrCodeValue}
+      />
+      <TicketSection qrCode={qrCodeValue} setQRcode={setQrCodeValue} />
       <TicketBenefits />
     </div>
   );

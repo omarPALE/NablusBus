@@ -1,7 +1,7 @@
 import express from "express";
 import pool from "./db.js";
 import usersRouter from "./routes/users.js";
-import ticketRoutes from "./routes/addTicket.js";
+import ticketRoutes from "./routes/Ticket.js";
 
 import cors from "cors";
 
