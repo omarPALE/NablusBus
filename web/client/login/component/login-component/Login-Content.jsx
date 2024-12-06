@@ -68,7 +68,7 @@ export default function LoginContent(props) {
 
       if (response.status === 200) {
         const { email, username, id, role } = response.data;
-
+        console.log("role is :" + JSON.stringify(response.data));
         // Save user data to storage
         const userData = { email, username, id };
         if (rememberMe) {

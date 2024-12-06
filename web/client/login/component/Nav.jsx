@@ -10,7 +10,7 @@ export default function Nav(props) {
     email: props.userState.email,
     avatar: "https://via.placeholder.com/150", // Optional profile picture URL
   };
-
+  console.log(props.userState)
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary">
       <div className="container-fluid">

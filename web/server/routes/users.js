@@ -75,7 +75,7 @@ router.post("/email", async (req, res) => {
 
   try {
     const result = await pool.query(
-      "SELECT email, password, username, role id FROM users WHERE email = $1",
+      "SELECT email, password, username, role, id FROM users WHERE email = $1",
       [email]
     );
 
@@ -92,6 +92,7 @@ router.post("/email", async (req, res) => {
           email: result.rows[0].email,
           username: result.rows[0].username,
           id: result.rows[0].id,
+          role: result.rows[0].role,
         });
       } else {
         return res.status(401).json({ message: "Invalid password" });
