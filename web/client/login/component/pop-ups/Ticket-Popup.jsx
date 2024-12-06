@@ -24,6 +24,16 @@ const TicketPopUp = ({
 
   const selectedTicket = pricingData.find((ticket) => ticket.touched);
 
+  const qrValue = JSON.stringify({
+    price: selectedTicket.ticketPrice,
+    departure: selectedTicket.departure || "Downtown",
+    destination: selectedTicket.destination || "Najah",
+    classType: selectedTicket.classType || "Full",
+    seatNumber: selectedTicket.seatNumber || "B16",
+    busNumber: selectedTicket.busNumber || "98",
+    rides_left: selectedTicket.rides_left,
+  });
+
   const handleGenerateTicket = async () => {
     const undefinedFields = Object.entries(ticketData)
       .filter(([value]) => value === undefined)
@@ -78,16 +88,6 @@ const TicketPopUp = ({
       );
     }
   };
-
-  const qrValue = JSON.stringify({
-    price: selectedTicket.ticketPrice,
-    departure: selectedTicket.departure || "Downtown",
-    destination: selectedTicket.destination || "Najah",
-    classType: selectedTicket.classType || "Full",
-    seatNumber: selectedTicket.seatNumber || "B16",
-    busNumber: selectedTicket.busNumber || "98",
-    rides_left: selectedTicket.rides_left,
-  });
 
   return (
     <div className="popup-overlay">

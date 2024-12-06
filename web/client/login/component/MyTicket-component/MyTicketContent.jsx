@@ -7,6 +7,7 @@ const TicketManagement = () => {
   const [tickets, setTickets] = useState([]); // State to hold tickets data
   const [loading, setLoading] = useState(true); // State to handle loading
   const [error, setError] = useState(""); // State to handle errors
+  const [isTicketPage] = useState(true); // Boolean flag to indicate if it's a ticket page
 
   // Fetch ticket data from the database
   useEffect(() => {
@@ -16,7 +17,7 @@ const TicketManagement = () => {
         setTickets(response.data); // Assuming the backend returns a list of tickets
         setLoading(false);
       } catch (err) {
-        setError("Failed to fetch tickets. Please try again later.", err);
+        setError("Failed to fetch tickets. Please try again later." + err);
         setLoading(false);
       }
     };
@@ -31,7 +32,6 @@ const TicketManagement = () => {
   if (error) {
     return <p className="error-message">{error}</p>;
   }
-  console.log("ticket data is:", tickets);
 
   return (
     <div className="ticket-management-container">
@@ -39,15 +39,8 @@ const TicketManagement = () => {
       <div className="ticket-list">
         {tickets.map((ticket) => (
           <TicketSection
-            key={ticket.id}
-            ticketID={ticket.id}
-            departure={ticket.departure}
-            destination={ticket.destination}
-            classType={ticket.model || "N/A"} // Model as classType
-            seatNumber={ticket.seatNumber || "N/A"}
-            busNumber={ticket.busNumber || "N/A"}
-            ticketPrice={ticket.price || "N/A"}
-            departureTime={ticket.departureTime || "N/A"}
+            key={ticket.id} // Use ticket.id for unique key
+            ticket={ticket} // Pass individual ticket object
             date={
               ticket.created_at
                 ? new Date(ticket.created_at).toLocaleDateString("en-US", {
@@ -58,6 +51,7 @@ const TicketManagement = () => {
                 : "N/A"
             }
             status={ticket.status || "N/A"} // Status of the ticket
+            isMyTicket={isTicketPage} // Flag to determine if the ticket belongs to the user
           />
         ))}
       </div>

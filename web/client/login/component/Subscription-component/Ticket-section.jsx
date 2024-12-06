@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types"; // Import PropTypes
 import QRCode from "react-qr-code"; // Using react-qr-code
-import axios from "axios";
+// import axios from "axios";
 import "./pop-styles.css";
 const TicketSection = (props) => {
   const ticketRef = useRef(null);
   const [isPopupVisible, setPopupVisible] = useState(false);
 
-  const [ticketInfo, setTicketInfo] = useState({
+  const [ticketInfo] = useState({
     departure: "Downtown",
     destination: "Madison",
     class: "Standard",
@@ -40,23 +40,30 @@ const TicketSection = (props) => {
       if (ticketRef.current) observer.unobserve(ticketRef.current);
     };
   }, []);
+  console.log("ticket info", props.ticket || "Ticket is not available yet.");
 
-  useEffect(() => {
-    console.log("requset is going");
-    const fetchQRCode = async () => {
-      try {
-        const response = await axios.get("http://localhost:5000/api/ticket/24");
-        setTicketInfo((prevInfo) => ({
-          ...prevInfo,
-          qr_code: response.data.qr_code, // Update qr_code in ticketInfo
-        }));
-      } catch (error) {
-        console.error("Error fetching QR code:", error);
-      }
-    };
+  // useEffect(() => {
+  //   if (!props.isMyTicket || !props.ticketID) {
+  //     console.log("Effect skipped due to invalid conditions");
+  //     return; // Prevent the effect from firing if conditions aren't met
+  //   }
 
-    fetchQRCode();
-  }, [props.ticketID]);
+  //   const fetchQRCode = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         `http://localhost:5000/api/ticket/${props.ticketID}`
+  //       );
+  //       setTicketInfo((prevInfo) => ({
+  //         ...prevInfo,
+  //         qr_code: response.data.qr_code, // Update qr_code in ticketInfo
+  //       }));
+  //     } catch (error) {
+  //       console.error("Error fetching QR code:", error);
+  //     }
+  //   };
+
+  //   fetchQRCode();
+  // }, [props.ticketID, props.isMyTicket]);
 
   const handlePopupOpen = () => setPopupVisible(true);
   const handlePopupClose = () => setPopupVisible(false);
@@ -74,7 +81,6 @@ const TicketSection = (props) => {
   //     props.setQRcode(ticketInfo.qr_code);
   //   }
   // }, [props.qrCode, props.setQRcode]); // Run only when qrValue changes
-  console.log("from ticket section print data :" + props.qrCode);
 
   return (
     <section className="ticket-section">
@@ -90,34 +96,35 @@ const TicketSection = (props) => {
             <div className="ticket-info">
               <p>
                 <strong>Departure:</strong>{" "}
-                {props.departure || ticketInfo.departure}
+                {props.ticket.departure || ticketInfo.departure}
               </p>
               <p>
                 <strong>Destination:</strong>{" "}
-                {props.destination || ticketInfo.destination}
+                {props.ticket?.destination || ticketInfo.destination}
               </p>
               <p>
-                <strong>Class:</strong> {props.classType || ticketInfo.class}
+                <strong>Class:</strong>{" "}
+                {props.ticket?.model || ticketInfo.class}
               </p>
             </div>
             <div className="ticket-info">
               <p>
                 <strong>Seat Number:</strong>{" "}
-                {props.seatNumber || ticketInfo.seatNumber}
+                {props.ticket?.seatNumber || ticketInfo.seatNumber}
               </p>
               <p>
                 <strong>Bus Number:</strong>{" "}
-                {props.busNumber || ticketInfo.busNumber}
+                {props.ticket?.busNumber || ticketInfo.busNumber}
               </p>
               <p>
                 <strong>Ticket Price:</strong>{" "}
-                {props.ticketPrice || ticketInfo.ticketPrice}
+                {props.ticket?.price || ticketInfo.ticketPrice}
               </p>
             </div>
             <div className="ticket-info">
               <p>
                 <strong>Departure Time:</strong>{" "}
-                {props.departureTime || ticketInfo.departureTime}
+                {props.ticket.departureTime || ticketInfo.departureTime}
               </p>
               <p>
                 <strong>Date:</strong> {props.date || ticketInfo.date}
@@ -140,14 +147,12 @@ const TicketSection = (props) => {
               Close
             </button>
             <h3>QR Code for Ticket</h3>
-            {ticketInfo.qr_code ? (
+            {
               <QRCode
-                value={ticketInfo.qr_code} // QR Code dat
+                value={props.ticket.qr_code} // QR Code dat
                 size={200} // Size of the QR Code
               />
-            ) : (
-              <p>Loading...</p>
-            )}
+            }
             <p>
               <strong>Trip Info:</strong> {ticketInfo.departure} to{" "}
               {ticketInfo.destination}, Seat: {ticketInfo.seatNumber}
@@ -161,17 +166,12 @@ const TicketSection = (props) => {
 
 // Define PropTypes for the component
 TicketSection.propTypes = {
-  departure: PropTypes.string.isRequired,
-  destination: PropTypes.string.isRequired,
-  classType: PropTypes.string.isRequired,
-  seatNumber: PropTypes.string.isRequired,
-  busNumber: PropTypes.string.isRequired,
-  ticketPrice: PropTypes.string.isRequired,
-  departureTime: PropTypes.string.isRequired,
-  date: PropTypes.string.isRequired,
   setQRcode: PropTypes.func.isRequired, // Function to set QR code value
-  qrCode: PropTypes.string.isRequired,
   key: PropTypes.string.isRequired, // Unique key for the ticket
   ticketID: PropTypes.string.isRequired, // Unique key for the ticket
+  isMyTicket: PropTypes.bool.isRequired, // Flag to show or hide the QR code section
+  date: PropTypes.string.isRequired,
 };
+
+TicketSection.propTypes = { ticket: PropTypes.object.isRequired };
 export default TicketSection;

@@ -44,7 +44,7 @@ router.post("/addticket", async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 });
-
+//get all tickets
 router.get("/Tickets", async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM tickets");
@@ -54,19 +54,6 @@ router.get("/Tickets", async (req, res) => {
     res.status(500).send("Server Error");
   }
 });
-
-// router.get("/ticket/:id", async (req, res) => {
-//   const { id } = req.params;
-//   try {
-//     const result = await pool.query("SELECT id FROM tickets WHERE id = $1", [
-//       id,
-//     ]);
-//     res.json(result.rows);
-//   } catch (err) {
-//     console.error(err.message);
-//     res.status(500).send("Server Error");
-//   }
-// });
 
 router.get("/ticket/:id", async (req, res) => {
   const { id } = req.params;

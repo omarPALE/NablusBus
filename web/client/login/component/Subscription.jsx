@@ -5,6 +5,7 @@ import PricingTable from "./Subscription-component/PricingTable";
 import PropType from "prop-types";
 export default function Subscription(props) {
   const [qrCodeValue, setQrCodeValue] = useState("");
+  const [isTicketPage] = useState("false");
 
   return (
     <div>
@@ -13,7 +14,11 @@ export default function Subscription(props) {
         qrCode={qrCodeValue}
         setQRcode={setQrCodeValue}
       />
-      <TicketSection qrCode={qrCodeValue} setQRcode={setQrCodeValue} />
+      <TicketSection
+        qrCode={qrCodeValue}
+        setQRcode={setQrCodeValue}
+        isMyTicket={isTicketPage}
+      />
       <TicketBenefits />
     </div>
   );
