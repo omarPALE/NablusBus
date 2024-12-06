@@ -1,11 +1,12 @@
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 export default function LoginContent(props) {
   const navigate = useNavigate();
-  // State to manage sign-in information and errors
+
+  // State to manage sign-in information, errors, "Remember Me", and logged-in state
   const [signInInfo, setSignInInfo] = useState({
     email: "",
     password: "",
@@ -13,6 +14,25 @@ export default function LoginContent(props) {
   const [error, setError] = useState(""); // State to manage error message
   const [isPasswordInvalid, setIsPasswordInvalid] = useState(false); // State for red border
   const [isEmailInvalid, setIsEmailInvalid] = useState(false); // State for red border
+  const [rememberMe, setRememberMe] = useState(false); // State for "Remember Me"
+
+  // Load user from localStorage or sessionStorage
+  useEffect(() => {
+    const savedUser =
+      localStorage.getItem("user") || sessionStorage.getItem("user");
+    if (savedUser) {
+      const userData = JSON.parse(savedUser);
+      props.setUserState(() => ({
+        ...props.userState,
+        loggedIn: true,
+        email: userData.email,
+        username: userData.username,
+        user_id: userData.id,
+      }));
+      navigate("/home"); // Redirect to the home page if already logged in
+    }
+  }, []);
+
   const handleEmailChange = (e) => {
     setSignInInfo((prevState) => ({
       ...prevState,
@@ -32,6 +52,10 @@ export default function LoginContent(props) {
     setIsPasswordInvalid(false); // Reset red border
   };
 
+  const handleRememberMeChange = (e) => {
+    setRememberMe(e.target.checked);
+  };
+
   const handleLogIn = async (e) => {
     e.preventDefault();
 
@@ -44,7 +68,15 @@ export default function LoginContent(props) {
 
       if (response.status === 200) {
         const { email, username, id } = response.data;
-        console.log(id);
+
+        // Save user data to storage
+        const userData = { email, username, id };
+        if (rememberMe) {
+          localStorage.setItem("user", JSON.stringify(userData)); // Save to localStorage for persistence
+        } else {
+          sessionStorage.setItem("user", JSON.stringify(userData)); // Save to sessionStorage for temporary persistence
+        }
+
         // Update user state
         props.setUserState(() => ({
           ...props.userState,
@@ -54,16 +86,15 @@ export default function LoginContent(props) {
           user_id: id,
         }));
 
-        console.log("user info : " + username);
         navigate("/home");
       }
     } catch (err) {
       if (err.response?.status === 401) {
-        setError("Incorrect password. Please try again."); // Set error message
-        setIsPasswordInvalid(true); // Add red border
+        setError("Incorrect password. Please try again.");
+        setIsPasswordInvalid(true);
       } else if (err.response?.status === 404) {
-        setError("User not found. Please sign up."); // Set error message
-        setIsEmailInvalid(true); // Add red border
+        setError("User not found. Please sign up.");
+        setIsEmailInvalid(true);
       } else {
         setError("An error occurred. Please try again later.");
         console.error("An error occurred:", err.message);
@@ -82,6 +113,7 @@ export default function LoginContent(props) {
           className={`form-control ${isEmailInvalid ? "error" : ""}`}
           id="exampleFormControlInput1"
           placeholder="name@example.com"
+          value={signInInfo.email}
           onChange={handleEmailChange}
         />
 
@@ -93,8 +125,22 @@ export default function LoginContent(props) {
           id="inputPassword5"
           className={`form-control ${isPasswordInvalid ? "error" : ""}`}
           aria-describedby="passwordHelpBlock"
+          value={signInInfo.password}
           onChange={handlePasswordChange}
         />
+
+        <div className="form-check my-2">
+          <input
+            type="checkbox"
+            className="form-check-input"
+            id="rememberMe"
+            checked={rememberMe}
+            onChange={handleRememberMeChange}
+          />
+          <label className="form-check-label" htmlFor="rememberMe">
+            Remember Me
+          </label>
+        </div>
 
         <div
           id="passwordHelpBlock"

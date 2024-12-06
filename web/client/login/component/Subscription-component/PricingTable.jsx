@@ -216,20 +216,20 @@ const PricingTable = (props) => {
 
       {/* Render the PopUp component */}
       {
-        props.qrCode ? (
-          <TicketPopUp
-            isPopupOpen={isPopupOpen}
-            setIsPopupOpen={setIsPopupOpen}
-            ticketData={ticketData}
-            userState={props.userState}
-            setTicketData={setTicketData}
-            pricingData={pricingData}
-            qr_code={props.qrCode}
-            setQRcode={props.setQRcode}
-          />
-        ) : (
-          <p>Loading QR Code...</p>
-        ) // Show a loading message until qrCode is defined)
+        // props.qrCode ? (
+        <TicketPopUp
+          isPopupOpen={isPopupOpen}
+          setIsPopupOpen={setIsPopupOpen}
+          ticketData={ticketData}
+          userState={props.userState}
+          setTicketData={setTicketData}
+          pricingData={pricingData}
+          qr_code={props.qrCode}
+          setQRcode={props.setQRcode}
+        />
+        // ) : (
+        // <p>Loading QR Code...</p>
+        // ) // Show a loading message until qrCode is defined)
       }
 
       {isMsgPopupOpen && (
