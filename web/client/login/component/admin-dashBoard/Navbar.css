@@ -1,0 +1,40 @@
+/* styles/Navbar.css */
+
+.navbar {
+  background-color: #ff6600; /* Dark blue */
+  color: black;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: black;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-right a {
+  color: black;
+  margin-left: 15px;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.navbar-right a:hover {
+  color: #1890ff;
+}
+
+.navbar {
+  background: #ff6600;
+  color: black;
+  padding: 0px 20px;
+  margin-top: 23px;
+}

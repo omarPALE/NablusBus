@@ -1,5 +1,6 @@
 // components/Sidebar.js
 import { Layout, Menu } from "antd";
+import "./Sidebar.css";
 import {
   DashboardOutlined,
   CarOutlined,
@@ -14,21 +15,23 @@ const { Sider } = Layout;
 const Sidebar = () => {
   return (
     <Sider theme="dark" collapsible>
-      <Menu theme="dark" mode="inline">
-        <Menu.Item key="1" icon={<DashboardOutlined />}>
+      <Menu className="Menu" theme="dark" mode="inline">
+        <Menu.Item key="1" className="MenuItem" icon={<DashboardOutlined />}>
           <Link to="/">Dashboard</Link>
         </Menu.Item>
-        <Menu.Item key="2" icon={<CarOutlined />}>
+        <Menu.Item key="2" className="MenuItem" icon={<CarOutlined />}>
           <Link to="/trips">Trips</Link>
         </Menu.Item>
-        <Menu.Item key="3" icon={<UserOutlined />}>
+        <Menu.Item key="3" className="MenuItem" icon={<UserOutlined />}>
           <Link to="/users">Users</Link>
         </Menu.Item>
-        <Menu.Item key="4" icon={<NotificationOutlined />}>
+        <Menu.Item key="4" className="MenuItem" icon={<NotificationOutlined />}>
           <Link to="/notifications">Notifications</Link>
         </Menu.Item>
-        <Menu.Item key="5" icon={<FileOutlined />}>
-          <Link to="/reports">Reports</Link>
+        <Menu.Item key="5" className="MenuItem" icon={<FileOutlined />}>
+          <Link className="MenuItem" to="/reports">
+            Reports
+          </Link>
         </Menu.Item>
       </Menu>
     </Sider>

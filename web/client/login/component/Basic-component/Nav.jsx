@@ -10,6 +10,7 @@ export default function Nav(props) {
     email: props.userState.email,
     avatar: "https://via.placeholder.com/150", // Optional profile picture URL
   };
+  console.log("user info are : " + props.userState.role);
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary">
       <div className="container-fluid">
@@ -69,6 +70,17 @@ export default function Nav(props) {
                 </a>
               </li>
             )}
+            {props.userState.loggedIn &&
+              props.userState.role === "administrator" && (
+                <li>
+                  <a
+                    className="btn btn-outline-success"
+                    onClick={() => navigate("admin/dashboard")}
+                  >
+                    Dash board
+                  </a>
+                </li>
+              )}
             <li>
               <TrackingDropdown />
             </li>

@@ -1,6 +1,6 @@
 // components/Navbar.js
 import { Layout } from "antd";
-
+import "./Navbar.css";
 const { Header } = Layout;
 
 const Navbar = () => {
