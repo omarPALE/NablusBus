@@ -67,7 +67,7 @@ export default function LoginContent(props) {
       });
 
       if (response.status === 200) {
-        const { email, username, id } = response.data;
+        const { email, username, id, role } = response.data;
 
         // Save user data to storage
         const userData = { email, username, id };
@@ -84,6 +84,7 @@ export default function LoginContent(props) {
           email: email,
           username: username,
           user_id: id,
+          role: role, // Add role to user state for additional functionalities
         }));
 
         navigate("/home");

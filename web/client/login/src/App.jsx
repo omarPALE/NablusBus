@@ -15,6 +15,7 @@ function App() {
     email: "",
     username: "",
     userID: 0,
+    role: "passenger",
   });
 
   return (
@@ -44,15 +45,17 @@ function App() {
             <Subscription setUserState={setUserState} userState={userState} />
           }
         />
-        <Route
-          path="/ticket"
-          element={
-            <TicketManagement
-              setUserState={setUserState}
-              userState={userState}
-            />
-          }
-        />
+        {userState.loggedIn && (
+          <Route
+            path="/ticket"
+            element={
+              <TicketManagement
+                setUserState={setUserState}
+                userState={userState}
+              />
+            }
+          />
+        )}
         <Route path="/scan" element={<DriverScanner />} />
       </Routes>
     </div>

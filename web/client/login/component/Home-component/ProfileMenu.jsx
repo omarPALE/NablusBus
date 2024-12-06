@@ -16,6 +16,9 @@ export default function ProfileMenu(props) {
       email: "",
       username: "",
     }));
+    localStorage.removeItem("user");
+    sessionStorage.removeItem("user"); // or any other storage you use
+
     navigate("/login");
   };
 

@@ -40,7 +40,6 @@ const TicketSection = (props) => {
       if (ticketRef.current) observer.unobserve(ticketRef.current);
     };
   }, []);
-  console.log("ticket info", props.ticket || "Ticket is not available yet.");
 
   // useEffect(() => {
   //   if (!props.isMyTicket || !props.ticketID) {
@@ -96,7 +95,7 @@ const TicketSection = (props) => {
             <div className="ticket-info">
               <p>
                 <strong>Departure:</strong>{" "}
-                {props.ticket.departure || ticketInfo.departure}
+                {props.ticket.departure || ticketInfo?.departure}
               </p>
               <p>
                 <strong>Destination:</strong>{" "}

@@ -19,9 +19,6 @@ const PricingTable = (props) => {
     qr_code: "123",
     price: 3,
   });
-  useEffect(() => {
-    console.log("TicketSection qrCode received from parent:", props.qrCode);
-  }, [props.qrCode]); // Log qrCode when it changes
 
   useEffect(() => {
     const fetchData = async () => {

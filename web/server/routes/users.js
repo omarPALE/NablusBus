@@ -20,16 +20,9 @@ router.get("/", async (req, res) => {
 
 //add user
 router.post("/add", async (req, res) => {
-  const {
-    firstName,
-    lastName,
-    phone,
-    email,
-    password,
-    role = "passenger",
-  } = req.body;
+  const { username, phone, email, password, role = "passenger" } = req.body;
+
   const hashedPassword = await bcrypt.hash(password, 10);
-  const username = firstName + " " + lastName;
 
   const age = Math.floor(Math.random() * 100) + 18; // Generate a random age between 18 and 100
   try {
@@ -37,6 +30,7 @@ router.post("/add", async (req, res) => {
       "INSERT INTO users (username, email, password, role, age) VALUES ($1, $2, $3, $4, $5) RETURNING *",
       [username, email, hashedPassword, role, age]
     );
+
     res.status(201).json(result.rows[0]); // Respond with the inserted user
   } catch (err) {
     if (err.code === "23505") {
@@ -81,7 +75,7 @@ router.post("/email", async (req, res) => {
 
   try {
     const result = await pool.query(
-      "SELECT email, password, username, id FROM users WHERE email = $1",
+      "SELECT email, password, username, role id FROM users WHERE email = $1",
       [email]
     );
 

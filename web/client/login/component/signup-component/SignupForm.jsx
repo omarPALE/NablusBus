@@ -135,14 +135,13 @@ const showSuccess = (input) => {
   const error = formField.querySelector("small");
   error.textContent = "";
 };
-
 const SignupForm = (props) => {
   const navigate = useNavigate();
   const [focusStates, setFocusStates] = useState({});
   const [values, setValues] = useState({});
   const [showPassword, setShowPassword] = useState([true]);
   const [confirmShowPassword, setConfirmShowPassword] = useState([false]);
-  const [message, setMessage] = useState("");
+  const [setMessage] = useState("");
 
   // props.setUserState(() => ({
   //   ...props.userState,
@@ -170,7 +169,6 @@ const SignupForm = (props) => {
     e.preventDefault();
 
     // Log the formRefs object
-    console.log(formRefs);
     // Validate form fields
     let isUsernameValid = checkUsername("firstnameEl", "First Name"),
       isLastNameValid = checkUsername("lastnameEl", "Last Name"),
@@ -194,36 +192,34 @@ const SignupForm = (props) => {
     if (isFormValid) {
       try {
         const formData = {
-          firstname: formRefs.current.firstnameEl.value, // Replace with the actual ref for username
-          lastName: formRefs.current.lastnameEl.value, // Replace with the actual ref for
+          username:
+            formRefs.current.firstnameEl.value + // Replace with the actual ref for username
+            formRefs.current.lastnameEl.value, // Replace with the actual ref for
           phone: formRefs.current.phoneEl.value, // Replace with the actual ref for email
           email: formRefs.current.emailEl.value, // Replace with the actual ref for email
           password: formRefs.current.passwordEl.value, // Replace with the actual ref for password
+          role:
+            values.userType.charAt(0).toLowerCase() + values.userType.slice(1),
         };
+
         props.setUserState(() => ({
           ...props.userState,
           loggedIn: true,
         }));
-        console.log(
-          "hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii:" + props.userState.loggedIn
-        );
+
         const response = await axios.post(
           "http://localhost:5000/users/add",
           formData
         );
 
+        navigate("/home");
         setMessage("Sign up successful!");
-        console.log(response.data); // Handle the returned data
       } catch (err) {
         props.setUserState(() => ({
           ...props.userState,
           loggedIn: false,
         }));
-        if (
-          err.response &&
-          err.response.data &&
-          err.response.data.includes("duplicate key value violates")
-        ) {
+        if (err.response && err.response.data) {
           // Show a popup or alert if duplicate key error
           alert(
             "This username or email is already in use. Please try another."
@@ -494,7 +490,7 @@ const SignupForm = (props) => {
 
         {[
           { name: "date", label: "Birth Date", type: "date", refName: "date" },
-          {},
+
           {
             name: "phone",
             label: "Phone Number",

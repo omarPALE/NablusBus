@@ -49,22 +49,27 @@ export default function Nav(props) {
                 Subscription
               </a>
             </li>
-            <li>
-              <a
-                className="btn btn-outline-success"
-                onClick={() => navigate("ticket")}
-              >
-                Ticket
-              </a>
-            </li>
-            <li>
-              <a
-                className="btn btn-outline-success"
-                onClick={() => navigate("scan")}
-              >
-                Scanner
-              </a>
-            </li>
+            {props.userState.loggedIn &&
+              props.userState.role === "passenger" && (
+                <li>
+                  <a
+                    className="btn btn-outline-success"
+                    onClick={() => navigate("ticket")}
+                  >
+                    My Ticket
+                  </a>
+                </li>
+              )}
+            {props.userState.loggedIn && props.userState.role === "driver" && (
+              <li>
+                <a
+                  className="btn btn-outline-success"
+                  onClick={() => navigate("scan")}
+                >
+                  Scanner
+                </a>
+              </li>
+            )}
             <li>
               <TrackingDropdown />
             </li>
@@ -103,6 +108,7 @@ Nav.propTypes = {
     loggedIn: PropTypes.bool.isRequired,
     email: PropTypes.string.isRequired,
     username: PropTypes.string.isRequired,
+    role: PropTypes.string,
   }).isRequired,
   setUserState: PropTypes.func.isRequired,
 };
