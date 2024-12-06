@@ -141,7 +141,7 @@ const SignupForm = (props) => {
   const [values, setValues] = useState({});
   const [showPassword, setShowPassword] = useState([true]);
   const [confirmShowPassword, setConfirmShowPassword] = useState([false]);
-  const [setMessage] = useState("");
+  const [message, setMessage] = useState("");
 
   // props.setUserState(() => ({
   //   ...props.userState,

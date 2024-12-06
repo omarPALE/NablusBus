@@ -1,12 +1,13 @@
-import Login from "../component/Login";
-import Home from "../component/Home";
-import Nav from "../component/Nav";
-import SignUp from "../component/SignUp";
-import Subscription from "../component/Subscription";
+import Login from "../component/Basic-component//Login";
+import Home from "../component/Basic-component/Home";
+import Nav from "../component/Basic-component/Nav";
+import SignUp from "../component/Basic-component/SignUp";
+import Subscription from "../component/Basic-component/Subscription";
 import TicketManagement from "../component/MyTicket-component/MyTicketContent";
-import ScrollToTop from "../component/ScrolToTop";
+import ScrollToTop from "../component/Basic-component/ScrolToTop";
 import { Route, Routes } from "react-router-dom";
 import { useState } from "react";
+import Footer from "../component/Basic-component/Footer";
 import DriverScanner from "../component/DriverScaner/DriverScanner";
 
 function App() {
@@ -58,6 +59,7 @@ function App() {
         )}
         <Route path="/scan" element={<DriverScanner />} />
       </Routes>
+      <Footer />
     </div>
   );
 }

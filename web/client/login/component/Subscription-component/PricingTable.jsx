@@ -62,7 +62,7 @@ const PricingTable = (props) => {
 
   useEffect(() => {
     const observerOptions = {
-      threshold: 0.3, // 50% of the element must be visible to trigger the animation
+      threshold: 0.4, // 50% of the element must be visible to trigger the animation
       rootMargin: "0px 0px -100px 0px", // Adds an offset to delay animation triggering
     };
 

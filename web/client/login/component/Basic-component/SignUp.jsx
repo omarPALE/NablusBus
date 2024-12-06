@@ -1,7 +1,7 @@
 // import SignUpContent from "./signup-component/Signup-content"; // Assuming SignUpContent is defined in a separate file
-import SignupForm from "./signup-component/SignupForm"; // Assuming SignUpContent is defined in a separate file
+import SignupForm from "../signup-component/SignupForm"; // Assuming SignUpContent is defined in a separate file
 import PropTypes from "prop-types";
-import Header from "./login-component/Login-Header";
+import Header from "../login-component/Login-Header";
 // import Footer from "./login-component/Login-Footer";
 
 export default function SignUp(props) {

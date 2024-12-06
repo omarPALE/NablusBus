@@ -41,45 +41,8 @@ const TicketSection = (props) => {
     };
   }, []);
 
-  // useEffect(() => {
-  //   if (!props.isMyTicket || !props.ticketID) {
-  //     console.log("Effect skipped due to invalid conditions");
-  //     return; // Prevent the effect from firing if conditions aren't met
-  //   }
-
-  //   const fetchQRCode = async () => {
-  //     try {
-  //       const response = await axios.get(
-  //         `http://localhost:5000/api/ticket/${props.ticketID}`
-  //       );
-  //       setTicketInfo((prevInfo) => ({
-  //         ...prevInfo,
-  //         qr_code: response.data.qr_code, // Update qr_code in ticketInfo
-  //       }));
-  //     } catch (error) {
-  //       console.error("Error fetching QR code:", error);
-  //     }
-  //   };
-
-  //   fetchQRCode();
-  // }, [props.ticketID, props.isMyTicket]);
-
   const handlePopupOpen = () => setPopupVisible(true);
   const handlePopupClose = () => setPopupVisible(false);
-  // = JSON.stringify({
-  //   price: props.ticketPrice,
-  //   departure: props.departure || ticketInfo.departure,
-  //   destination: props.destination || ticketInfo.destination,
-  //   classType: props.classType || ticketInfo.class,
-  //   seatNumber: props.seatNumber || ticketInfo.seatNumber,
-  //   busNumber: props.busNumber || ticketInfo.busNumber,
-  // });
-
-  // useEffect(() => {
-  //   if (props.setQRcode) {
-  //     props.setQRcode(ticketInfo.qr_code);
-  //   }
-  // }, [props.qrCode, props.setQRcode]); // Run only when qrValue changes
 
   return (
     <section className="ticket-section">

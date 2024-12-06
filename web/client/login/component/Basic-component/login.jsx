@@ -1,6 +1,6 @@
-import LoginContent from "./login-component/Login-Content";
-import Header from "./login-component/Login-Header";
-import Footer from "./login-component/Login-Footer";
+import LoginContent from "../login-component/Login-Content";
+import Header from "../login-component/Login-Header";
+import Footer from "../login-component/Login-Footer";
 import { PropTypes } from "prop-types";
 function Login(props) {
   return (

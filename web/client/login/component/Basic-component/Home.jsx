@@ -1,4 +1,4 @@
-import Content from "./Home-component/Home-Content";
+import Content from "../Home-component/Home-Content";
 
 export default function Home() {
   return (

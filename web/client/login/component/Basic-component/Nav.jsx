@@ -1,8 +1,8 @@
 // Import PropTypes and Dropdown from 'react-bootstrap'
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
-import ProfileMenu from "./Home-component/ProfileMenu";
-import TrackingDropdown from "./TrackingDropDown/TrackingDropDown";
+import ProfileMenu from "../Home-component/ProfileMenu";
+import TrackingDropdown from "../TrackingDropDown/TrackingDropDown";
 export default function Nav(props) {
   const navigate = useNavigate();
   const user = {
@@ -10,7 +10,6 @@ export default function Nav(props) {
     email: props.userState.email,
     avatar: "https://via.placeholder.com/150", // Optional profile picture URL
   };
-  console.log(props.userState)
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary">
       <div className="container-fluid">
