@@ -69,12 +69,24 @@ function App() {
           <Route
             path="/admin/*"
             element={
-              <Layout style={{ minHeight: "100vh" }}>
+              <Layout
+                style={{
+                  minHeight: "100vh",
+                }}
+              >
                 <Sidebar />
                 <Layout>
                   <Navbar />
                   <Routes>
-                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route
+                      path="/dashboard"
+                      element={
+                        <Dashboard
+                          userState={userState}
+                          setUserState={setUserState}
+                        />
+                      }
+                    />
                   </Routes>
                 </Layout>
               </Layout>

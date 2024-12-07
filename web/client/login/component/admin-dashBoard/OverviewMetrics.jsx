@@ -1,7 +1,18 @@
 // components/OverviewMetrics.js
 import { Card, Col, Row } from "antd";
+import { useEffect } from "react";
+import PropTypes from "prop-types";
 import "./OverviewMetrics.css";
-const OverviewMetrics = () => {
+import axios from "axios";
+const OverviewMetrics = (props) => {
+  // Fetch data from your API here using axios.get() and store it in a state variable
+  useEffect(() => {
+    axios
+      .get("https://your-api-endpoint.com/users")
+      .then((response) => props.setUserState(response.data))
+
+      .catch((error) => console.error(error));
+  }, []);
   const metrics = [
     { title: "Total Users", value: 1250 },
     { title: "Active Tickets", value: 850 },
@@ -24,5 +35,8 @@ const OverviewMetrics = () => {
     </Row>
   );
 };
-
+OverviewMetrics.PropTypes = {
+  setUserState: PropTypes.func.isRequired,
+  userState: PropTypes.object.isRequired, // Assuming userState is an object with properties like loggedIn, email, username, role
+};
 export default OverviewMetrics;
