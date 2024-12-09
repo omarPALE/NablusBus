@@ -26,3 +26,22 @@
   font-weight: bold;
   color: #1890ff;
 }
+
+.details-container {
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+  transform: translateY(-10px);
+  pointer-events: none;
+}
+
+.details-container.fade-in {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.details-container.fade-out {
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+}

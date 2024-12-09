@@ -1,42 +1,146 @@
-// components/OverviewMetrics.js
-import { Card, Col, Row } from "antd";
-import { useEffect } from "react";
-import PropTypes from "prop-types";
-import "./OverviewMetrics.css";
+import { Card, Col, Row, Button } from "antd";
+import { useState, useEffect } from "react";
 import axios from "axios";
-const OverviewMetrics = (props) => {
-  // Fetch data from your API here using axios.get() and store it in a state variable
+import "./OverviewMetrics.css";
+import DropdownDetails from "./DropdownDetails";
+
+const OverviewMetrics = () => {
+  const [metrics, setMetrics] = useState([]);
+  const [roles, setRoles] = useState([]);
+  const [showUserDetails, setShowUserDetails] = useState(false); // Toggle user roles
+  const [showTicketDetails, setShowTicketDetails] = useState(false); // Toggle ticket types
+  const [tickets, setTickets] = useState([]); // State for tickets
+
   useEffect(() => {
-    axios
-      .get("https://your-api-endpoint.com/users")
-      .then((response) => props.setUserState(response.data))
+    const fetchMetrics = async () => {
+      try {
+        const userResponse = await axios.get(
+          "http://localhost:5000/api/admin/users"
+        );
+        const ticketResponse = await axios.get(
+          "http://localhost:5000/api/admin/tickets"
+        );
 
-      .catch((error) => console.error(error));
+        // Debugging the API responses
+        console.log("User API Response:", userResponse.data);
+        console.log("Ticket API Response:", ticketResponse.data);
+
+        const { total_users, roles = [] } = userResponse.data || {};
+        const { tickets = [] } = ticketResponse.data;
+
+        // Set states
+        setMetrics([{ title: "Total Users", value: total_users }]);
+        setRoles(roles);
+        setTickets(tickets);
+
+        // Debugging the parsed tickets
+        console.log("Parsed tickets:", tickets);
+      } catch (error) {
+        console.error("Error fetching metrics:", error);
+      }
+    };
+
+    fetchMetrics();
   }, []);
-  const metrics = [
-    { title: "Total Users", value: 1250 },
-    { title: "Active Tickets", value: 850 },
-    { title: "Buses on Trip", value: 45 },
-    { title: "Revenue (Today)", value: "$4,520" },
-  ];
 
+  const toggleUserDetails = () => {
+    setShowUserDetails((prevState) => !prevState);
+  };
+  const toggleTicketDetails = () => {
+    setShowTicketDetails((prevState) => !prevState);
+  };
   return (
-    <Row gutter={16} style={{ margin: "20px 0" }}>
-      {metrics.map((metric, index) => (
-        <Col span={6} key={index}>
-          <Card>
-            <h3>{metric.title}</h3>
-            <p style={{ fontSize: "24px", fontWeight: "bold" }}>
-              {metric.value}
+    <div>
+      {/* Main Metrics */}
+      <Row gutter={16} style={{ margin: "20px 0" }}>
+        {metrics.map((metric, index) => (
+          <Col span={6} key={index}>
+            <Card
+              style={{
+                border:
+                  metric.title === "Total Users" ? "2px solid #1890ff" : "",
+              }}
+            >
+              {metric.title === "Total Users" ? (
+                <Button
+                  type="link"
+                  aria-label="Toggle User Roles"
+                  style={{
+                    fontSize: "24px",
+                    fontWeight: "bold",
+                    color: showUserDetails ? "#1890ff" : "inherit",
+                  }}
+                  onClick={toggleUserDetails}
+                >
+                  {metric.title}
+                </Button>
+              ) : (
+                <h3>{metric.title}</h3>
+              )}
+              <p style={{ fontSize: "18px", fontWeight: "bold" }}>
+                {metric.value}
+              </p>
+            </Card>
+          </Col>
+        ))}
+
+        {/* Add a new card for tickets */}
+        <Col span={6}>
+          <Card style={{ border: "2px solid #52c41a" }}>
+            <Button
+              type="link"
+              aria-label="Toggle Tickets Details"
+              style={{
+                fontSize: "24px",
+                fontWeight: "bold",
+                color: showTicketDetails ? "#52c41a" : "inherit",
+              }}
+              onClick={toggleTicketDetails}
+            >
+              Tickets
+            </Button>
+            {/* Display total tickets value */}
+            <p
+              style={{
+                fontSize: "18px",
+                fontWeight: "bold",
+                marginTop: "10px",
+              }}
+            >
+              Total:{" "}
+              {tickets.reduce(
+                (total, ticket) => total + (ticket.count || 0),
+                0
+              )}
             </p>
           </Card>
         </Col>
-      ))}
-    </Row>
+      </Row>
+
+      {/* Drop-down details for User Roles */}
+      <DropdownDetails
+        show={showUserDetails}
+        data={roles}
+        cardStyle={{ background: "#f6f8fa" }}
+        renderTitle={(role) =>
+          role.role.charAt(0).toUpperCase() + role.role.slice(1)
+        }
+      />
+
+      {/* Drop-down details for Ticket Types */}
+      <DropdownDetails
+        show={showTicketDetails}
+        data={tickets}
+        cardStyle={{ background: "#e6f7ff" }}
+        renderTitle={
+          (ticket) =>
+            ticket.model
+              ? ticket.model.charAt(0).toUpperCase() + ticket.model.slice(1)
+              : "Unknown Type" // Fallback for missing type
+        }
+      />
+    </div>
   );
 };
-OverviewMetrics.PropTypes = {
-  setUserState: PropTypes.func.isRequired,
-  userState: PropTypes.object.isRequired, // Assuming userState is an object with properties like loggedIn, email, username, role
-};
+
 export default OverviewMetrics;
