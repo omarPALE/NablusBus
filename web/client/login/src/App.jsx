@@ -12,8 +12,9 @@ import DriverScanner from "../component/DriverScaner/DriverScanner";
 import { Layout } from "antd";
 import Navbar from "../component/admin-dashBoard/Nav";
 import Sidebar from "../component/admin-dashBoard/SideBar";
-import Dashboard from "../component/admin-dashBoard/DashBoard";
+// import Dashboard from "../component/admin-dashBoard/Dashboard";
 import StartTripCard from "../component/start-trip/StartTrip";
+
 function App() {
   const [userState, setUserState] = useState({
     loggedIn: false,
@@ -22,10 +23,12 @@ function App() {
     userID: 0,
     role: "passenger",
   });
+
   const handleStartTrip = (tripDetails) => {
     console.log("Trip started:", tripDetails);
     // Send trip details to the backend or perform other actions
   };
+
   return (
     <div className="main-container">
       <Nav userState={userState} setUserState={setUserState} />
@@ -85,25 +88,15 @@ function App() {
           <Route
             path="/admin/*"
             element={
-              <Layout
-                style={{
-                  minHeight: "100vh",
-                }}
-              >
-                <Sidebar />
+              <Layout style={{ minHeight: "100vh" }}>
+                {/* Navbar for Admin */}
+                <Navbar />
+                {/* Sidebar Component */}
+                <Sidebar userState={userState} />
                 <Layout>
-                  <Navbar />
-                  <Routes>
-                    <Route
-                      path="/dashboard"
-                      element={
-                        <Dashboard
-                          userState={userState}
-                          setUserState={setUserState}
-                        />
-                      }
-                    />
-                  </Routes>
+                  <div style={{ padding: "20px" }}>
+                    {/* Content is conditionally rendered in Sidebar */}
+                  </div>
                 </Layout>
               </Layout>
             }
