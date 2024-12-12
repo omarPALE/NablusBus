@@ -60,9 +60,10 @@ function App() {
             <StartTripCard
               setUserState={setUserState}
               userState={userState}
-              busNumber="NB-101"
+              busNumber={101}
               availableRoutes={["Route A", "Route B", "Route C"]}
               onStartTrip={handleStartTrip}
+              driverId="12345"
             />
           }
         />

@@ -1,7 +1,14 @@
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import "./start-trip.css";
-const StartTripCard = ({ busNumber, availableRoutes, onStartTrip }) => {
+import axios from "axios";
+import "./start-trip.css"; // Import the CSS file
+
+const StartTripCard = ({
+  busNumber,
+  availableRoutes,
+  driverId,
+  onStartTrip,
+}) => {
   const [route, setRoute] = useState("");
   const [filteredRoutes, setFilteredRoutes] = useState(availableRoutes);
   const [passengerCount, setPassengerCount] = useState("");
@@ -28,14 +35,39 @@ const StartTripCard = ({ busNumber, availableRoutes, onStartTrip }) => {
     setIsFocused(false); // Hide dropdown after selection
   };
 
-  const handleStartTrip = () => {
+  const handleStartTrip = async () => {
     if (route && passengerCount) {
-      onStartTrip({
+      // Prepare data for API request
+      const tripData = {
+        bus_id: busNumber,
+        driver_id: driverId,
+        start_time: startTime,
+        passenger_count: passengerCount,
         route,
-        busNumber,
-        passengerCount,
-        startTime,
-      });
+        status: "ongoing",
+      };
+
+      try {
+        const response = await axios.post(
+          "http://localhost:5000/api/trips/trip",
+          { ...tripData }
+        );
+
+        if (response.status === 200) {
+          // Handle successful response
+          console.log("Trip started successfully:", response.data);
+          onStartTrip(tripData); // Optional: Call the parent callback if necessary
+        } else {
+          // Handle failure (e.g., server error)
+          console.error("Error starting trip:", response.data);
+          alert("Error starting the trip. Please try again.");
+        }
+      } catch (error) {
+        console.error("Error during the request:", error);
+        alert("Network error. Please try again.");
+      }
+
+      // Reset form fields
       setRoute("");
       setPassengerCount("");
     } else {
@@ -106,6 +138,7 @@ const StartTripCard = ({ busNumber, availableRoutes, onStartTrip }) => {
 StartTripCard.propTypes = {
   busNumber: PropTypes.string.isRequired, // Bus number should be a string
   availableRoutes: PropTypes.arrayOf(PropTypes.string).isRequired, // Routes should be an array of strings
+  driverId: PropTypes.string.isRequired, // Driver ID should be a string
   onStartTrip: PropTypes.func.isRequired, // Function to handle trip start
 };
 

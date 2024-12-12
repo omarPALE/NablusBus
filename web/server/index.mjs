@@ -3,15 +3,20 @@ import pool from "./db.js";
 import usersRouter from "./routes/users.js";
 import ticketRoutes from "./routes/Ticket.js";
 import adminRoutes from "./routes/admin.js";
+import tripRoutes from "./routes/tripRoutes.js";
 import cors from "cors";
 
 const app = express();
-app.use("/users", usersRouter);
-app.use("/api", ticketRoutes);
-app.use("/api/admin", adminRoutes);
 // Middleware
 app.use(express.json());
 app.use(cors());
+
+// Define routes
+app.use("/users", usersRouter);
+app.use("/api", ticketRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/trips", tripRoutes);
+
 // Test the database connection
 pool.query("SELECT NOW()", (err, res) => {
   if (err) {
