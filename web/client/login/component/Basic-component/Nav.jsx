@@ -70,6 +70,16 @@ export default function Nav(props) {
                 </a>
               </li>
             )}
+            {props.userState.loggedIn && props.userState.role === "driver" && (
+              <li>
+                <a
+                  className="btn btn-outline-success"
+                  onClick={() => navigate("/trip")}
+                >
+                  Start Trip
+                </a>
+              </li>
+            )}
             {props.userState.loggedIn &&
               props.userState.role === "administrator" && (
                 <li>

@@ -13,7 +13,7 @@ import { Layout } from "antd";
 import Navbar from "../component/admin-dashBoard/Nav";
 import Sidebar from "../component/admin-dashBoard/SideBar";
 import Dashboard from "../component/admin-dashBoard/DashBoard";
-
+import StartTripCard from "../component/start-trip/StartTrip";
 function App() {
   const [userState, setUserState] = useState({
     loggedIn: false,
@@ -22,7 +22,10 @@ function App() {
     userID: 0,
     role: "passenger",
   });
-
+  const handleStartTrip = (tripDetails) => {
+    console.log("Trip started:", tripDetails);
+    // Send trip details to the backend or perform other actions
+  };
   return (
     <div className="main-container">
       <Nav userState={userState} setUserState={setUserState} />
@@ -49,6 +52,18 @@ function App() {
           path="/subscription"
           element={
             <Subscription setUserState={setUserState} userState={userState} />
+          }
+        />
+        <Route
+          path="/trip"
+          element={
+            <StartTripCard
+              setUserState={setUserState}
+              userState={userState}
+              busNumber="NB-101"
+              availableRoutes={["Route A", "Route B", "Route C"]}
+              onStartTrip={handleStartTrip}
+            />
           }
         />
         {userState.loggedIn && (
