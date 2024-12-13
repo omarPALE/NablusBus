@@ -23,7 +23,7 @@ function App() {
     userID: 0,
     role: "passenger",
   });
-
+  const [links, setLinks] = useState([]);
   const handleStartTrip = (tripDetails) => {
     console.log("Trip started:", tripDetails);
     // Send trip details to the backend or perform other actions
@@ -90,11 +90,11 @@ function App() {
             element={
               <Layout style={{ minHeight: "100vh" }}>
                 {/* Navbar for Admin */}
-                <Navbar />
+                <Navbar links={links} />
                 {/* Sidebar Component */}
-                <Sidebar userState={userState} />
+                <Sidebar userState={userState} setLinks={setLinks} />
                 <Layout>
-                  <div style={{ padding: "20px" }}>
+                  <div>
                     {/* Content is conditionally rendered in Sidebar */}
                   </div>
                 </Layout>
