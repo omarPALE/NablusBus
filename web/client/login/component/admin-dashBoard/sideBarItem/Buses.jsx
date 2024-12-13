@@ -47,7 +47,7 @@ const Buses = ({ show, hide }) => {
             status: values.status,
           }
         );
-
+        console.log(values.driver_work_id);
         if (response.status === 201) {
           message.success("Bus added successfully!");
           form.resetFields();
@@ -66,9 +66,38 @@ const Buses = ({ show, hide }) => {
     }
   };
 
-  const handleUpdateBus = () => {
-    console.log("Update bus info clicked");
-    // Add your logic to handle updating bus information here
+  const handleUpdateBus = async (values) => {
+    console.log("Form values for update:", values);
+    setIsSubmitting(true);
+
+    // Remove empty fields from the update payload except 'bus_id' (mandatory)
+    const { bus_id, ...fields } = values;
+    const updatePayload = { bus_id };
+
+    Object.keys(fields).forEach((key) => {
+      if (fields[key]) {
+        updatePayload[key] = fields[key];
+      }
+    });
+    try {
+      const response = await axios.put(
+        "http://localhost:5000/api/admin/updateBus",
+        updatePayload
+      );
+      console.log("updatePayload", updatePayload);
+
+      if (response.status === 200) {
+        message.success("Bus information updated successfully!");
+        form.resetFields();
+      } else {
+        message.error("Failed to update bus information. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error updating bus information:", error);
+      message.error("An error occurred while updating the bus information.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -137,7 +166,7 @@ const Buses = ({ show, hide }) => {
 
               {/* Driver Work ID */}
               <Form.Item
-                label="Driver Work ID"
+                label="driver_work_id"
                 name="driver_work_id"
                 rules={[
                   {
@@ -147,7 +176,7 @@ const Buses = ({ show, hide }) => {
                   {
                     pattern: /^[0-9]{1,5}$/,
                     message:
-                      "Driver Work ID must be numeric and not more than 5 digits",
+                      "Driver ID must be a numeric value between 1 and 5 digits",
                   },
                 ]}
               >
@@ -184,17 +213,89 @@ const Buses = ({ show, hide }) => {
 
         {/* Update Bus Info Card */}
         {!show && hide && (
-          <Card
-            className="buses-card"
-            title="Update Bus Info"
-            bordered
-            actions={[
-              <Button key="1" type="primary" onClick={handleUpdateBus}>
-                Update Info
-              </Button>,
-            ]}
-          >
-            <p>Update information for an existing bus in the system.</p>
+          <Card className="buses-card" title="Update Bus Info" bordered>
+            <Form
+              layout="vertical"
+              onFinish={handleUpdateBus}
+              initialValues={{
+                status: "station",
+              }}
+            >
+              {/* Bus ID */}
+              <Form.Item
+                label="Bus ID"
+                name="bus_id"
+                rules={[
+                  { required: true, message: "Please enter the bus ID" },
+                  {
+                    pattern: /^[0-9]+$/,
+                    message: "Bus ID must be a numeric value",
+                  },
+                ]}
+              >
+                <Input placeholder="Enter Bus ID" />
+              </Form.Item>
+
+              {/* Bus Worker ID */}
+              <Form.Item
+                label="driver_work_id"
+                name="driver_work_id"
+                rules={[
+                  {
+                    pattern: /^[0-9]{1,5}$/,
+                    message:
+                      "Bus Worker ID must be a numeric value between 1 and 5 digits",
+                  },
+                ]}
+              >
+                <Input placeholder="Enter Bus Worker ID" />
+              </Form.Item>
+
+              {/* Area */}
+              <Form.Item
+                label="Area"
+                name="area"
+                rules={[
+                  {
+                    pattern: /^[a-zA-Z\s]+$/,
+                    message: "Area must contain only letters",
+                  },
+                ]}
+              >
+                <Input placeholder="Enter Area" />
+              </Form.Item>
+
+              {/* Status */}
+              <Form.Item
+                label="Status"
+                name="status"
+                rules={[
+                  {
+                    pattern: /^(station|on_trip|maintenance)$/,
+                    message:
+                      "Status must be 'station', 'on_trip', or 'maintenance'",
+                  },
+                ]}
+              >
+                <Select>
+                  <Option value="station">Station</Option>
+                  <Option value="on_trip">On Trip</Option>
+                  <Option value="maintenance">Maintenance</Option>
+                </Select>
+              </Form.Item>
+
+              {/* Submit Button */}
+              <Form.Item>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  loading={isSubmitting}
+                  block
+                >
+                  Update Bus Info
+                </Button>
+              </Form.Item>
+            </Form>
           </Card>
         )}
       </div>

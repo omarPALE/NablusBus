@@ -117,7 +117,6 @@ export const checkDriverIdExists = async (req, res) => {
 // Add a new Bus
 export const addBus = async (req, res) => {
   const { bus_number, capacity, area, driver_work_id, status } = req.body;
-  console.log("Received data:", req.body);
 
   try {
     // Insert the bus into the database
@@ -143,3 +142,77 @@ export async function getTotalUsers(req, res) {
     res.status(500).json({ error: "Error fetching total users" });
   }
 }
+
+export const updateBus = async (req, res) => {
+  const { bus_id, driver_work_id, status, area } = req.body;
+  console.log("driver workid is: ", driver_work_id);
+  if (!bus_id) {
+    return res.status(400).json({ error: "Bus ID is required for updates." });
+  }
+
+  try {
+    const fieldsToUpdate = [];
+    const values = [];
+    let paramIndex = 1; // Keeps track of the positional parameters for the query.
+
+    // Validate and check if the driver exists if `driver_work_id` is provided.
+    if (driver_work_id) {
+      const driverCheckQuery = `
+        SELECT COUNT(*) 
+        FROM users 
+        WHERE work_id = $1;
+      `;
+      const driverCheckResult = await pool.query(driverCheckQuery, [
+        driver_work_id,
+      ]);
+
+      if (parseInt(driverCheckResult.rows[0].count, 10) === 0) {
+        return res
+          .status(400)
+          .json({ error: "Driver Work ID does not exist in the database." });
+      }
+
+      fieldsToUpdate.push(`driver_work_id = $${paramIndex++}`);
+      values.push(driver_work_id);
+    }
+
+    // Add optional fields to update if provided.
+    if (status) {
+      fieldsToUpdate.push(`status = $${paramIndex++}`);
+      values.push(status);
+    }
+
+    if (area) {
+      fieldsToUpdate.push(`area = $${paramIndex++}`);
+      values.push(area);
+    }
+
+    // If no fields provided for update, return an error.
+    if (fieldsToUpdate.length === 0) {
+      return res.status(400).json({ error: "No fields provided to update." });
+    }
+
+    // Add bus_id as the last parameter.
+    values.push(bus_id);
+
+    const query = `
+      UPDATE buses
+      SET ${fieldsToUpdate.join(", ")}
+      WHERE bus_number = $${paramIndex}
+      RETURNING *;
+    `;
+
+    const result = await pool.query(query, values);
+
+    if (result.rowCount > 0) {
+      res
+        .status(200)
+        .json({ message: "Bus updated successfully!", bus: result.rows[0] });
+    } else {
+      res.status(404).json({ error: "Bus not found." });
+    }
+  } catch (error) {
+    console.error("Error updating bus:", error);
+    res.status(500).json({ error: "Error updating bus." });
+  }
+};

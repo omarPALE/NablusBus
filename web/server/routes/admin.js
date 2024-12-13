@@ -10,6 +10,7 @@ import {
   getUsersAndRolesCount,
   checkDriverIdExists,
   addBus,
+  updateBus,
 } from "../controllers/adminController.js";
 
 // Admin metrics
@@ -23,4 +24,7 @@ router.get("/trips", getAllTrips);
 // router.post("/drivers/:id", addDriver);
 router.get("/driver/:id", checkDriverIdExists);
 router.post("/addBus", addBus);
+
+router.put("/updateBus", updateBus);
+
 export default router;
