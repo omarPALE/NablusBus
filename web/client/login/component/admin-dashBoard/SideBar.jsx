@@ -6,8 +6,8 @@ import {
   NotificationOutlined,
   TruckOutlined,
 } from "@ant-design/icons";
-import { useState, useEffect } from "react";
-import { Layout, Menu } from "antd";
+import { useState } from "react";
+import { Layout, Menu, message } from "antd";
 import PropTypes from "prop-types";
 import OverviewMetrics from "./OverviewMetrics";
 import Trips from "./sideBarItem/Trips";
@@ -15,14 +15,20 @@ import Users from "./sideBarItem/Users";
 import Buses from "./sideBarItem/Buses";
 import Notifications from "./sideBarItem/Notifications";
 import Reports from "./sideBarItem/Reports";
+import axios from "axios";
 import "./Sidebar.css";
 
 const { Sider } = Layout;
 
 const Sidebar = ({ setLinks }) => {
   const [selectedView, setSelectedView] = useState("overview");
-  const [show, setShow] = useState(false);
-  const [hide, setHide] = useState(true);
+  // const [show, setShow] = useState(false);
+  // const [hide, setHide] = useState(true);
+  const [showlink1, setShowlink1] = useState("false");
+  const [showlink2, setShowlink2] = useState("false");
+  const [showlink3, setShowlink3] = useState("false");
+  const [busData, setBusData] = useState([]); // State to store bus data
+
   const handleMenuClick = (view) => {
     setSelectedView(view);
 
@@ -60,15 +66,26 @@ const Sidebar = ({ setLinks }) => {
           {
             label: "Add Bus",
             onClick: () => {
-              setShow(true);
-              setHide(false);
+              setShowlink1(true);
+              setShowlink2(false);
+              setShowlink3(false);
             },
           },
           {
             label: "Update Bus",
             onClick: () => {
-              setHide(true);
-              setShow(false);
+              setShowlink1(false);
+              setShowlink2(true);
+              setShowlink3(false);
+            },
+          },
+          {
+            label: "Show All Buses",
+            onClick: () => {
+              setShowlink1(false);
+              setShowlink2(false);
+              setShowlink3(true);
+              fetchBuses();
             },
           },
         ]);
@@ -102,9 +119,22 @@ const Sidebar = ({ setLinks }) => {
         break;
     }
   };
-  useEffect(() => {
-    setShow(false);
-  }, [selectedView]);
+  const fetchBuses = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:5000/api/admin/getBuses"
+      );
+      if (response.status === 200) {
+        setBusData(response.data); // Store the bus data in state
+      } else {
+        message.error("Failed to fetch buses.");
+      }
+    } catch (error) {
+      console.error("Error fetching bus data:", error);
+      message.error("An error occurred while fetching bus data.");
+    }
+  };
+
   const renderContent = () => {
     switch (selectedView) {
       case "overview":
@@ -114,7 +144,14 @@ const Sidebar = ({ setLinks }) => {
       case "users":
         return <Users />;
       case "buses":
-        return <Buses show={show} hide={hide} />;
+        return (
+          <Buses
+            showlink2={showlink2}
+            showlink3={showlink3}
+            showlink1={showlink1}
+            busData={busData}
+          />
+        );
       case "notifications":
         return <Notifications />;
       case "reports":

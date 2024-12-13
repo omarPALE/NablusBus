@@ -216,3 +216,14 @@ export const updateBus = async (req, res) => {
     res.status(500).json({ error: "Error updating bus." });
   }
 };
+
+// Get all buses
+export const getAllBuses = async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM buses");
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error("Error fetching buses:", error);
+    res.status(500).json({ error: "Failed to fetch buses" });
+  }
+};

@@ -11,6 +11,7 @@ import {
   checkDriverIdExists,
   addBus,
   updateBus,
+  getAllBuses,
 } from "../controllers/adminController.js";
 
 // Admin metrics
@@ -24,7 +25,7 @@ router.get("/trips", getAllTrips);
 // router.post("/drivers/:id", addDriver);
 router.get("/driver/:id", checkDriverIdExists);
 router.post("/addBus", addBus);
-
+router.get("/getBuses", getAllBuses);
 router.put("/updateBus", updateBus);
 
 export default router;

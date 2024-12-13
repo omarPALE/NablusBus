@@ -6,9 +6,13 @@ import "./styles/Buses.css";
 
 const { Option } = Select;
 
-const Buses = ({ show, hide }) => {
+const Buses = ({ showlink1, showlink2, showlink3, busData }) => {
   const [form] = Form.useForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Fetch bus data from backend
+
+  // Button click handler to fetch bus data
 
   const checkDriverIdExists = async (driverId) => {
     try {
@@ -47,7 +51,7 @@ const Buses = ({ show, hide }) => {
             status: values.status,
           }
         );
-        console.log(values.driver_work_id);
+
         if (response.status === 201) {
           message.success("Bus added successfully!");
           form.resetFields();
@@ -79,12 +83,12 @@ const Buses = ({ show, hide }) => {
         updatePayload[key] = fields[key];
       }
     });
+
     try {
       const response = await axios.put(
         "http://localhost:5000/api/admin/updateBus",
         updatePayload
       );
-      console.log("updatePayload", updatePayload);
 
       if (response.status === 200) {
         message.success("Bus information updated successfully!");
@@ -109,7 +113,7 @@ const Buses = ({ show, hide }) => {
       </p>
       <div className="buses-cards">
         {/* Add New Bus Card */}
-        {show && !hide && (
+        {showlink1 && !showlink2 && !showlink3 && (
           <Card className="buses-card" title="Add a New Bus" bordered>
             <Form
               form={form}
@@ -212,7 +216,7 @@ const Buses = ({ show, hide }) => {
         )}
 
         {/* Update Bus Info Card */}
-        {!show && hide && (
+        {!showlink1 && showlink2 && !showlink3 && (
           <Card className="buses-card" title="Update Bus Info" bordered>
             <Form
               layout="vertical"
@@ -298,14 +302,52 @@ const Buses = ({ show, hide }) => {
             </Form>
           </Card>
         )}
+
+        {/* Display Bus Data */}
+        {!showlink1 && !showlink2 && showlink3 && (
+          <Card title="Bus Information" bordered>
+            <div className="bus-list">
+              {busData.length === 0 ? (
+                <p>No buses available.</p>
+              ) : (
+                busData.map((bus) => (
+                  <Card key={bus.bus_number} className="bus-item" bordered>
+                    <p>
+                      <strong>Bus Number:</strong> {bus.bus_number}
+                    </p>
+                    <p>
+                      <strong>Capacity:</strong> {bus.capacity}
+                    </p>
+                    <p>
+                      <strong>Area:</strong> {bus.area}
+                    </p>
+                    <p>
+                      <strong>Status:</strong> {bus.status}
+                    </p>
+                    <p>
+                      <strong>Driver Work ID:</strong> {bus.driver_work_id}
+                    </p>
+                  </Card>
+                ))
+              )}
+            </div>
+          </Card>
+        )}
       </div>
     </div>
   );
 };
 
 Buses.propTypes = {
-  show: PropTypes.bool,
-  hide: PropTypes.bool,
+  showlink1: PropTypes.bool,
+  showlink2: PropTypes.bool,
+  showlink3: PropTypes.bool,
+  fetchBuses: PropTypes.func,
+  busData: PropTypes.array,
+  isSubmitting: PropTypes.bool,
+  handleFetchBuses: PropTypes.func,
+  handleAddBus: PropTypes.func,
+  handleUpdateBus: PropTypes.func,
 };
 
 export default Buses;
