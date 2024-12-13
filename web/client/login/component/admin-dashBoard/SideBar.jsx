@@ -59,12 +59,16 @@ const Sidebar = ({ setLinks }) => {
         setLinks([
           {
             label: "Add Bus",
-            onClick: () => setShow(true),
+            onClick: () => {
+              setShow(true);
+              setHide(false);
+            },
           },
           {
             label: "Update Bus",
             onClick: () => {
-              setHide(false);
+              setHide(true);
+              setShow(false);
             },
           },
         ]);
@@ -110,7 +114,7 @@ const Sidebar = ({ setLinks }) => {
       case "users":
         return <Users />;
       case "buses":
-        return <Buses show={show} />;
+        return <Buses show={show} hide={hide} />;
       case "notifications":
         return <Notifications />;
       case "reports":

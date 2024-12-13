@@ -20,15 +20,22 @@ router.get("/", async (req, res) => {
 
 //add user
 router.post("/add", async (req, res) => {
-  const { username, phone, email, password, role = "passenger" } = req.body;
+  const {
+    username,
+    phone,
+    email,
+    password,
+    work_id,
+    role = "passenger",
+  } = req.body;
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const age = Math.floor(Math.random() * 100) + 18; // Generate a random age between 18 and 100
   try {
     const result = await pool.query(
-      "INSERT INTO users (username, email, password, role, age) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-      [username, email, hashedPassword, role, age]
+      "INSERT INTO users (username, email, password, role, age, work_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
+      [username, email, hashedPassword, role, age, work_id]
     );
 
     res.status(201).json(result.rows[0]); // Respond with the inserted user

@@ -198,10 +198,10 @@ const SignupForm = (props) => {
           phone: formRefs.current.phoneEl.value, // Replace with the actual ref for email
           email: formRefs.current.emailEl.value, // Replace with the actual ref for email
           password: formRefs.current.passwordEl.value, // Replace with the actual ref for password
+          work_id: formRefs.current.workIdEl.value,
           role:
             values.userType.charAt(0).toLowerCase() + values.userType.slice(1),
         };
-
         props.setUserState(() => ({
           ...props.userState,
           loggedIn: true,

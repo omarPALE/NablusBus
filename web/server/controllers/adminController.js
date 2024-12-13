@@ -30,18 +30,6 @@ export const getUsersAndRolesCount = async (req, res) => {
   }
 };
 
-// Get total users
-export async function getTotalUsers(req, res) {
-  try {
-    const result = await pool.query(
-      "SELECT COUNT(*) AS total_users FROM users"
-    );
-    res.status(200).json({ total_users: result.rows[0].total_users });
-  } catch (error) {
-    res.status(500).json({ error: "Error fetching total users" });
-  }
-}
-
 // Get active tickets
 export async function getActiveTickets(req, res) {
   try {
@@ -106,5 +94,52 @@ export async function addDriver(req, res) {
     res.status(201).json(result.rows[0]);
   } catch (error) {
     res.status(500).json({ error: "Error adding driver" });
+  }
+}
+
+// Get driver by Work ID
+
+export const checkDriverIdExists = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const query = `SELECT EXISTS (SELECT 1 FROM users WHERE work_id = $1) AS exists`;
+    const result = await pool.query(query, [id]);
+    const exists = result.rows[0]?.exists || false;
+
+    res.status(200).json({ exists });
+  } catch (error) {
+    console.error("Error checking driver ID existence:", error);
+    res.status(500).json({ error: "Failed to check driver ID existence" });
+  }
+};
+
+// Add a new Bus
+export const addBus = async (req, res) => {
+  const { bus_number, capacity, area, driver_work_id, status } = req.body;
+  console.log("Received data:", req.body);
+
+  try {
+    // Insert the bus into the database
+    const result = await pool.query(
+      "INSERT INTO buses (bus_number, capacity, area, driver_work_id, status) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+      [bus_number, capacity, area, driver_work_id, status]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error("Error adding bus:", error); // Log the actual error
+    res.status(500).json({ error: "Error adding Bus" });
+  }
+};
+
+// Get total users
+export async function getTotalUsers(req, res) {
+  try {
+    const result = await pool.query(
+      "SELECT COUNT(*) AS total_users FROM users"
+    );
+    res.status(200).json({ total_users: result.rows[0].total_users });
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching total users" });
   }
 }

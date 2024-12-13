@@ -29,7 +29,7 @@
 }
 
 .navbar-right a:hover {
-  color: #1890ff;
+  color: #f2dfdf !important;
 }
 
 .navbar {
@@ -39,3 +39,19 @@
   margin-top: 23px;
 }
 
+.ant-menu-horizontal > .ant-menu-item:hover,
+.ant-menu-horizontal > .ant-menu-item-active,
+.ant-menu-horizontal > .ant-menu-item-selected {
+  color: #f2dfdf !important; /* Ensure text remains white */
+  background: transparent !important; /* Remove any background changes */
+}
+
+.ant-menu-item a {
+  color: #f2dfdf !important; /* Set text color for links */
+  text-decoration: underline !important; /* Remove the underline */
+}
+
+.ant-menu-item a:hover {
+  color: #f2dfdf !important; /* Maintain white color on hover */
+  text-decoration: underline !important; /* Prevent underline on hover */
+}

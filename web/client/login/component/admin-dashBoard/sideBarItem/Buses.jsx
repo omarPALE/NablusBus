@@ -1,25 +1,69 @@
 import { Card, Button, Form, Input, Select, message } from "antd";
 import { useState } from "react";
 import PropTypes from "prop-types";
+import axios from "axios";
 import "./styles/Buses.css";
 
 const { Option } = Select;
 
-const Buses = ({ show }) => {
+const Buses = ({ show, hide }) => {
   const [form] = Form.useForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleAddBus = (values) => {
+  const checkDriverIdExists = async (driverId) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/api/admin/driver/${driverId}`
+      );
+      return response.data.exists;
+    } catch (error) {
+      console.error("Error checking driver work ID:", error);
+      message.error("Failed to check Driver Work ID. Please try again later.");
+      return false;
+    }
+  };
+
+  const handleAddBus = async (values) => {
     console.log("Form values:", values);
     setIsSubmitting(true);
 
-    // Simulate an API call
-    setTimeout(() => {
-      console.log("Bus added:", values);
-      message.success("Bus added successfully!");
+    try {
+      const driverExists = await checkDriverIdExists(values.driver_work_id);
+
+      if (!driverExists) {
+        message.error("Driver Work ID does not exist in the database.");
+        setIsSubmitting(false);
+        return;
+      }
+
+      try {
+        const response = await axios.post(
+          "http://localhost:5000/api/admin/addBus",
+          {
+            bus_number: values.bus_number,
+            capacity: values.capacity,
+            area: values.area,
+            driver_work_id: values.driver_work_id,
+            status: values.status,
+          }
+        );
+
+        if (response.status === 201) {
+          message.success("Bus added successfully!");
+          form.resetFields();
+        } else {
+          message.error("Failed to add the bus. Please try again.");
+        }
+      } catch (error) {
+        console.error("Error adding bus:", error);
+        message.error("An error occurred while adding the bus.");
+      } finally {
+        setIsSubmitting(false);
+      }
+    } catch (error) {
+      message.error("An error occurred while validating the driver.", error);
       setIsSubmitting(false);
-      form.resetFields();
-    }, 1000);
+    }
   };
 
   const handleUpdateBus = () => {
@@ -36,7 +80,7 @@ const Buses = ({ show }) => {
       </p>
       <div className="buses-cards">
         {/* Add New Bus Card */}
-        {show && (
+        {show && !hide && (
           <Card className="buses-card" title="Add a New Bus" bordered>
             <Form
               form={form}
@@ -91,6 +135,25 @@ const Buses = ({ show }) => {
                 <Input placeholder="Enter bus area" />
               </Form.Item>
 
+              {/* Driver Work ID */}
+              <Form.Item
+                label="Driver Work ID"
+                name="driver_work_id"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please enter the driver work ID",
+                  },
+                  {
+                    pattern: /^[0-9]{1,5}$/,
+                    message:
+                      "Driver Work ID must be numeric and not more than 5 digits",
+                  },
+                ]}
+              >
+                <Input placeholder="Enter driver work ID" />
+              </Form.Item>
+
               {/* Status */}
               <Form.Item
                 label="Status"
@@ -120,23 +183,28 @@ const Buses = ({ show }) => {
         )}
 
         {/* Update Bus Info Card */}
-        <Card
-          className="buses-card"
-          title="Update Bus Info"
-          bordered
-          actions={[
-            <Button key="1" type="primary" onClick={handleUpdateBus}>
-              Update Info
-            </Button>,
-          ]}
-        >
-          <p>Update information for an existing bus in the system.</p>
-        </Card>
+        {!show && hide && (
+          <Card
+            className="buses-card"
+            title="Update Bus Info"
+            bordered
+            actions={[
+              <Button key="1" type="primary" onClick={handleUpdateBus}>
+                Update Info
+              </Button>,
+            ]}
+          >
+            <p>Update information for an existing bus in the system.</p>
+          </Card>
+        )}
       </div>
     </div>
   );
 };
+
 Buses.propTypes = {
   show: PropTypes.bool,
+  hide: PropTypes.bool,
 };
+
 export default Buses;
