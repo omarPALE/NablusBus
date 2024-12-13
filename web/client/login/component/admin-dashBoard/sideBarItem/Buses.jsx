@@ -218,6 +218,10 @@ const Buses = ({ showlink1, showlink2, showlink3, busData }) => {
         {/* Update Bus Info Card */}
         {!showlink1 && showlink2 && !showlink3 && (
           <Card className="buses-card" title="Update Bus Info" bordered>
+            <p style={{ fontStyle: "italic", color: "#999" }}>
+              Please leave fields empty if you do not wish to change their
+              value.
+            </p>
             <Form
               layout="vertical"
               onFinish={handleUpdateBus}
