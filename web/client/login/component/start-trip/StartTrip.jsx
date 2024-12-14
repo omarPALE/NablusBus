@@ -14,9 +14,10 @@ const StartTripCard = ({ availableRoutes, onStartTrip, userState }) => {
   // Fetch bus number by driver_work_id
   useEffect(() => {
     const fetchBusNumber = async () => {
+      console.log("get Bus number", userState.work_id);
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/bus/driver/${userState.work_id}`
+          `http://localhost:5000/api/buses/driver/${userState.work_id}`
         );
         if (response.status === 200) {
           setBusNumber(response.data.busNumber);
@@ -58,6 +59,7 @@ const StartTripCard = ({ availableRoutes, onStartTrip, userState }) => {
   };
 
   const handleStartTrip = async () => {
+    console.log("start getting date");
     if (route && passengerCount) {
       // Prepare data for API request
       const tripData = {

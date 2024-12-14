@@ -9,7 +9,7 @@ body {
 .ant-menu-dark .ant-menu-item-selected {
   background-color: #ff7017;
   color: #fff;
-  transition: all 0.3s ease-in-out; /* Smooth transition for all properties */
+  transition: all 0.6s ease-in-out; /* Smooth transition for all properties */
   transform: scale(1.05); /* Slightly scale up the selected item */
 }
 

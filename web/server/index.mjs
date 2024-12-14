@@ -4,6 +4,7 @@ import usersRouter from "./routes/users.js";
 import ticketRoutes from "./routes/Ticket.js";
 import adminRoutes from "./routes/admin.js";
 import tripRoutes from "./routes/tripRoutes.js";
+import busRoutes from "./routes/busRoutes.js";
 import cors from "cors";
 
 const app = express();
@@ -16,6 +17,7 @@ app.use("/users", usersRouter);
 app.use("/api", ticketRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/trips", tripRoutes);
+app.use("/api/buses", busRoutes);
 
 // Test the database connection
 pool.query("SELECT NOW()", (err, res) => {

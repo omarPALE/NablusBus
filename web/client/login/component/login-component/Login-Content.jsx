@@ -70,7 +70,7 @@ export default function LoginContent(props) {
       if (response.status === 200) {
         const { email, username, id, role, work_id } = response.data;
         // Save user data to storage
-        const userData = { email, username, id, role };
+        const userData = { email, username, id, role, work_id };
         if (rememberMe) {
           localStorage.setItem("user", JSON.stringify(userData)); // Save to localStorage for persistence
         } else {
