@@ -6,7 +6,6 @@ import Subscription from "../component/Basic-component/Subscription";
 import TicketManagement from "../component/MyTicket-component/MyTicketContent";
 import ScrollToTop from "../component/Basic-component/ScrolToTop";
 import { Route, Routes } from "react-router-dom";
-import { useState } from "react";
 import Footer from "../component/Basic-component/Footer";
 import DriverScanner from "../component/DriverScaner/DriverScanner";
 import { Layout } from "antd";
@@ -14,16 +13,37 @@ import Navbar from "../component/admin-dashBoard/Nav";
 import Sidebar from "../component/admin-dashBoard/SideBar";
 // import Dashboard from "../component/admin-dashBoard/Dashboard";
 import StartTripCard from "../component/start-trip/StartTrip";
+import Dashboard from "../component/start-trip/DashBoard";
 
+// import axios from "axios";
+import { useState } from "react";
 function App() {
+  // const fetchUsers = async () => {
+  //   try {
+  //     const response = await axios.get("http://localhost:5000/users");
+  //     if (response.status === 200) {
+  //       console.log("Users fetched successfully:", response.data);
+  //     } else {
+  //       console.error("Failed to fetch users. Status:", response.status);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching users:", error.message);
+  //   }
+  // };
+  // useEffect(() => {
+  //   fetchUsers();
+  // }, []);
+
   const [userState, setUserState] = useState({
     loggedIn: false,
     email: "",
     username: "",
     userID: 0,
     role: "passenger",
+    work_id: 1,
   });
   const [links, setLinks] = useState([]);
+
   const handleStartTrip = (tripDetails) => {
     console.log("Trip started:", tripDetails);
     // Send trip details to the backend or perform other actions
@@ -60,7 +80,7 @@ function App() {
         <Route
           path="/trip"
           element={
-            <StartTripCard
+            <Dashboard
               setUserState={setUserState}
               userState={userState}
               busNumber={101}

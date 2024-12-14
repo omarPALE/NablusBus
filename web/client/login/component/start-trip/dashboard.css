@@ -1,0 +1,29 @@
+/* App.css */
+body {
+  background-color: #f0f2f5;
+}
+
+.ant-layout-sider {
+  background-color: #ff6000;
+}
+.ant-menu-dark .ant-menu-item-selected {
+  background-color: #ff7017;
+  color: #fff;
+  transition: all 0.3s ease-in-out; /* Smooth transition for all properties */
+  transform: scale(1.05); /* Slightly scale up the selected item */
+}
+
+.ant-menu-dark .ant-menu-item-selected:hover {
+  background-color: #e07544; /* A lighter shade of the selected color when hovered */
+  transform: scale(1.1); /* Slightly scale up when hovered */
+}
+
+.site-layout-background {
+  background: #fff;
+}
+
+.logo {
+  height: 32px;
+  background-color: #ff6000;
+  margin: 16px;
+}

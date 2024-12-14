@@ -3,17 +3,39 @@ import PropTypes from "prop-types";
 import axios from "axios";
 import "./start-trip.css"; // Import the CSS file
 
-const StartTripCard = ({
-  busNumber,
-  availableRoutes,
-  driverId,
-  onStartTrip,
-}) => {
+const StartTripCard = ({ availableRoutes, onStartTrip, userState }) => {
+  const [busNumber, setBusNumber] = useState(""); // State for bus number
   const [route, setRoute] = useState("");
   const [filteredRoutes, setFilteredRoutes] = useState(availableRoutes);
   const [passengerCount, setPassengerCount] = useState("");
   const [startTime, setStartTime] = useState("");
   const [isFocused, setIsFocused] = useState(false); // To handle dropdown visibility
+
+  // Fetch bus number by driver_work_id
+  useEffect(() => {
+    const fetchBusNumber = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/api/bus/driver/${userState.work_id}`
+        );
+        if (response.status === 200) {
+          setBusNumber(response.data.busNumber);
+        } else {
+          console.error("Failed to fetch bus number:", response.data);
+          alert("Could not retrieve the bus number. Please try again.");
+        }
+      } catch (error) {
+        console.error("Error fetching bus number:", error);
+        alert(
+          "Error retrieving bus number. Please check your network connection."
+        );
+      }
+    };
+
+    if (userState?.work_id) {
+      fetchBusNumber();
+    }
+  }, [userState?.work_id]);
 
   useEffect(() => {
     const now = new Date();
@@ -40,7 +62,7 @@ const StartTripCard = ({
       // Prepare data for API request
       const tripData = {
         bus_id: busNumber,
-        driver_id: driverId,
+        driver_id: userState.work_id,
         start_time: startTime,
         passenger_count: passengerCount,
         route,
@@ -53,13 +75,14 @@ const StartTripCard = ({
           { ...tripData }
         );
 
-        if (response.status === 200) {
+        if (response.status === 201) {
           // Handle successful response
           console.log("Trip started successfully:", response.data);
+          alert("Trip started successfully");
           onStartTrip(tripData); // Optional: Call the parent callback if necessary
         } else {
           // Handle failure (e.g., server error)
-          console.error("Error starting trip:", response.data);
+          console.error("Error starting trip:", response.data, response.status);
           alert("Error starting the trip. Please try again.");
         }
       } catch (error) {
@@ -136,10 +159,9 @@ const StartTripCard = ({
 
 // PropTypes for type checking
 StartTripCard.propTypes = {
-  busNumber: PropTypes.string.isRequired, // Bus number should be a string
   availableRoutes: PropTypes.arrayOf(PropTypes.string).isRequired, // Routes should be an array of strings
-  driverId: PropTypes.string.isRequired, // Driver ID should be a string
   onStartTrip: PropTypes.func.isRequired, // Function to handle trip start
+  userState: PropTypes.object.isRequired, // User state object
 };
 
 export default StartTripCard;

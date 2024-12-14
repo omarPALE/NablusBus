@@ -47,3 +47,19 @@ export const addNewTrip = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
+export const getTripByDriverId = async (req,res) =>{
+  const { driver_id } = req.params;
+
+  try {
+    const result = await pool.query(
+      `SELECT bus_number FROM bus WHERE driver_worker_id = $1`,
+      [driver_id]
+    );
+    if(result.rows.length === 0){
+      return res.status(404).json({ message: "No bus found for this driver" });
+    }
+    
+
+
+}

@@ -68,7 +68,7 @@ export default function LoginContent(props) {
       });
 
       if (response.status === 200) {
-        const { email, username, id, role } = response.data;
+        const { email, username, id, role, work_id } = response.data;
         // Save user data to storage
         const userData = { email, username, id, role };
         if (rememberMe) {
@@ -76,7 +76,6 @@ export default function LoginContent(props) {
         } else {
           sessionStorage.setItem("user", JSON.stringify(userData)); // Save to sessionStorage for temporary persistence
         }
-
         // Update user state
         props.setUserState(() => ({
           ...props.userState,
@@ -85,6 +84,7 @@ export default function LoginContent(props) {
           username: username,
           user_id: id,
           role: role, // Add role to user state for additional functionalities
+          work_id: work_id,
         }));
 
         navigate("/home");

@@ -82,7 +82,7 @@ router.post("/email", async (req, res) => {
 
   try {
     const result = await pool.query(
-      "SELECT email, password, username, role, id FROM users WHERE email = $1",
+      "SELECT email, password, username, role, id, work_id FROM users WHERE email = $1",
       [email]
     );
 
@@ -91,7 +91,7 @@ router.post("/email", async (req, res) => {
         password,
         result.rows[0].password
       );
-
+      console.log("hi from back end ", result.rows[0]);
       if (isPasswordValid) {
         console.log("from data base response on email " + result.rows[0].id);
         return res.status(200).json({
@@ -100,6 +100,7 @@ router.post("/email", async (req, res) => {
           username: result.rows[0].username,
           id: result.rows[0].id,
           role: result.rows[0].role,
+          work_id: result.rows[0].work_id,
         });
       } else {
         return res.status(401).json({ message: "Invalid password" });
