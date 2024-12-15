@@ -10,8 +10,6 @@ router.use(express.json());
 router.use(cors());
 // Endpoint to add a ticket
 router.post("/addticket", async (req, res) => {
-  console.log("Incoming Request Body:", req.body);
-
   const { user_id, ticketType, model, price, rides_left, qr_code } = req.body;
 
   try {
@@ -57,7 +55,6 @@ router.get("/Tickets", async (req, res) => {
 
 router.get("/ticket/:id", async (req, res) => {
   const { id } = req.params;
-  console.log("back end result");
 
   try {
     // Fetch full ticket details based on the ID
@@ -70,7 +67,7 @@ router.get("/ticket/:id", async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(404).json({ message: "Ticket not found" });
     }
-    console.log("back end result" + result.rows[0].qr_code);
+
     // Return the first matching ticket
     res.json(result.rows[0].qr_code);
   } catch (err) {

@@ -1,10 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Layout, Menu, Row, Col, Modal } from "antd";
+import axios from "axios";
 import TripCard from "./TripCard.jsx";
-import "./dashboard.css";
 import StartTripCard from "./StartTrip";
 import PropTypes from "prop-types";
-const { Sider, Content } = Layout;
+import { UserOutlined } from "@ant-design/icons";
+import { useSpring, animated } from "@react-spring/web"; // Import react-spring for animations
+import "./dashboard.css";
+
+const { Sider, Content, Header } = Layout;
 
 const Dashboard = (props) => {
   const [trips, setTrips] = useState([]);
@@ -12,46 +16,80 @@ const Dashboard = (props) => {
   const [isModalVisible, setIsModalVisible] = useState(false); // To manage the modal visibility
 
   const handleStartTrip = () => {
-    setIsModalVisible(true); // Open the modal when "Start Trip" is clicked
+    setIsModalVisible(true);
   };
 
-  const handleGetTrips = () => {
-    // Simulating fetching trips
-    const fetchedTrips = [
-      {
-        tripId: 1,
-        busNumber: "B123",
-        status: "In Progress",
-        driverName: "John Doe",
-      },
-      {
-        tripId: 2,
-        busNumber: "B124",
-        status: "Completed",
-        driverName: "Jane Smith",
-      },
-    ];
-    setTrips(fetchedTrips);
-    setShowTrips(true);
+  const handleGetTrips = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:5000/api/trips/alltrips"
+      );
+      setTrips(response.data);
+      setShowTrips(true);
+    } catch (error) {
+      console.error("Error fetching trips:", error);
+    }
   };
 
-  const handleFinishTrip = (tripId) => {
-    alert(`Trip ${tripId} Finished`);
-    // Logic to finish trip (update database, etc.)
+  const handleFinishTrip = async (tripId) => {
+    // Get the current time as the end_time
+    console.log("trip id is:", tripId);
+    const endTime = new Date().toISOString();
+
+    try {
+      // Send a PUT request to update the end_time in the backend
+      const response = await axios.put(
+        `http://localhost:5000/api/trips/updateEndTime/${tripId}`,
+        { end_time: endTime }
+      );
+
+      if (response.status === 200) {
+        alert(`Trip ${tripId} finished at ${endTime}`);
+        // Optionally, refresh trips or update UI state here
+      } else {
+        alert("Failed to finish trip. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error finishing trip:", error);
+      alert("Error finishing trip. Please try again.");
+    }
   };
 
   const handleCancelModal = () => {
-    setIsModalVisible(false); // Close the modal
+    setIsModalVisible(false);
   };
+
+  // Fetch new trips every 5 seconds (real-time updates)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      handleGetTrips();
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // Animation for the trip cards
+  const fadeIn = useSpring({
+    opacity: showTrips ? 1 : 0,
+    transform: showTrips ? "translateY(0)" : "translateY(20px)",
+    config: { tension: 200, friction: 25 }, // Smooth and soft animation
+  });
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sider
         width={200}
         className="site-layout-background"
-        style={{ backgroundColor: "#ff6000" }}
+        style={{ backgroundColor: "#ff6000", padding: "20px" }}
       >
         <div className="logo" />
+        <div className="user-info">
+          <UserOutlined className="user-icon" />
+          <div className="user-details">
+            <h3>{props.userState.username}</h3>
+            <p>Status: {props.userState.loggedIn ? "Active" : ""}</p>
+          </div>
+        </div>
         <Menu
           theme="dark"
           mode="inline"
@@ -67,19 +105,43 @@ const Dashboard = (props) => {
         </Menu>
       </Sider>
 
-      <Layout style={{ padding: "0 24px 24px" }}>
+      <Layout style={{ padding: "0 0px 24px" }}>
+        <Header
+          className="dashboard-header"
+          style={{
+            backgroundColor: "#ff6000",
+            color: "white",
+            fontSize: "24px",
+            minWidth: "100vh",
+          }}
+        >
+          <div className="header-title">Driver Dashboard</div>
+        </Header>
         <Content
           style={{
             padding: 24,
             margin: 0,
             minHeight: 280,
+            backgroundColor: "white",
+            borderRadius: "8px",
           }}
         >
           <Row gutter={[16, 16]}>
             {showTrips &&
               trips.map((trip) => (
                 <Col span={8} key={trip.tripId}>
-                  <TripCard trip={trip} onFinishTrip={handleFinishTrip} />
+                  <animated.div style={fadeIn}>
+                    {" "}
+                    {/* Apply the animation to the trip card */}
+                    <div className="trip-card-container">
+                      <TripCard
+                        trip={trip}
+                        {...(trip.status !== "Completed"
+                          ? { onFinishTrip: handleFinishTrip }
+                          : {})}
+                      />
+                    </div>
+                  </animated.div>
                 </Col>
               ))}
           </Row>
@@ -91,17 +153,9 @@ const Dashboard = (props) => {
         title="Start Trip"
         visible={isModalVisible}
         onCancel={handleCancelModal}
-        footer={null} // Remove footer buttons as StartTripCard will have its own buttons
-        width={600} // Customize width if necessary
+        footer={null}
+        width={600}
       >
-        {/* <Dashboard
-          setUserState={setUserState}
-          userState={userState}
-          busNumber={101}
-          availableRoutes={["Route A", "Route B", "Route C"]}
-          onStartTrip={handleStartTrip}
-          driverId="12345"
-        /> */}
         <StartTripCard
           onClose={handleCancelModal}
           setUserState={props.setUserState}

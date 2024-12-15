@@ -9,7 +9,7 @@ body {
 .ant-menu-dark .ant-menu-item-selected {
   background-color: #ff7017;
   color: #fff;
-  transition: all 0.6s ease-in-out; /* Smooth transition for all properties */
+  transition: all 0.4s ease-in-out; /* Smooth transition for all properties */
   transform: scale(1.05); /* Slightly scale up the selected item */
 }
 
@@ -26,4 +26,62 @@ body {
   height: 32px;
   background-color: #ff6000;
   margin: 16px;
+}
+
+/* Overall layout */
+.site-layout-background {
+  background-color: #ff6000;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.user-icon {
+  font-size: 40px;
+  color: white;
+}
+
+.user-details {
+  margin-left: 10px;
+  color: white;
+}
+
+.user-details h3 {
+  margin: 0;
+}
+
+.user-details p {
+  margin: 5px 0 0;
+}
+
+/* Trip card container styling */
+.trip-card-container {
+  transition: 0.3s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.trip-card-container:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Layout and content */
+.site-layout-background {
+  padding: 24px;
+  min-height: 100vh;
+}
+
+.site-layout-content {
+  padding: 24px;
+  margin: 0;
+  background-color: #fff;
+  border-radius: 8px;
+}
+
+/* Menu */
+.ant-menu-dark .ant-menu-item-selected {
+  background-color: #ff6000 !important;
 }

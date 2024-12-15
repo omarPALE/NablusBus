@@ -1,10 +1,10 @@
-import { Card, Button } from "antd";
+import { Card, Button, Tooltip } from "antd";
 import PropTypes from "prop-types";
 
 const TripCard = ({ trip, onFinishTrip }) => {
   return (
     <Card
-      title={`Trip #${trip.tripId}`}
+      title={`Trip #${trip.id}`}
       bordered={false}
       style={{
         backgroundColor: "#ff6000",
@@ -13,22 +13,28 @@ const TripCard = ({ trip, onFinishTrip }) => {
       }}
     >
       <p>
-        <strong>Bus Number:</strong> {trip.busNumber}
+        <strong>Route:</strong> {trip.route}
       </p>
       <p>
         <strong>Status:</strong> {trip.status}
       </p>
       <p>
-        <strong>Driver:</strong> {trip.driverName}
+        <strong>Passenger Count:</strong> {trip.passengers_count}
       </p>
 
-      <Button
-        type="primary"
-        style={{ backgroundColor: "#fff", color: "#ff6000" }}
-        onClick={() => onFinishTrip(trip.tripId)}
-      >
-        Finish Trip
-      </Button>
+      {trip.status !== "Completed" && (
+        <Tooltip
+          title={trip.status !== "Completed" ? "Click to finish this trip" : ""}
+        >
+          <Button
+            type="primary"
+            style={{ backgroundColor: "#fff", color: "#ff6000" }}
+            onClick={() => onFinishTrip(trip.id)}
+          >
+            Finish Trip
+          </Button>
+        </Tooltip>
+      )}
     </Card>
   );
 };

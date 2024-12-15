@@ -47,3 +47,49 @@ export const addNewTrip = async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 };
+
+export const getAllTrips = async (req, res) => {
+  try {
+    // Query to fetch all trips from the "trips" table
+    const result = await pool.query("SELECT * FROM trips ORDER BY id ASC");
+
+    // Send the retrieved trips as a JSON response
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error("Error fetching trips:", error.message);
+    res
+      .status(500)
+      .json({ message: "Failed to fetch trips", error: error.message });
+  }
+};
+
+export const updateEndTime = async (req, res) => {
+  const { tripId } = req.params;
+  const { end_time } = req.body;
+
+  // Ensure end_time is provided
+  if (!end_time) {
+    return res.status(400).json({ message: "End time is required" });
+  }
+
+  try {
+    // Update the end_time in the database
+    const result = await pool.query(
+      "UPDATE trips SET end_time = $1, status = 'completed' WHERE id = $2 RETURNING *",
+      [end_time, tripId]
+    );
+
+    // Check if the trip exists
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "Trip not found" });
+    }
+
+    // Send success response with the updated trip
+    res
+      .status(200)
+      .json({ message: "Trip finished successfully", trip: result.rows[0] });
+  } catch (error) {
+    console.error("Error updating trip:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
