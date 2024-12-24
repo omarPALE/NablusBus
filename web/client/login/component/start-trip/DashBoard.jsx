@@ -1,7 +1,8 @@
+import { Spin } from "antd"; // Import Ant Design's loading spinner
 import { useState, useEffect } from "react";
 import { Layout, Menu, Row, Col, Modal } from "antd";
 import axios from "axios";
-import TripCard from "./TripCard.jsx";
+import TripCard from "./TripCard";
 import StartTripCard from "./StartTrip";
 import PropTypes from "prop-types";
 import { UserOutlined } from "@ant-design/icons";
@@ -13,39 +14,37 @@ const { Sider, Content, Header } = Layout;
 const Dashboard = (props) => {
   const [trips, setTrips] = useState([]);
   const [showTrips, setShowTrips] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false); // To manage the modal visibility
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [loading, setLoading] = useState(false); // Add loading state
 
   const handleStartTrip = () => {
     setIsModalVisible(true);
   };
 
   const handleGetTrips = async () => {
+    setLoading(true); // Set loading to true before fetching trips
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/trips/alltrips"
+        `http://localhost:5000/api/trips/worker/${props.userState.work_id}`
       );
       setTrips(response.data);
       setShowTrips(true);
     } catch (error) {
       console.error("Error fetching trips:", error);
+    } finally {
+      setLoading(false); // Set loading to false after fetching trips
     }
   };
 
   const handleFinishTrip = async (tripId) => {
-    // Get the current time as the end_time
-    console.log("trip id is:", tripId);
     const endTime = new Date().toISOString();
-
     try {
-      // Send a PUT request to update the end_time in the backend
       const response = await axios.put(
         `http://localhost:5000/api/trips/updateEndTime/${tripId}`,
         { end_time: endTime }
       );
-
       if (response.status === 200) {
         alert(`Trip ${tripId} finished at ${endTime}`);
-        // Optionally, refresh trips or update UI state here
       } else {
         alert("Failed to finish trip. Please try again.");
       }
@@ -59,20 +58,18 @@ const Dashboard = (props) => {
     setIsModalVisible(false);
   };
 
-  // Fetch new trips every 5 seconds (real-time updates)
   useEffect(() => {
+    handleGetTrips(); // Fetch trips initially
     const interval = setInterval(() => {
       handleGetTrips();
     }, 5000);
-
     return () => clearInterval(interval);
   }, []);
 
-  // Animation for the trip cards
   const fadeIn = useSpring({
     opacity: showTrips ? 1 : 0,
     transform: showTrips ? "translateY(0)" : "translateY(20px)",
-    config: { tension: 200, friction: 25 }, // Smooth and soft animation
+    config: { tension: 200, friction: 25 },
   });
 
   return (
@@ -126,29 +123,32 @@ const Dashboard = (props) => {
             borderRadius: "8px",
           }}
         >
-          <Row gutter={[16, 16]}>
-            {showTrips &&
-              trips.map((trip) => (
-                <Col span={8} key={trip.tripId}>
-                  <animated.div style={fadeIn}>
-                    {" "}
-                    {/* Apply the animation to the trip card */}
-                    <div className="trip-card-container">
-                      <TripCard
-                        trip={trip}
-                        {...(trip.status !== "Completed"
-                          ? { onFinishTrip: handleFinishTrip }
-                          : {})}
-                      />
-                    </div>
-                  </animated.div>
-                </Col>
-              ))}
-          </Row>
+          {loading && trips.length === 0 ? ( // Show spinner only if no trips are loaded yet
+            <div style={{ textAlign: "center", padding: "50px" }}>
+              <Spin size="large" />
+            </div>
+          ) : (
+            <Row gutter={[16, 16]}>
+              {showTrips &&
+                trips.map((trip) => (
+                  <Col span={8} key={trip.tripId}>
+                    <animated.div style={fadeIn}>
+                      <div className="trip-card-container">
+                        <TripCard
+                          trip={trip}
+                          {...(trip.status !== "Completed"
+                            ? { onFinishTrip: handleFinishTrip }
+                            : {})}
+                        />
+                      </div>
+                    </animated.div>
+                  </Col>
+                ))}
+            </Row>
+          )}
         </Content>
       </Layout>
 
-      {/* Modal for Start Trip */}
       <Modal
         title="Start Trip"
         visible={isModalVisible}

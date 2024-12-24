@@ -21,6 +21,7 @@ const StartTripCard = ({ availableRoutes, onStartTrip, userState }) => {
         );
         if (response.status === 200) {
           setBusNumber(response.data.busNumber);
+          console.log("bus number returned are:", response.data.busNumber);
         } else {
           console.error("Failed to fetch bus number:", response.data);
           alert("Could not retrieve the bus number. Please try again.");

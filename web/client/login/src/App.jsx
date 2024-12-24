@@ -12,7 +12,6 @@ import { Layout } from "antd";
 import Navbar from "../component/admin-dashBoard/Nav";
 import Sidebar from "../component/admin-dashBoard/SideBar";
 // import Dashboard from "../component/admin-dashBoard/Dashboard";
-import StartTripCard from "../component/start-trip/StartTrip";
 import Dashboard from "../component/start-trip/DashBoard";
 
 // import axios from "axios";

@@ -89,7 +89,35 @@ export const updateEndTime = async (req, res) => {
       .status(200)
       .json({ message: "Trip finished successfully", trip: result.rows[0] });
   } catch (error) {
-    console.error("Error updating trip:", error);
+    error("Error updating trip:", error);
     res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+// Get trips by worker ID
+export const getTripsByWorkerId = async (req, res) => {
+  const { workerId } = req.params;
+  console.log(workerId);
+  try {
+    // Query to fetch trips for a specific worker ID
+    const result = await pool.query(
+      "SELECT * FROM trips WHERE driver_id = $1",
+      [workerId]
+    );
+
+    // Check if trips exist
+    if (result.rows.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No trips found for the given worker ID" });
+    }
+
+    // Send the retrieved trips as a JSON response
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error("Error fetching trips by worker ID:", error.message);
+    res
+      .status(500)
+      .json({ message: "Failed to fetch trips", error: error.message });
   }
 };
