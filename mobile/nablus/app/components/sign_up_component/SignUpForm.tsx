@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
+  Alert,
 } from "react-native";
 
 interface FormData {
@@ -30,6 +31,10 @@ export default function SignupForm() {
     confirmPassword: "",
     role: "",
   });
+  const [showMessage, setShowMessage] = useState(false);
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState(""); // "success" or "error"
+
   const [fieldValidity, setFieldValidity] = useState<Record<string, boolean>>(
     {}
   );
@@ -124,10 +129,10 @@ export default function SignupForm() {
         phone: formData.phone,
         email: formData.email,
         password: formData.password,
-        role: formData.role.charAt(0).toLowerCase() + formData.role.slice(1), // Replace with the desired role logic if needed
+        role: formData.role.charAt(0).toLowerCase() + formData.role.slice(1),
         work_id: formData.driverId,
       };
-      console.log("the submitted data from mobile is ", payload);
+      console.log("The submitted data from mobile is:", payload);
 
       try {
         const response = await axios.post(
@@ -135,13 +140,41 @@ export default function SignupForm() {
           payload
         );
         console.log("User added successfully:", response.data);
-        // Redirect or show a success message
+
+        // Display success message
+        setMessage("User added successfully!");
+        setMessageType("success");
+        setShowMessage(true);
+
+        // Hide message after 3 seconds
+        setTimeout(() => {
+          setShowMessage(false);
+        }, 3000);
       } catch (error) {
         console.error("Error adding user:", error);
-        // Handle error (e.g., show an error message)
+
+        // Display error message
+        setMessage("Failed to add user. Please try again.");
+        setMessageType("error");
+        setShowMessage(true);
+
+        // Hide message after 3 seconds
+        setTimeout(() => {
+          setShowMessage(false);
+        }, 3000);
       }
     } else {
       console.error("Form validation failed.");
+
+      // Display validation error message
+      setMessage("Form validation failed. Please check your inputs.");
+      setMessageType("error");
+      setShowMessage(true);
+
+      // Hide message after 3 seconds
+      setTimeout(() => {
+        setShowMessage(false);
+      }, 3000);
     }
   };
   return (
@@ -309,6 +342,21 @@ export default function SignupForm() {
       <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
         <Text style={styles.submitButtonText}>Sign Up</Text>
       </TouchableOpacity>
+      {showMessage && (
+        <View
+          style={{
+            position: "absolute",
+            top: 20,
+            left: "20%",
+            transform: [{ translateX: -50 }],
+            padding: 10,
+            backgroundColor: messageType === "success" ? "green" : "red",
+            borderRadius: 5,
+          }}
+        >
+          <Text style={{ color: "white" }}>{message}</Text>
+        </View>
+      )}
     </ScrollView>
   );
 }
