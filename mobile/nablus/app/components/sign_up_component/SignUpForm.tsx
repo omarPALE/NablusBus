@@ -124,7 +124,7 @@ export default function SignupForm() {
         phone: formData.phone,
         email: formData.email,
         password: formData.password,
-        role: formData.role, // Replace with the desired role logic if needed
+        role: formData.role.charAt(0).toLowerCase() + formData.role.slice(1), // Replace with the desired role logic if needed
         work_id: formData.driverId,
       };
       console.log("the submitted data from mobile is ", payload);
@@ -155,6 +155,7 @@ export default function SignupForm() {
           (key) =>
             key !== "userType" &&
             key !== "driverId" &&
+            key !== "role" &&
             key !== "password" &&
             key !== "confirmPassword"
         )
