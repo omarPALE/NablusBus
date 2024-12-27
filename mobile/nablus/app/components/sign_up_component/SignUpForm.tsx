@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import {
   View,
   Text,
@@ -15,7 +16,7 @@ interface FormData {
   email: string;
   password: string;
   confirmPassword: string;
-  userType: string;
+  role: string;
   driverId?: string;
 }
 
@@ -27,7 +28,7 @@ export default function SignupForm() {
     email: "",
     password: "",
     confirmPassword: "",
-    userType: "",
+    role: "",
   });
   const [fieldValidity, setFieldValidity] = useState<Record<string, boolean>>(
     {}
@@ -109,16 +110,45 @@ export default function SignupForm() {
   };
 
   const validateDriverId = (): boolean => {
-    if (formData.userType === "Driver") {
+    if (formData.role === "Driver") {
       const driverId = formData.driverId || "";
       return /^[0-9]{5}$/.test(driverId);
     }
     return true;
   };
 
+  const handleSubmit = async () => {
+    if (Object.values(fieldValidity).every((isValid) => isValid)) {
+      const payload = {
+        username: formData.firstName + formData.lastName,
+        phone: formData.phone,
+        email: formData.email,
+        password: formData.password,
+        role: formData.role, // Replace with the desired role logic if needed
+        work_id: formData.driverId,
+      };
+      console.log("the submitted data from mobile is ", payload);
+
+      try {
+        const response = await axios.post(
+          "http://192.168.1.7:5000/users/add",
+          payload
+        );
+        console.log("User added successfully:", response.data);
+        // Redirect or show a success message
+      } catch (error) {
+        console.error("Error adding user:", error);
+        // Handle error (e.g., show an error message)
+      }
+    } else {
+      console.error("Form validation failed.");
+    }
+  };
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Sign Up</Text>
+      <Text style={styles.title} onPress={handleSubmit}>
+        Sign Up
+      </Text>
 
       {Object.keys(formData)
         .filter(
@@ -170,16 +200,16 @@ export default function SignupForm() {
           {["Passenger", "Driver", "Administrator"].map((type) => (
             <TouchableOpacity
               key={type}
-              onPress={() => handleInputChange("userType", type)}
+              onPress={() => handleInputChange("role", type)}
               style={[
                 styles.radioButton,
-                formData.userType === type && styles.radioButtonSelected,
+                formData.role === type && styles.radioButtonSelected,
               ]}
             >
               <Text
                 style={[
                   styles.radioButtonText,
-                  formData.userType === type && styles.radioButtonTextSelected,
+                  formData.role === type && styles.radioButtonTextSelected,
                 ]}
               >
                 {type}
@@ -189,7 +219,7 @@ export default function SignupForm() {
         </View>
       </View>
 
-      {formData.userType === "Driver" && (
+      {formData.role === "Driver" && (
         <View
           style={[
             styles.inputContainer,
@@ -275,7 +305,7 @@ export default function SignupForm() {
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity style={styles.submitButton}>
+      <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
         <Text style={styles.submitButtonText}>Sign Up</Text>
       </TouchableOpacity>
     </ScrollView>

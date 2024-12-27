@@ -206,7 +206,7 @@ const SignupForm = (props) => {
           ...props.userState,
           loggedIn: true,
         }));
-
+        console.log("the data from web site is :", formData);
         const response = await axios.post(
           "http://localhost:5000/users/add",
           formData

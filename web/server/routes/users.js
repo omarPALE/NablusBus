@@ -28,7 +28,7 @@ router.post("/add", async (req, res) => {
     work_id,
     role = "passenger",
   } = req.body;
-
+  console.log("the data from mobile is :", req.body);
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const age = Math.floor(Math.random() * 100) + 18; // Generate a random age between 18 and 100
