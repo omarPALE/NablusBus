@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
+import { MaterialIcons } from "@expo/vector-icons"; // For icons
+import axios from "axios";
 import {
   View,
   Text,
@@ -9,8 +12,6 @@ import {
   Animated,
   Modal,
 } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons"; // For icons
-import axios from "axios";
 
 export default function SignupForm() {
   const [formData, setFormData] = useState({
@@ -30,9 +31,9 @@ export default function SignupForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [fadeAnim] = useState(new Animated.Value(0)); // Animation for password toggle
-
   const [fieldValidity, setFieldValidity] = useState({});
   const [focusedFields, setFocusedFields] = useState({});
+  const navigation = useNavigation();
 
   const handleInputChange = (field, value) => {
     setFormData({ ...formData, [field]: value });
@@ -163,6 +164,7 @@ export default function SignupForm() {
         setTimeout(() => {
           setShowMessage(false);
         }, 3000);
+        navigation.navigate("SignIn");
       } catch (error) {
         // Display error message
         setMessage("Failed to add user. Please try again.");
