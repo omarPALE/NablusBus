@@ -9,9 +9,18 @@ import {
   Switch,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+
+// Define the route types for navigation
+type RootStackParamList = {
+  SignIn: undefined;
+  SignUp: undefined;
+};
 
 export default function SignInForm() {
-  const navigation = useNavigation();
+  // Type navigation for better type safety
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -27,8 +36,8 @@ export default function SignInForm() {
   });
   const [showPassword, setShowPassword] = useState(false);
 
+  // Validation Helpers
   const isRequired = (value: string): boolean => value.trim().length > 0;
-
   const isEmailValid = (email: string): boolean => {
     const re = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
     return re.test(email);
@@ -43,6 +52,7 @@ export default function SignInForm() {
     return true;
   };
 
+  // Input Handlers
   const handleInputChange = (field: "email" | "password", value: string) => {
     setFormData({ ...formData, [field]: value });
   };
@@ -61,13 +71,14 @@ export default function SignInForm() {
     handleFieldBlur(field);
   };
 
+  // Submit Handler
   const handleSubmit = () => {
     const emailValid = validateField("email");
     const passwordValid = validateField("password");
 
     if (emailValid && passwordValid) {
       console.log("Sign In Successful", formData);
-      // Handle sign-in logic here
+      // Implement sign-in logic here
     } else {
       console.log("Validation Failed");
     }
@@ -77,41 +88,39 @@ export default function SignInForm() {
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Sign In</Text>
 
-      {Object.entries({ email: "Email", password: "Password" }).map(
-        ([key, label]) => (
-          <View key={key} style={styles.inputContainer}>
+      {["email", "password"].map((field) => (
+        <View key={field} style={styles.inputContainer}>
+          <Text
+            style={[
+              styles.placeholder,
+              focusStates[field as "email" | "password"]
+                ? styles.placeholderFocused
+                : {},
+            ]}
+          >
+            {field.charAt(0).toUpperCase() + field.slice(1)}
+          </Text>
+          <TextInput
+            placeholder=""
+            value={formData[field as "email" | "password"]}
+            onFocus={() => handleFocus(field as "email" | "password")}
+            onBlur={() => handleBlur(field as "email" | "password")}
+            onChangeText={(value) =>
+              handleInputChange(field as "email" | "password", value)
+            }
+            style={styles.input}
+            secureTextEntry={field === "password" && !showPassword}
+          />
+          {field === "password" && (
             <Text
-              style={[
-                styles.placeholder,
-                focusStates[key as "email" | "password"]
-                  ? styles.placeholderFocused
-                  : {},
-              ]}
+              style={styles.showPassword}
+              onPress={() => setShowPassword(!showPassword)}
             >
-              {label}
+              {showPassword ? "🙈" : "👁️"}
             </Text>
-            <TextInput
-              placeholder=""
-              value={formData[key as "email" | "password"]}
-              onFocus={() => handleFocus(key as "email" | "password")}
-              onBlur={() => handleBlur(key as "email" | "password")}
-              onChangeText={(value) =>
-                handleInputChange(key as "email" | "password", value)
-              }
-              style={styles.input}
-              secureTextEntry={key === "password" && !showPassword}
-            />
-            {key === "password" && (
-              <Text
-                style={styles.showPassword}
-                onPress={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? "🙈" : "👁️"}
-              </Text>
-            )}
-          </View>
-        )
-      )}
+          )}
+        </View>
+      ))}
 
       <View style={styles.checkboxContainer}>
         <Switch
@@ -161,24 +170,22 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 10,
     top: "50%",
-    transform: [{ translateY: -40 }],
+    transform: [{ translateY: -10 }],
     color: "#aaa",
     fontSize: 16,
   },
   placeholderFocused: {
     top: -10,
-    transform: [{ translateY: 0 }],
     fontSize: 12,
     color: "#333",
   },
   showPassword: {
     position: "absolute",
     right: 10,
-    top: 45,
-    transform: [{ translateY: -30 }],
+    top: "50%",
     fontSize: 16,
     color: "#007BFF",
-    cursor: "pointer",
+    transform: [{ translateY: -10 }],
   },
   checkboxContainer: {
     flexDirection: "row",
