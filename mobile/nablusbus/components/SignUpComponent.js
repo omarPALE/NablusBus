@@ -7,9 +7,11 @@ import {
   StyleSheet,
   ScrollView,
   Animated,
+  Modal,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons"; // For icons
 import axios from "axios";
+
 export default function SignupForm() {
   const [formData, setFormData] = useState({
     firstName: "",
@@ -144,7 +146,6 @@ export default function SignupForm() {
         role: formData.role.charAt(0).toLowerCase() + formData.role.slice(1),
         work_id: formData.driverId || null, // Include driverId only if applicable
       };
-      console.log("The submitted data from mobile is:", payload);
 
       try {
         // Send data to the server
@@ -152,7 +153,6 @@ export default function SignupForm() {
           "http://192.168.1.7:5000/users/add",
           payload
         );
-        console.log("User added successfully:", response.data);
 
         // Display success message
         setMessage("User added successfully!");
@@ -164,8 +164,6 @@ export default function SignupForm() {
           setShowMessage(false);
         }, 3000);
       } catch (error) {
-        console.error("Error adding user:", error);
-
         // Display error message
         setMessage("Failed to add user. Please try again.");
         setMessageType("error");
@@ -177,8 +175,6 @@ export default function SignupForm() {
         }, 3000);
       }
     } else {
-      console.error("Form validation failed.");
-
       // Display validation error message
       setMessage("Form validation failed. Please check your inputs.");
       setMessageType("error");
@@ -193,6 +189,32 @@ export default function SignupForm() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      <Modal
+        animationType="fade" // Add a fade animation
+        transparent={true} // Ensure the modal overlays the existing content
+        visible={showMessage} // Controlled by showMessage state
+        onRequestClose={() => setShowMessage(false)} // Handle hardware back button on Android
+      >
+        <View style={styles.modalOverlay}>
+          <View
+            style={[
+              styles.modalContainer,
+              messageType === "success"
+                ? styles.successBackground
+                : styles.errorBackground,
+            ]}
+          >
+            <Text style={styles.modalText}>{message}</Text>
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={() => setShowMessage(false)} // Close the modal
+            >
+              <Text style={styles.modalButtonText}>OK</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
       <Text style={styles.title}>Sign Up</Text>
 
       {/* Render Input Fields */}
@@ -437,5 +459,46 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 18,
     fontWeight: "bold",
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // Dimmed background
+  },
+  modalContainer: {
+    width: "80%",
+    padding: 20,
+    borderRadius: 10,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5, // For Android shadow
+  },
+  successBackground: {
+    backgroundColor: "green",
+  },
+  errorBackground: {
+    backgroundColor: "red",
+  },
+  modalText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "white",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  modalButton: {
+    backgroundColor: "white",
+    padding: 10,
+    borderRadius: 5,
+    alignItems: "center",
+  },
+  modalButtonText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "green",
   },
 });
