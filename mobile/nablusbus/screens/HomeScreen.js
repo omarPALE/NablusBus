@@ -15,6 +15,16 @@ const HomeScreen = ({ navigation }) => {
         onPress={() => navigation.navigate("SignUp")}
         color="#ff6000"
       />
+      <Button
+        title="Subscription"
+        onPress={() => navigation.navigate("Subscription")}
+        color="#ff6000"
+      />
+      <Button
+        title="My Ticket"
+        onPress={() => navigation.navigate("MyTicket")}
+        color="#ff6000"
+      />
     </View>
   );
 };
