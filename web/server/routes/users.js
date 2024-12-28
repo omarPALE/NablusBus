@@ -21,22 +21,23 @@ router.get("/", async (req, res) => {
 //add user
 router.post("/add", async (req, res) => {
   const {
-    firstName,
-    lastName,
+    username,
     phone,
     email,
     password,
+    work_id,
     role = "passenger",
   } = req.body;
+  console.log("the data from mobile is :", req.body);
   const hashedPassword = await bcrypt.hash(password, 10);
-  const username = firstName + " " + lastName;
 
   const age = Math.floor(Math.random() * 100) + 18; // Generate a random age between 18 and 100
   try {
     const result = await pool.query(
-      "INSERT INTO users (username, email, password, role, age) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-      [username, email, hashedPassword, role, age]
+      "INSERT INTO users (username, email, password, role, age, work_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
+      [username, email, hashedPassword, role, age, work_id]
     );
+
     res.status(201).json(result.rows[0]); // Respond with the inserted user
   } catch (err) {
     if (err.code === "23505") {
@@ -81,7 +82,7 @@ router.post("/email", async (req, res) => {
 
   try {
     const result = await pool.query(
-      "SELECT email, password, username, id FROM users WHERE email = $1",
+      "SELECT email, password, username, role, id, work_id FROM users WHERE email = $1",
       [email]
     );
 
@@ -90,7 +91,7 @@ router.post("/email", async (req, res) => {
         password,
         result.rows[0].password
       );
-
+      console.log("hi from back end ", result.rows[0]);
       if (isPasswordValid) {
         console.log("from data base response on email " + result.rows[0].id);
         return res.status(200).json({
@@ -98,6 +99,8 @@ router.post("/email", async (req, res) => {
           email: result.rows[0].email,
           username: result.rows[0].username,
           id: result.rows[0].id,
+          role: result.rows[0].role,
+          work_id: result.rows[0].work_id,
         });
       } else {
         return res.status(401).json({ message: "Invalid password" });

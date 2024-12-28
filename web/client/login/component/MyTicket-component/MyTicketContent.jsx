@@ -1,33 +1,37 @@
+import { useState, useEffect } from "react";
+import axios from "axios";
 import TicketSection from "../Subscription-component/Ticket-section"; // Import the reusable TicketSection component
 import "./TicketManagement.css";
 
 const TicketManagement = () => {
-  const tickets = [
-    {
-      id: 1,
-      departure: "Chicago",
-      destination: "Madison",
-      classType: "Standard",
-      seatNumber: "16B",
-      busNumber: "A-12345",
-      ticketPrice: "$7",
-      departureTime: "10:00 AM",
-      date: "September 20, 2024",
-      status: "Completed",
-    },
-    {
-      id: 2,
-      departure: "Chicago",
-      destination: "Madison",
-      classType: "Premium",
-      seatNumber: "12A",
-      busNumber: "B-54321",
-      ticketPrice: "$10",
-      departureTime: "2:00 PM",
-      date: "September 21, 2024",
-      status: "Upcoming",
-    },
-  ];
+  const [tickets, setTickets] = useState([]); // State to hold tickets data
+  const [loading, setLoading] = useState(true); // State to handle loading
+  const [error, setError] = useState(""); // State to handle errors
+  const [isTicketPage] = useState(true); // Boolean flag to indicate if it's a ticket page
+
+  // Fetch ticket data from the database
+  useEffect(() => {
+    const fetchTickets = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/tickets");
+        setTickets(response.data); // Assuming the backend returns a list of tickets
+        setLoading(false);
+      } catch (err) {
+        setError("Failed to fetch tickets. Please try again later." + err);
+        setLoading(false);
+      }
+    };
+
+    fetchTickets();
+  }, []); // Empty dependency array ensures this runs only once
+
+  if (loading) {
+    return <p>Loading tickets...</p>;
+  }
+
+  if (error) {
+    return <p className="error-message">{error}</p>;
+  }
 
   return (
     <div className="ticket-management-container">
@@ -35,15 +39,19 @@ const TicketManagement = () => {
       <div className="ticket-list">
         {tickets.map((ticket) => (
           <TicketSection
-            key={ticket.id}
-            departure={ticket.departure}
-            destination={ticket.destination}
-            classType={ticket.classType}
-            seatNumber={ticket.seatNumber}
-            busNumber={ticket.busNumber}
-            ticketPrice={ticket.ticketPrice}
-            departureTime={ticket.departureTime}
-            date={ticket.date}
+            key={ticket.id} // Use ticket.id for unique key
+            ticket={ticket} // Pass individual ticket object
+            date={
+              ticket.created_at
+                ? new Date(ticket.created_at).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })
+                : "N/A"
+            }
+            status={ticket.status || "N/A"} // Status of the ticket
+            isMyTicket={isTicketPage} // Flag to determine if the ticket belongs to the user
           />
         ))}
       </div>

@@ -1,0 +1,47 @@
+/* styles/OverviewMetrics.css */
+
+.metrics-container {
+  margin: 20px 0;
+}
+
+.metric-card {
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
+}
+
+.metric-card:hover {
+  transform: translateY(-5px);
+}
+
+.metric-title {
+  font-size: 16px;
+  color: #000;
+}
+
+.metric-value {
+  font-size: 24px;
+  font-weight: bold;
+  color: #1890ff;
+}
+
+.details-container {
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+  transform: translateY(-10px);
+  pointer-events: none;
+}
+
+.details-container.fade-in {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.details-container.fade-out {
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+}

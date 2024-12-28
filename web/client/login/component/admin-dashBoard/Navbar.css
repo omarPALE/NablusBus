@@ -1,0 +1,57 @@
+/* styles/Navbar.css */
+
+.navbar {
+  background-color: #ff6600; /* Dark blue */
+  color: black;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: black;
+}
+
+.navbar-right {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-right a {
+  color: black;
+  margin-left: 15px;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.navbar-right a:hover {
+  color: #f2dfdf !important;
+}
+
+.navbar {
+  background: #ff6600;
+  color: black;
+  padding: 0px 20px;
+  margin-top: 23px;
+}
+
+.ant-menu-horizontal > .ant-menu-item:hover,
+.ant-menu-horizontal > .ant-menu-item-active,
+.ant-menu-horizontal > .ant-menu-item-selected {
+  color: #f2dfdf !important; /* Ensure text remains white */
+  background: transparent !important; /* Remove any background changes */
+}
+
+.ant-menu-item a {
+  color: #f2dfdf !important; /* Set text color for links */
+  text-decoration: underline !important; /* Remove the underline */
+}
+
+.ant-menu-item a:hover {
+  color: #f2dfdf !important; /* Maintain white color on hover */
+  text-decoration: underline !important; /* Prevent underline on hover */
+}

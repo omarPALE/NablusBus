@@ -1,0 +1,89 @@
+/* styles/Sidebar.css */
+
+.ant-layout-sider {
+  background-color: #ff6600; /* Dark blue */
+}
+
+.sidebar-menu {
+  height: 100%;
+}
+
+.sidebar-menu-item {
+  font-size: 16px;
+  font-weight: 500;
+  color: #000;
+  padding: 10px 15px;
+}
+
+.sidebar-menu-item:hover {
+  background-color: #ff6600;
+}
+
+.sidebar-menu-item a {
+  color: black;
+  text-decoration: none;
+}
+
+.Menu {
+  background-color: #ff6600;
+  color: black;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 10px 15px;
+}
+
+.Menu:hover {
+  background-color: #ff6600;
+}
+
+.MenuItem {
+  color: black !important;
+}
+
+.MenuItem a {
+  color: black !important; /* Ensures the links also inherit the color */
+}
+
+.MenuItem:hover {
+  background-color: rgba(255, 255, 255, 0.1); /* Optional: Add a hover effect */
+}
+.ant-layout-sider .ant-layout-sider-trigger {
+  background-color: rgba(255, 255, 255, 0.1); /* Optional: Add a hover effect */
+}
+
+Menu.Item {
+  color: black !important; /* Ensures the links also inherit the color */
+}
+
+/* Add this to Sidebar.css */
+
+/* Transition effect for menu items */
+.sidebar-menu .ant-menu-item {
+  transition: all 0.3s ease;
+}
+
+/* Hover effect */
+.sidebar-menu .ant-menu-item:hover {
+  background-color: #ff7733; /* Highlight on hover */
+  transform: scale(1.05); /* Slight scaling */
+}
+
+/* Active/selected item */
+.sidebar-menu .ant-menu-item-selected {
+  background-color: #e64a19; /* Change background on selection */
+  transform: scale(1.1); /* Scale up the selected item */
+}
+
+/* Smooth transition effect */
+.sidebar-menu .ant-menu-item {
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+/* Optional: Icon size animation */
+.sidebar-menu .ant-menu-item-icon {
+  transition: transform 0.3s ease;
+}
+
+.sidebar-menu .ant-menu-item-selected .ant-menu-item-icon {
+  transform: scale(1.2); /* Scale icon on active state */
+}

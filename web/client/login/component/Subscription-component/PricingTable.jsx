@@ -8,8 +8,7 @@ const PricingTable = (props) => {
   const ticketRef = useRef(null);
   const pricingRef = useRef(null);
   const navigate = useNavigate();
-
-  const [isPopupOpen, setIsPopupOpen] = useState(true);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isMsgPopupOpen, setIsMsgPopupOpen] = useState(false);
 
   const [ticketData, setTicketData] = useState({
@@ -63,7 +62,7 @@ const PricingTable = (props) => {
 
   useEffect(() => {
     const observerOptions = {
-      threshold: 0.3, // 50% of the element must be visible to trigger the animation
+      threshold: 0.4, // 50% of the element must be visible to trigger the animation
       rootMargin: "0px 0px -100px 0px", // Adds an offset to delay animation triggering
     };
 
@@ -113,7 +112,6 @@ const PricingTable = (props) => {
       )
     );
   };
-
   return (
     <div id="generic_price_table">
       <section className="pricing-section" ref={pricingRef}>
@@ -214,14 +212,22 @@ const PricingTable = (props) => {
       </section>
 
       {/* Render the PopUp component */}
-      <TicketPopUp
-        isPopupOpen={isPopupOpen}
-        setIsPopupOpen={setIsPopupOpen}
-        ticketData={ticketData}
-        userState={props.userState}
-        setTicketData={setTicketData}
-        pricingData={pricingData}
-      />
+      {
+        // props.qrCode ? (
+        <TicketPopUp
+          isPopupOpen={isPopupOpen}
+          setIsPopupOpen={setIsPopupOpen}
+          ticketData={ticketData}
+          userState={props.userState}
+          setTicketData={setTicketData}
+          pricingData={pricingData}
+          qr_code={props.qrCode}
+          setQRcode={props.setQRcode}
+        />
+        // ) : (
+        // <p>Loading QR Code...</p>
+        // ) // Show a loading message until qrCode is defined)
+      }
 
       {isMsgPopupOpen && (
         <div className="popup-overlay">
@@ -236,6 +242,8 @@ const PricingTable = (props) => {
 
 PricingTable.propTypes = {
   userState: PropType.object,
+  qrCode: PropType.string,
+  setQRcode: PropType.func,
 };
 
 export default PricingTable;

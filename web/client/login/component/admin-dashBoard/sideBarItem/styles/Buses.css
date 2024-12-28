@@ -1,0 +1,116 @@
+/* Container for the entire Buses component */
+.buses-container {
+  padding: 20px;
+}
+
+/* Header styles */
+.buses-header {
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #333; /* Customize the color */
+}
+
+/* Description text */
+.buses-description {
+  margin-bottom: 20px;
+  font-size: 16px;
+  color: #555; /* Slightly lighter color for description */
+}
+
+/* Cards container */
+.buses-cards {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+/* Individual card styling */
+.buses-card {
+  width: 300px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid #ddd; /* Subtle border for customization */
+  border-radius: 8px; /* Rounded corners */
+  background-color: #fff; /* White background */
+}
+
+.buses-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Add shadow on hover */
+}
+
+/* Card title */
+.buses-card .ant-card-head-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #ff6000; /* Use a theme color for the title */
+}
+
+/* Card content */
+.buses-card p {
+  font-size: 14px;
+  color: #666; /* Subtle text color for content */
+  margin: 0;
+}
+
+/* Button inside cards */
+.buses-card .ant-btn-primary {
+  background-color: #ff6000;
+  border-color: #ff6000;
+}
+
+.buses-card .ant-btn-primary:hover {
+  background-color: #e05500; /* Slightly darker shade on hover */
+  border-color: #e05500;
+}
+.buses-container {
+  padding: 20px;
+}
+
+.buses-header {
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+}
+
+.buses-description {
+  margin-bottom: 20px;
+  font-size: 16px;
+  color: #555;
+}
+
+.buses-cards {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.buses-card {
+  width: 400px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.buses-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.buses-card .ant-card-head-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #ff6000;
+}
+
+.buses-card .ant-btn-primary {
+  background-color: #ff6000;
+  border-color: #ff6000;
+}
+
+.buses-card .ant-btn-primary:hover {
+  background-color: #e05500;
+  border-color: #e05500;
+}

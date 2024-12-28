@@ -1,12 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types"; // Import PropTypes
 import QRCode from "react-qr-code"; // Using react-qr-code
+// import axios from "axios";
 import "./pop-styles.css";
 const TicketSection = (props) => {
   const ticketRef = useRef(null);
   const [isPopupVisible, setPopupVisible] = useState(false);
+
   const [ticketInfo] = useState({
-    departure: "Chicago",
+    departure: "Downtown",
     destination: "Madison",
     class: "Standard",
     seatNumber: "16B",
@@ -14,6 +16,7 @@ const TicketSection = (props) => {
     ticketPrice: "$7",
     departureTime: "10:00 AM",
     date: "September 20, 2024",
+    qr_code: "", // Initialize qr_code as an empty string
   });
 
   useEffect(() => {
@@ -55,37 +58,38 @@ const TicketSection = (props) => {
             <div className="ticket-info">
               <p>
                 <strong>Departure:</strong>{" "}
-                {ticketInfo.departure || props.departure}
+                {props.ticket.departure || ticketInfo?.departure}
               </p>
               <p>
                 <strong>Destination:</strong>{" "}
-                {ticketInfo.destination || props.destination}
+                {props.ticket?.destination || ticketInfo.destination}
               </p>
               <p>
-                <strong>Class:</strong> {ticketInfo.class || props.classType}
+                <strong>Class:</strong>{" "}
+                {props.ticket?.model || ticketInfo.class}
               </p>
             </div>
             <div className="ticket-info">
               <p>
                 <strong>Seat Number:</strong>{" "}
-                {ticketInfo.seatNumber || props.seatNumber}
+                {props.ticket?.seatNumber || ticketInfo.seatNumber}
               </p>
               <p>
                 <strong>Bus Number:</strong>{" "}
-                {ticketInfo.busNumber || props.busNumber}
+                {props.ticket?.busNumber || ticketInfo.busNumber}
               </p>
               <p>
                 <strong>Ticket Price:</strong>{" "}
-                {ticketInfo.ticketPrice || props.ticketPrice}
+                {props.ticket?.price || ticketInfo.ticketPrice}
               </p>
             </div>
             <div className="ticket-info">
               <p>
                 <strong>Departure Time:</strong>{" "}
-                {ticketInfo.departureTime || props.departureTime}
+                {props.ticket.departureTime || ticketInfo.departureTime}
               </p>
               <p>
-                <strong>Date:</strong> {ticketInfo.date || props.date}
+                <strong>Date:</strong> {props.date || ticketInfo.date}
               </p>
             </div>
           </div>
@@ -105,10 +109,12 @@ const TicketSection = (props) => {
               Close
             </button>
             <h3>QR Code for Ticket</h3>
-            <QRCode
-              value={JSON.stringify(ticketInfo)} // QR Code data
-              size={200} // Size of the QR Code
-            />
+            {
+              <QRCode
+                value={props.ticket.qr_code} // QR Code dat
+                size={200} // Size of the QR Code
+              />
+            }
             <p>
               <strong>Trip Info:</strong> {ticketInfo.departure} to{" "}
               {ticketInfo.destination}, Seat: {ticketInfo.seatNumber}
@@ -122,13 +128,12 @@ const TicketSection = (props) => {
 
 // Define PropTypes for the component
 TicketSection.propTypes = {
-  departure: PropTypes.string.isRequired,
-  destination: PropTypes.string.isRequired,
-  classType: PropTypes.string.isRequired,
-  seatNumber: PropTypes.string.isRequired,
-  busNumber: PropTypes.string.isRequired,
-  ticketPrice: PropTypes.string.isRequired,
-  departureTime: PropTypes.string.isRequired,
+  setQRcode: PropTypes.func.isRequired, // Function to set QR code value
+  key: PropTypes.string.isRequired, // Unique key for the ticket
+  ticketID: PropTypes.string.isRequired, // Unique key for the ticket
+  isMyTicket: PropTypes.bool.isRequired, // Flag to show or hide the QR code section
   date: PropTypes.string.isRequired,
 };
+
+TicketSection.propTypes = { ticket: PropTypes.object.isRequired };
 export default TicketSection;
