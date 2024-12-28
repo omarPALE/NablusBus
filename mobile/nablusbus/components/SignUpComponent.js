@@ -189,185 +189,187 @@ export default function SignupForm() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Modal
-        animationType="fade" // Add a fade animation
-        transparent={true} // Ensure the modal overlays the existing content
-        visible={showMessage} // Controlled by showMessage state
-        onRequestClose={() => setShowMessage(false)} // Handle hardware back button on Android
-      >
-        <View style={styles.modalOverlay}>
-          <View
-            style={[
-              styles.modalContainer,
-              messageType === "success"
-                ? styles.successBackground
-                : styles.errorBackground,
-            ]}
-          >
-            <Text style={styles.modalText}>{message}</Text>
-            <TouchableOpacity
-              style={styles.modalButton}
-              onPress={() => setShowMessage(false)} // Close the modal
-            >
-              <Text style={styles.modalButtonText}>OK</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-
-      <Text style={styles.title}>Sign Up</Text>
-
-      {/* Render Input Fields */}
-      {["firstName", "lastName", "phone", "email"].map((key) => (
-        <View
-          key={key}
-          style={[
-            styles.inputContainer,
-            fieldValidity[key] === false
-              ? styles.invalidInput
-              : fieldValidity[key] === true
-              ? styles.validInput
-              : {},
-          ]}
+      <View style={styles.card}>
+        <Modal
+          animationType="fade" // Add a fade animation
+          transparent={true} // Ensure the modal overlays the existing content
+          visible={showMessage} // Controlled by showMessage state
+          onRequestClose={() => setShowMessage(false)} // Handle hardware back button on Android
         >
-          <Text
-            style={[
-              styles.placeholder,
-              focusedFields[key] || formData[key]
-                ? styles.placeholderFocused
-                : {},
-            ]}
-          >
-            {key
-              .replace(/([A-Z])/g, " $1")
-              .replace(/^./, (str) => str.toUpperCase())}
-          </Text>
-          <TextInput
-            value={formData[key]}
-            onChangeText={(value) => handleInputChange(key, value)}
-            onFocus={() => handleFocus(key)}
-            onBlur={() => handleBlur(key)}
-            style={[styles.input]}
-          />
-        </View>
-      ))}
-
-      {/* User Type Field */}
-      <View style={styles.userTypeContainer}>
-        <Text style={styles.userTypeLabel}>Select User Type:</Text>
-        <View style={styles.radioGroup}>
-          {["Passenger", "Driver", "Admin"].map((type) => (
-            <TouchableOpacity
-              key={type}
-              onPress={() => handleUserTypeChange(type)}
+          <View style={styles.modalOverlay}>
+            <View
               style={[
-                styles.radioButton,
-                formData.role === type && styles.radioButtonSelected,
+                styles.modalContainer,
+                messageType === "success"
+                  ? styles.successBackground
+                  : styles.errorBackground,
               ]}
             >
-              <Text
+              <Text style={styles.modalText}>{message}</Text>
+              <TouchableOpacity
+                style={styles.modalButton}
+                onPress={() => setShowMessage(false)} // Close the modal
+              >
+                <Text style={styles.modalButtonText}>OK</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+
+        <Text style={styles.title}>Sign Up</Text>
+
+        {/* Render Input Fields */}
+        {["firstName", "lastName", "phone", "email"].map((key) => (
+          <View
+            key={key}
+            style={[
+              styles.inputContainer,
+              fieldValidity[key] === false
+                ? styles.invalidInput
+                : fieldValidity[key] === true
+                ? styles.validInput
+                : {},
+            ]}
+          >
+            <Text
+              style={[
+                styles.placeholder,
+                focusedFields[key] || formData[key]
+                  ? styles.placeholderFocused
+                  : {},
+              ]}
+            >
+              {key
+                .replace(/([A-Z])/g, " $1")
+                .replace(/^./, (str) => str.toUpperCase())}
+            </Text>
+            <TextInput
+              value={formData[key]}
+              onChangeText={(value) => handleInputChange(key, value)}
+              onFocus={() => handleFocus(key)}
+              onBlur={() => handleBlur(key)}
+              style={[styles.input]}
+            />
+          </View>
+        ))}
+
+        {/* User Type Field */}
+        <View style={styles.userTypeContainer}>
+          <Text style={styles.userTypeLabel}>Select User Type:</Text>
+          <View style={styles.radioGroup}>
+            {["Passenger", "Driver", "Admin"].map((type) => (
+              <TouchableOpacity
+                key={type}
+                onPress={() => handleUserTypeChange(type)}
                 style={[
-                  styles.radioText,
-                  formData.role === type && styles.radioTextSelected,
+                  styles.radioButton,
+                  formData.role === type && styles.radioButtonSelected,
                 ]}
               >
-                {type}
-              </Text>
-            </TouchableOpacity>
-          ))}
+                <Text
+                  style={[
+                    styles.radioText,
+                    formData.role === type && styles.radioTextSelected,
+                  ]}
+                >
+                  {type}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
-      </View>
 
-      {/* Driver ID Field */}
-      {formData.role === "Driver" && (
-        <View
-          style={[
-            styles.inputContainer,
-            fieldValidity.driverId === false
-              ? styles.invalidInput
-              : fieldValidity.driverId === true
-              ? styles.validInput
-              : {},
-          ]}
-        >
-          <Text
+        {/* Driver ID Field */}
+        {formData.role === "Driver" && (
+          <View
             style={[
-              styles.placeholder,
-              focusedFields.driverId || formData.driverId
-                ? styles.placeholderFocused
+              styles.inputContainer,
+              fieldValidity.driverId === false
+                ? styles.invalidInput
+                : fieldValidity.driverId === true
+                ? styles.validInput
                 : {},
             ]}
           >
-            Driver ID (5 digits)
-          </Text>
-          <TextInput
-            value={formData.driverId}
-            onChangeText={(value) => handleInputChange("driverId", value)}
-            onFocus={() => handleFocus("driverId")}
-            onBlur={() => handleBlur("driverId")}
-            style={styles.input}
-            keyboardType="numeric"
-          />
-        </View>
-      )}
+            <Text
+              style={[
+                styles.placeholder,
+                focusedFields.driverId || formData.driverId
+                  ? styles.placeholderFocused
+                  : {},
+              ]}
+            >
+              Driver ID (5 digits)
+            </Text>
+            <TextInput
+              value={formData.driverId}
+              onChangeText={(value) => handleInputChange("driverId", value)}
+              onFocus={() => handleFocus("driverId")}
+              onBlur={() => handleBlur("driverId")}
+              style={styles.input}
+              keyboardType="numeric"
+            />
+          </View>
+        )}
 
-      {/* Password Fields */}
-      {["password", "confirmPassword"].map((key, index) => (
-        <View
-          key={key}
-          style={[
-            styles.inputContainer,
-            fieldValidity[key] === false
-              ? styles.invalidInput
-              : fieldValidity[key] === true
-              ? styles.validInput
-              : {},
-          ]}
-        >
-          <Text
+        {/* Password Fields */}
+        {["password", "confirmPassword"].map((key, index) => (
+          <View
+            key={key}
             style={[
-              styles.placeholder,
-              focusedFields[key] || formData[key]
-                ? styles.placeholderFocused
+              styles.inputContainer,
+              fieldValidity[key] === false
+                ? styles.invalidInput
+                : fieldValidity[key] === true
+                ? styles.validInput
                 : {},
             ]}
           >
-            {key === "password" ? "Password" : "Confirm Password"}
-          </Text>
-          <TextInput
-            value={formData[key]}
-            onChangeText={(value) => handleInputChange(key, value)}
-            onFocus={() => handleFocus(key)}
-            onBlur={() => handleBlur(key)}
-            style={[styles.input]}
-            secureTextEntry={
-              key === "password" ? !showPassword : !showConfirmPassword
-            }
-          />
-          <TouchableOpacity
-            onPress={() => togglePasswordVisibility(key)}
-            style={styles.showPasswordIcon}
-          >
-            <MaterialIcons
-              name={
-                key === "password"
-                  ? showPassword
+            <Text
+              style={[
+                styles.placeholder,
+                focusedFields[key] || formData[key]
+                  ? styles.placeholderFocused
+                  : {},
+              ]}
+            >
+              {key === "password" ? "Password" : "Confirm Password"}
+            </Text>
+            <TextInput
+              value={formData[key]}
+              onChangeText={(value) => handleInputChange(key, value)}
+              onFocus={() => handleFocus(key)}
+              onBlur={() => handleBlur(key)}
+              style={[styles.input]}
+              secureTextEntry={
+                key === "password" ? !showPassword : !showConfirmPassword
+              }
+            />
+            <TouchableOpacity
+              onPress={() => togglePasswordVisibility(key)}
+              style={styles.showPasswordIcon}
+            >
+              <MaterialIcons
+                name={
+                  key === "password"
+                    ? showPassword
+                      ? "visibility"
+                      : "visibility-off"
+                    : showConfirmPassword
                     ? "visibility"
                     : "visibility-off"
-                  : showConfirmPassword
-                  ? "visibility"
-                  : "visibility-off"
-              }
-              size={20}
-              color="#aaa"
-            />
-          </TouchableOpacity>
-        </View>
-      ))}
+                }
+                size={20}
+                color="#aaa"
+              />
+            </TouchableOpacity>
+          </View>
+        ))}
 
-      <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-        <Text style={styles.submitButtonText}>Sign Up</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+          <Text style={styles.submitButtonText}>Sign Up</Text>
+        </TouchableOpacity>
+      </View>
     </ScrollView>
   );
 }
@@ -375,8 +377,21 @@ export default function SignupForm() {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    padding: 20,
     backgroundColor: "#f9f9f9",
+    justifyContent: "center",
+    paddingVertical: 30,
+  },
+  card: {
+    backgroundColor: "#fff", // Card background
+    borderRadius: 10, // Rounded corners
+    padding: 20, // Inner padding
+    shadowColor: "#000", // Shadow color
+    shadowOffset: { width: 0, height: 2 }, // Shadow offset
+    shadowOpacity: 0.25, // Shadow opacity
+    shadowRadius: 3.84, // Shadow radius
+    elevation: 5, // Shadow for Android
+    width: "90%", // Card width
+    alignSelf: "center", // Center card
   },
   title: {
     fontSize: 24,
@@ -389,17 +404,17 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 8,
     position: "relative",
-    height: 60,
+    height: 45,
   },
   input: {
     padding: 15,
-    fontSize: 18,
+    fontSize: 14,
   },
   placeholder: {
     position: "absolute",
     left: 15,
-    top: 18,
-    fontSize: 16,
+    top: 14,
+    fontSize: 14,
     color: "#aaa",
   },
   placeholderFocused: {
