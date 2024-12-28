@@ -6,28 +6,30 @@ import { RouteProp } from "@react-navigation/native";
 // Define the type for your stack's navigation and route
 type RootStackParamList = {
   standaloneScreen: undefined; // No parameters expected
-  two: undefined; // Current screen
 };
 
-// Specify the navigation prop for the 'two' screen
-type TwoScreenNavigationProp = StackNavigationProp<RootStackParamList, "two">;
+// Specify the navigation and route props
+type StandaloneScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "standaloneScreen"
+>;
 
-type TwoScreenRouteProp = RouteProp<RootStackParamList, "two">;
+type StandaloneScreenRouteProp = RouteProp<
+  RootStackParamList,
+  "standaloneScreen"
+>;
 
 // Combine props into a single type
 type Props = {
-  navigation: TwoScreenNavigationProp;
-  route: TwoScreenRouteProp;
+  navigation: StandaloneScreenNavigationProp;
+  route: StandaloneScreenRouteProp;
 };
 
-export default function TwoScreen({ navigation }: Props) {
+export default function StandaloneScreen({ navigation }: Props) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>This is Tab Two</Text>
-      <Button
-        title="Go to Standalone Screen"
-        onPress={() => navigation.navigate("standaloneScreen")}
-      />
+      <Text style={styles.title}>This is a standalone screen</Text>
+      <Button title="Go Back" onPress={() => navigation.goBack()} />
     </View>
   );
 }
