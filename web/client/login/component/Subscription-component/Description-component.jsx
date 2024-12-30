@@ -21,6 +21,7 @@ const TicketBenefits = () => {
     }
 
     return () => {
+     
       if (sectionRef.current) observer.unobserve(sectionRef.current); // Cleanup observer
     };
   }, []);

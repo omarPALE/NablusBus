@@ -49,6 +49,14 @@ export default function Nav(props) {
                 Subscription
               </a>
             </li>
+            <li>
+              <a
+                className="btn btn-outline-success"
+                onClick={() => navigate("tracking")}
+              >
+                track
+              </a>
+            </li>
             {props.userState.loggedIn &&
               props.userState.role === "passenger" && (
                 <li>

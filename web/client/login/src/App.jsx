@@ -13,9 +13,9 @@ import Navbar from "../component/admin-dashBoard/Nav";
 import Sidebar from "../component/admin-dashBoard/SideBar";
 // import Dashboard from "../component/admin-dashBoard/Dashboard";
 import Dashboard from "../component/start-trip/DashBoard";
-
 // import axios from "axios";
 import { useState } from "react";
+import Tracking from "../component/tracking/tracking";
 function App() {
   // const fetchUsers = async () => {
   //   try {
@@ -52,6 +52,7 @@ function App() {
     <div className="main-container">
       <Nav userState={userState} setUserState={setUserState} />
       <ScrollToTop />
+
       <Routes>
         {/* Basic routes */}
         <Route
@@ -65,6 +66,12 @@ function App() {
         <Route
           path="/"
           element={<Home setUserState={setUserState} userState={userState} />}
+        />
+        <Route
+          path="/tracking"
+          element={
+            <Tracking setUserState={setUserState} userState={userState} />
+          }
         />
         <Route
           path="/signup"
