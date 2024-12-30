@@ -27,6 +27,7 @@ import SignInScreen from "./screens/SignInScreen";
 import SignUpScreen from "./screens/SignUpScreen";
 import SubscriptionScreen from "./screens/SubscriptionScreen";
 import MyTicketsScreen from "./screens/MyTicketsScreen";
+import DriverScreen from "./screens/DriverScreen";
 
 const Stack = createStackNavigator();
 
@@ -39,6 +40,7 @@ export default function App() {
         <Stack.Screen name="SignUp" component={SignUpScreen} />
         <Stack.Screen name="Subscription" component={SubscriptionScreen} />
         <Stack.Screen name="MyTicket" component={MyTicketsScreen} />
+        <Stack.Screen name="Scanner" component={DriverScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

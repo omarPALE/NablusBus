@@ -1,7 +1,8 @@
-import GoogleMaps from "../google-map-component/googleMap";
 import { useState } from "react";
+import PropTypes from "prop-types";
+import GoogleMaps from "../google-map-component/googleMap";
 
-const Tracking = () => {
+export default function Home() {
   const [form, setForm] = useState({
     name: "",
     address: "",
@@ -13,6 +14,19 @@ const Tracking = () => {
   const [latitude, setLatitude] = useState(24.799448);
   const [longitude, setLongitude] = useState(54.979021);
   const [address, setAddress] = useState("");
+
+  const mapStyles = [
+    {
+      featureType: "poi",
+      elementType: "labels",
+      stylers: [{ visibility: "off" }],
+    },
+    {
+      featureType: "transit",
+      elementType: "labels",
+      stylers: [{ visibility: "off" }],
+    },
+  ];
 
   return (
     <div className="w-full h-screen flex items-center justify-center bg-gradient-to-r from-indigo-500 to-blue-500">
@@ -30,6 +44,7 @@ const Tracking = () => {
             longitude={longitude}
             setLatitude={setLatitude}
             setLongitude={setLongitude}
+            mapStyles={mapStyles}
           />
         </div>
         <div className="flex flex-col">
@@ -40,6 +55,16 @@ const Tracking = () => {
       </div>
     </div>
   );
-};
+}
 
-export default Tracking;
+GoogleMaps.propTypes = {
+  style: PropTypes.string.isRequired,
+  address: PropTypes.string.isRequired,
+  setAddress: PropTypes.func.isRequired,
+  radius: PropTypes.number.isRequired,
+  latitude: PropTypes.number.isRequired,
+  longitude: PropTypes.number.isRequired,
+  setLatitude: PropTypes.func.isRequired,
+  setLongitude: PropTypes.func.isRequired,
+  mapStyles: PropTypes.array,
+};

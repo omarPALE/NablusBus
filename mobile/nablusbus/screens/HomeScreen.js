@@ -25,6 +25,11 @@ const HomeScreen = ({ navigation }) => {
         onPress={() => navigation.navigate("MyTicket")}
         color="#ff6000"
       />
+      <Button
+        title="Scanner"
+        onPress={() => navigation.navigate("Scanner")}
+        color="#ff6000"
+      />
     </View>
   );
 };

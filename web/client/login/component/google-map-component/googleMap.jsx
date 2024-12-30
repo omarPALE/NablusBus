@@ -1,4 +1,6 @@
 import { useState, useEffect, useMemo, useRef } from "react";
+import PropTypes from "prop-types";
+
 import {
   GoogleMap,
   Marker,
@@ -20,7 +22,7 @@ const GoogleMaps = ({
   const [map, setMap] = useState(null);
 
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: "AIzaSyDOTXuigdl1ZWQw2bNYFXUhh5cgoHYJ2qQ",
+    googleMapsApiKey: "YOUR_GOOGLE_MAPS_API_KEY", // Replace with your API key
     libraries: ["places"],
   });
 
@@ -30,6 +32,17 @@ const GoogleMaps = ({
   );
 
   const inputRef = useRef();
+
+  const mapStyles = [
+    {
+      featureType: "poi",
+      stylers: [{ visibility: "off" }], // Hide points of interest
+    },
+    {
+      featureType: "transit",
+      stylers: [{ visibility: "off" }], // Hide transit stations
+    },
+  ];
 
   useEffect(() => {
     if (map) {
@@ -61,6 +74,7 @@ const GoogleMaps = ({
           mapContainerClassName="map-container"
           center={center}
           zoom={10}
+          options={{ styles: mapStyles }} // Apply the custom map styles
           onLoad={(map) => setMap(map)}
         >
           <StandaloneSearchBox
@@ -108,6 +122,17 @@ const GoogleMaps = ({
       )}
     </div>
   );
+};
+
+GoogleMaps.propTypes = {
+  style: PropTypes.string.isRequired,
+  address: PropTypes.string.isRequired,
+  setAddress: PropTypes.func.isRequired,
+  radius: PropTypes.number.isRequired,
+  latitude: PropTypes.number.isRequired,
+  longitude: PropTypes.number.isRequired,
+  setLatitude: PropTypes.func.isRequired,
+  setLongitude: PropTypes.func.isRequired,
 };
 
 export default GoogleMaps;
