@@ -22,7 +22,7 @@ const GoogleMaps = ({
   const [map, setMap] = useState(null);
 
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: "YOUR_GOOGLE_MAPS_API_KEY", // Replace with your API key
+    googleMapsApiKey: "AIzaSyDOTXuigdl1ZWQw2bNYFXUhh5cgoHYJ2qQ", // Replace with your API key
     libraries: ["places"],
   });
 
@@ -76,6 +76,9 @@ const GoogleMaps = ({
           zoom={10}
           options={{ styles: mapStyles }} // Apply the custom map styles
           onLoad={(map) => setMap(map)}
+          style={{
+            heigh: "600px",
+          }}
         >
           <StandaloneSearchBox
             onLoad={(ref) => (inputRef.current = ref)}

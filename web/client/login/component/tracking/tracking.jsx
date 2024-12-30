@@ -1,6 +1,7 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import GoogleMaps from "../google-map-component/googleMap";
+import "./Home.css";
 
 export default function Home() {
   const [form, setForm] = useState({
@@ -29,14 +30,24 @@ export default function Home() {
   ];
 
   return (
-    <div className="w-full h-screen flex items-center justify-center bg-gradient-to-r from-indigo-500 to-blue-500">
-      <div className="flex flex-col w-full items-center gap-y-4">
-        <span className="text-6xl text-gray-700 font-bold">
-          Next.js Google Maps!
-        </span>
-        <div className="w-[30%] h-96">
+    <div className="home-container">
+      {/* Sidebar */}
+      <div className="sidebar">
+        <h1 className="sidebar-title">Admin Dashboard</h1>
+        <ul className="sidebar-list">
+          <li className="sidebar-item">Overview</li>
+          <li className="sidebar-item">Manage Users</li>
+          <li className="sidebar-item">Reports</li>
+          <li className="sidebar-item">Settings</li>
+        </ul>
+      </div>
+
+      {/* Main Content */}
+      <div className="main-content">
+        <span className="main-title">Next.js Google Maps!</span>
+        <div className="map-container">
           <GoogleMaps
-            style="w-[50%] px-4 py-2 border-b-[1px] border-[#E5E5E3]"
+            style="map-style"
             address={address}
             setAddress={setAddress}
             radius={form.radius}
@@ -47,10 +58,10 @@ export default function Home() {
             mapStyles={mapStyles}
           />
         </div>
-        <div className="flex flex-col">
-          <span className="text-xl">Address: {address}</span>
-          <span className="text-xl">Latitude: {latitude}</span>
-          <span className="text-xl">Longitude: {longitude}</span>
+        <div className="info-container">
+          <span className="info-item">Address: {address}</span>
+          <span className="info-item">Latitude: {latitude}</span>
+          <span className="info-item">Longitude: {longitude}</span>
         </div>
       </div>
     </div>
