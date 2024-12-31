@@ -100,17 +100,18 @@ const StartTripCard = ({ availableRoutes, onStartTrip, userState }) => {
     };
 
     const updateLocation = async (latitude, longitude) => {
-      if (
-        lastRecordedLocation &&
+      const shouldUpdate =
+        !lastRecordedLocation ||
         haversineDistance(
           lastRecordedLocation.latitude,
           lastRecordedLocation.longitude,
           latitude,
           longitude
-        ) < 20
-      ) {
+        ) >= 20;
+
+      if (!shouldUpdate) {
         console.log("Location change is less than 20 meters. No update sent.");
-        return;
+        return false;
       }
 
       try {
@@ -122,9 +123,11 @@ const StartTripCard = ({ availableRoutes, onStartTrip, userState }) => {
         console.log("Location update sent to database");
 
         // Update the last recorded location
-        lastRecordedLocation = { latitude, longitude, recordedAt: new Date() };
+        lastRecordedLocation = { latitude, longitude };
+        return true;
       } catch (error) {
         console.error("Error updating location in database:", error);
+        return false;
       }
     };
 
@@ -137,19 +140,19 @@ const StartTripCard = ({ availableRoutes, onStartTrip, userState }) => {
     fetchLastLocation();
 
     navigator.geolocation.watchPosition(
-      (position) => {
+      async (position) => {
         const { latitude, longitude } = position.coords;
 
-        // Send location update if it has changed significantly
-        updateLocation(latitude, longitude);
+        // Only update the database and emit location if distance is >= 20 meters
+        const locationUpdated = await updateLocation(latitude, longitude);
 
-        // Optionally send the location via WebSocket for real-time updates
-        if (socket) {
+        if (locationUpdated && socket) {
           socket.emit("location-update", {
             bus_id: busId,
             latitude,
             longitude,
           });
+          console.log("Location update sent via WebSocket");
         }
       },
       (error) => {

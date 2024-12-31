@@ -31,7 +31,7 @@ export default function LoginContent(props) {
         word_id: userData.word_id,
       }));
       navigate("/home"); // Redirect to the home page if already logged in
-      console.log("before goto home user data are", userData.word_id);
+      console.log("before goto home user data are", props.userState);
     }
   }, []);
 
