@@ -118,7 +118,6 @@ const StartTripCard = ({ availableRoutes, onStartTrip, userState }) => {
           bus_id: busId,
           latitude,
           longitude,
-          recorded_at: new Date().toISOString(),
         });
         console.log("Location update sent to database");
 

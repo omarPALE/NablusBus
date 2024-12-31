@@ -5,7 +5,7 @@ import axios from "axios";
 
 export default function LoginContent(props) {
   const navigate = useNavigate();
-
+  console.log("user info are ", props.userData);
   // State to manage sign-in information, errors, "Remember Me", and logged-in state
   const [signInInfo, setSignInInfo] = useState({
     email: "",
@@ -31,6 +31,7 @@ export default function LoginContent(props) {
         word_id: userData.word_id,
       }));
       navigate("/home"); // Redirect to the home page if already logged in
+      console.log("before goto home user data are", userData.word_id);
     }
   }, []);
 
