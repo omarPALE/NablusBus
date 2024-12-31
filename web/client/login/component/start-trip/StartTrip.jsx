@@ -1,33 +1,31 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
-import "./start-trip.css"; // Import the CSS file
+import "./start-trip.css";
+import { SocketContext } from "../../src/App"; // Import the SocketContext from App
 
 const StartTripCard = ({ availableRoutes, onStartTrip, userState }) => {
-  const [busNumber, setBusNumber] = useState(""); // State for bus number
+  const [busNumber, setBusNumber] = useState("");
   const [route, setRoute] = useState("");
   const [filteredRoutes, setFilteredRoutes] = useState(availableRoutes);
   const [passengerCount, setPassengerCount] = useState("");
   const [startTime, setStartTime] = useState("");
-  const [isFocused, setIsFocused] = useState(false); // To handle dropdown visibility
+  const [isFocused, setIsFocused] = useState(false);
 
-  // Fetch bus number by driver_work_id
+  const socket = useContext(SocketContext); // Access the shared WebSocket instance
+
   useEffect(() => {
     const fetchBusNumber = async () => {
-      console.log("get Bus number", userState.work_id);
       try {
         const response = await axios.get(
           `http://localhost:5000/api/buses/driver/${userState.work_id}`
         );
         if (response.status === 200) {
           setBusNumber(response.data.busNumber);
-          console.log("bus number returned are:", response.data.busNumber);
         } else {
-          console.error("Failed to fetch bus number:", response.data);
           alert("Could not retrieve the bus number. Please try again.");
         }
       } catch (error) {
-        console.error("Error fetching bus number:", error);
         alert(
           "Error retrieving bus number. Please check your network connection."
         );
@@ -41,7 +39,7 @@ const StartTripCard = ({ availableRoutes, onStartTrip, userState }) => {
 
   useEffect(() => {
     const now = new Date();
-    const formattedTime = now.toLocaleString(); // e.g., "12/12/2024, 10:00:00 AM"
+    const formattedTime = now.toLocaleString();
     setStartTime(formattedTime);
   }, []);
 
@@ -50,19 +48,44 @@ const StartTripCard = ({ availableRoutes, onStartTrip, userState }) => {
       route.toLowerCase().includes(searchText.toLowerCase())
     );
     setFilteredRoutes(filtered);
-    setRoute(searchText); // Keep the input value updated
+    setRoute(searchText);
   };
 
   const handleSelectRoute = (selectedRoute) => {
     setRoute(selectedRoute);
-    setFilteredRoutes(availableRoutes); // Reset to show all routes again
-    setIsFocused(false); // Hide dropdown after selection
+    setFilteredRoutes(availableRoutes);
+    setIsFocused(false);
+  };
+
+  const startLocationUpdates = () => {
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported by your browser.");
+      return;
+    }
+
+    navigator.geolocation.watchPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+
+        // Send location to the backend via WebSocket
+        if (socket) {
+          socket.emit("location-update", {
+            bus_id: busNumber,
+            latitude,
+            longitude,
+            recorded_at: new Date().toISOString(),
+          });
+        }
+      },
+      (error) => {
+        console.error("Error getting location:", error);
+      },
+      { enableHighAccuracy: true }
+    );
   };
 
   const handleStartTrip = async () => {
-    console.log("start getting date");
     if (route && passengerCount) {
-      // Prepare data for API request
       const tripData = {
         bus_id: busNumber,
         driver_id: userState.work_id,
@@ -75,25 +98,38 @@ const StartTripCard = ({ availableRoutes, onStartTrip, userState }) => {
       try {
         const response = await axios.post(
           "http://localhost:5000/api/trips/trip",
-          { ...tripData }
+          tripData
         );
 
         if (response.status === 201) {
-          // Handle successful response
-          console.log("Trip started successfully:", response.data);
           alert("Trip started successfully");
-          onStartTrip(tripData); // Optional: Call the parent callback if necessary
+          // onStartTrip(tripData);
+
+          // Start sending location updates after trip is started
+          startLocationUpdates();
         } else {
-          // Handle failure (e.g., server error)
-          console.error("Error starting trip:", response.data, response.status);
           alert("Error starting the trip. Please try again.");
         }
       } catch (error) {
-        console.error("Error during the request:", error);
-        alert("Network error. Please try again.");
+        let errorMessage = "Network error. Please try again.";
+
+        if (error.response) {
+          // Errors from the server
+          errorMessage += `\nStatus: ${error.response.status}\nMessage: ${
+            error.response.data.message || error.response.statusText
+          }`;
+        } else if (error.request) {
+          // No response was received
+          errorMessage += "\nNo response received from the server.";
+        } else {
+          // Errors during request setup
+          errorMessage += `\nError Message: ${error.message}`;
+        }
+
+        console.error("Error details:", error); // Log the full error object to the console
+        alert(errorMessage);
       }
 
-      // Reset form fields
       setRoute("");
       setPassengerCount("");
     } else {
@@ -112,8 +148,8 @@ const StartTripCard = ({ availableRoutes, onStartTrip, userState }) => {
             id="route"
             value={route}
             onChange={(e) => handleSearch(e.target.value)}
-            onFocus={() => setIsFocused(true)} // Show dropdown on focus
-            onBlur={() => setTimeout(() => setIsFocused(false), 200)} // Hide dropdown on blur after a slight delay
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setTimeout(() => setIsFocused(false), 200)}
             placeholder="Search for a route"
           />
           {isFocused && filteredRoutes.length > 0 && (
@@ -160,11 +196,10 @@ const StartTripCard = ({ availableRoutes, onStartTrip, userState }) => {
   );
 };
 
-// PropTypes for type checking
 StartTripCard.propTypes = {
-  availableRoutes: PropTypes.arrayOf(PropTypes.string).isRequired, // Routes should be an array of strings
-  onStartTrip: PropTypes.func.isRequired, // Function to handle trip start
-  userState: PropTypes.object.isRequired, // User state object
+  availableRoutes: PropTypes.arrayOf(PropTypes.string).isRequired,
+  onStartTrip: PropTypes.func.isRequired,
+  userState: PropTypes.object.isRequired,
 };
 
 export default StartTripCard;
