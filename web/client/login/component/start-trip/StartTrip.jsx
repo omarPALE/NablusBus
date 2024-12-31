@@ -60,16 +60,91 @@ const StartTripCard = ({ availableRoutes, onStartTrip, userState }) => {
   };
 
   const startLocationUpdates = () => {
+    let lastRecordedLocation = null; // To store the last recorded location
+
+    const fetchLastLocation = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:5000/api/bus-locations/recent/${busId}`
+        );
+        if (response.status === 200 && response.data) {
+          const { latitude, longitude } = response.data;
+          lastRecordedLocation = {
+            latitude,
+            longitude,
+          };
+          console.log("Last recorded location:", lastRecordedLocation);
+        } else {
+          console.warn("No previous location found for bus ID:", busId);
+        }
+      } catch (error) {
+        console.error("Error fetching last location:", error);
+      }
+    };
+
+    const haversineDistance = (lat1, lon1, lat2, lon2) => {
+      const R = 6371e3; // Radius of Earth in meters
+      const toRadians = (degrees) => (degrees * Math.PI) / 180;
+
+      const φ1 = toRadians(lat1);
+      const φ2 = toRadians(lat2);
+      const Δφ = toRadians(lat2 - lat1);
+      const Δλ = toRadians(lon2 - lon1);
+
+      const a =
+        Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+        Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+      return R * c; // Distance in meters
+    };
+
+    const updateLocation = async (latitude, longitude) => {
+      if (
+        lastRecordedLocation &&
+        haversineDistance(
+          lastRecordedLocation.latitude,
+          lastRecordedLocation.longitude,
+          latitude,
+          longitude
+        ) < 20
+      ) {
+        console.log("Location change is less than 20 meters. No update sent.");
+        return;
+      }
+
+      try {
+        await axios.post("http://localhost:5000/api/bus-locations/update", {
+          bus_id: busId,
+          latitude,
+          longitude,
+          recorded_at: new Date().toISOString(),
+        });
+        console.log("Location update sent to database");
+
+        // Update the last recorded location
+        lastRecordedLocation = { latitude, longitude, recordedAt: new Date() };
+      } catch (error) {
+        console.error("Error updating location in database:", error);
+      }
+    };
+
     if (!navigator.geolocation) {
       alert("Geolocation is not supported by your browser.");
       return;
     }
 
+    // Fetch the most recent location when the function starts
+    fetchLastLocation();
+
     navigator.geolocation.watchPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
 
-        // Send location to the backend via WebSocket
+        // Send location update if it has changed significantly
+        updateLocation(latitude, longitude);
+
+        // Optionally send the location via WebSocket for real-time updates
         if (socket) {
           socket.emit("location-update", {
             bus_id: busId,
