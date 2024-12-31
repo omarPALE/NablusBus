@@ -15,7 +15,6 @@ export default function LoginContent(props) {
   const [isPasswordInvalid, setIsPasswordInvalid] = useState(false); // State for red border
   const [isEmailInvalid, setIsEmailInvalid] = useState(false); // State for red border
   const [rememberMe, setRememberMe] = useState(false); // State for "Remember Me"
-  console.log("user info from log in" + props.userState);
   // Load user from localStorage or sessionStorage
   useEffect(() => {
     const savedUser =
@@ -29,6 +28,7 @@ export default function LoginContent(props) {
         username: userData.username,
         user_id: userData.id,
         role: userData.role,
+        word_id: userData.word_id,
       }));
       navigate("/home"); // Redirect to the home page if already logged in
     }

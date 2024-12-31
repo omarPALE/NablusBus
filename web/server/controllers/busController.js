@@ -7,7 +7,7 @@ export const getBusNumberByDriverId = async (req, res) => {
   try {
     // Query the database using the pool
     const result = await pool.query(
-      `SELECT bus_number 
+      `SELECT bus_number, id
        FROM buses 
        WHERE driver_work_id = $1`,
       [driver_work_id]
@@ -19,10 +19,12 @@ export const getBusNumberByDriverId = async (req, res) => {
         message: "Bus not found for the given driver_work_id",
       });
     }
+    console.log("data from data base are bus  id is ", result.rows[0].id);
 
     // Send the bus_number as a response
     res.status(200).json({
       busNumber: result.rows[0].bus_number,
+      busId: result.rows[0].id,
     });
   } catch (error) {
     console.error("Error fetching bus number:", error);

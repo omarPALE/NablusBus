@@ -6,6 +6,7 @@ import adminRoutes from "./routes/admin.js";
 import tripRoutes from "./routes/tripRoutes.js";
 import busRoutes from "./routes/busRoutes.js";
 import busLocationRoutes from "./routes/busLocationRoutes.js";
+import updateBusLocation from "./controllers/busLocationController.js";
 import cors from "cors";
 import http from "http";
 import { Server } from "socket.io";
@@ -35,8 +36,20 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
   console.log("A driver connected");
 
-  socket.on("location-update", (data) => {
+  socket.on("location-update", async (data) => {
     console.log("Location update received from client:", data);
+
+    try {
+      // Call the controller to handle the logic
+      await updateBusLocation({
+        body: data, // Simulate the Express request object
+      });
+
+      // Optionally broadcast the location update to passengers
+      socket.broadcast.emit("bus-location", data);
+    } catch (error) {
+      console.error("Error handling location update:", error);
+    }
   });
 
   socket.on("disconnect", () => {

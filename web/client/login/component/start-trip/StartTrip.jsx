@@ -11,7 +11,7 @@ const StartTripCard = ({ availableRoutes, onStartTrip, userState }) => {
   const [passengerCount, setPassengerCount] = useState("");
   const [startTime, setStartTime] = useState("");
   const [isFocused, setIsFocused] = useState(false);
-
+  const [busId, setBusId] = useState(0);
   const socket = useContext(SocketContext); // Access the shared WebSocket instance
 
   useEffect(() => {
@@ -22,6 +22,8 @@ const StartTripCard = ({ availableRoutes, onStartTrip, userState }) => {
         );
         if (response.status === 200) {
           setBusNumber(response.data.busNumber);
+          setBusId(response.data.busId);
+          console.log("bus id is ", response.data.busId);
         } else {
           alert("Could not retrieve the bus number. Please try again.");
         }
@@ -70,10 +72,9 @@ const StartTripCard = ({ availableRoutes, onStartTrip, userState }) => {
         // Send location to the backend via WebSocket
         if (socket) {
           socket.emit("location-update", {
-            bus_id: busNumber,
+            bus_id: busId,
             latitude,
             longitude,
-            recorded_at: new Date().toISOString(),
           });
         }
       },
@@ -85,6 +86,7 @@ const StartTripCard = ({ availableRoutes, onStartTrip, userState }) => {
   };
 
   const handleStartTrip = async () => {
+    console.log("at start of start trip  the bus id is :", busId);
     if (route && passengerCount) {
       const tripData = {
         bus_id: busNumber,
