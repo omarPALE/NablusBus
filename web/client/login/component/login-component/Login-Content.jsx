@@ -5,7 +5,6 @@ import axios from "axios";
 
 export default function LoginContent(props) {
   const navigate = useNavigate();
-  console.log("user info are ", props.userData);
   // State to manage sign-in information, errors, "Remember Me", and logged-in state
   const [signInInfo, setSignInInfo] = useState({
     email: "",
@@ -19,21 +18,32 @@ export default function LoginContent(props) {
   useEffect(() => {
     const savedUser =
       localStorage.getItem("user") || sessionStorage.getItem("user");
+
+    // Check if savedUser exists
     if (savedUser) {
       const userData = JSON.parse(savedUser);
-      props.setUserState(() => ({
-        ...props.userState,
-        loggedIn: true,
-        email: userData.email,
-        username: userData.username,
-        user_id: userData.id,
-        role: userData.role,
-        word_id: userData.word_id,
-      }));
-      navigate("/home"); // Redirect to the home page if already logged in
-      console.log("before goto home user data are", props.userState);
+
+      // Debug saved user data
+
+      // Attempt to set the user state
+      props.setUserState((prevState) => {
+        const updatedState = {
+          ...prevState,
+          loggedIn: true,
+          email: userData.email,
+          username: userData.username,
+          user_id: userData.id,
+          role: userData.role,
+          work_id: userData.work_id,
+        };
+
+        return updatedState;
+      });
+
+      // Redirect to home after setting the state
+      navigate("/home");
     }
-  }, []);
+  }, [navigate, props]);
 
   const handleEmailChange = (e) => {
     setSignInInfo((prevState) => ({

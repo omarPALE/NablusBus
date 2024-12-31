@@ -8,9 +8,12 @@ export default function Nav(props) {
   const user = {
     name: props.userState.username,
     email: props.userState.email,
+    loggedIn: true,
+    user_id: props.userState.id,
+    role: props.userState.role,
+    work_id: props.userState.work_id,
     avatar: "https://via.placeholder.com/150", // Optional profile picture URL
   };
-  console.log("user info are : " + props.userState.role);
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary">
       <div className="container-fluid">
@@ -133,11 +136,6 @@ export default function Nav(props) {
 }
 
 Nav.propTypes = {
-  userState: PropTypes.shape({
-    loggedIn: PropTypes.bool.isRequired,
-    email: PropTypes.string.isRequired,
-    username: PropTypes.string.isRequired,
-    role: PropTypes.string,
-  }).isRequired,
   setUserState: PropTypes.func.isRequired,
+  userState: PropTypes.func.isRequired,
 };
