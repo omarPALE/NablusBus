@@ -61,4 +61,24 @@ export const updateLocation = async (req, res) => {
   }
 };
 
+export const getBusesLastLocation = async (req, res) => {
+  try {
+    // Query to get all recent bus locations, ordered by 'created_at'
+    const result = await pool.query(`
+      SELECT bus_id, latitude, longitude, recorded_at
+      FROM bus_locations
+      WHERE recorded_at >= NOW() - INTERVAL '15 minutes' -- Filter by recent entries
+      ORDER BY recorded_at DESC
+    `);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "No location found" });
+    }
+    res.status(200).json(result.rows); // Return the result as JSON
+  } catch (error) {
+    console.error("Error fetching recent bus locations:", error);
+    res.status(500).json({ message: "Failed to fetch recent bus locations." });
+  }
+};
+
 export default updateBusLocation;

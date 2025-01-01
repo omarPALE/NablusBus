@@ -44,9 +44,10 @@ io.on("connection", (socket) => {
       await updateBusLocation({
         body: data, // Simulate the Express request object
       });
-
+      console.log("update location for all users ",data);
       // Optionally broadcast the location update to passengers
       socket.broadcast.emit("bus-location", data);
+      console.log("update location for all users ");
     } catch (error) {
       console.error("Error handling location update:", error);
     }

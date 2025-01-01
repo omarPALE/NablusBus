@@ -4,7 +4,13 @@ import axios from "axios";
 import "./start-trip.css";
 import { SocketContext } from "../../src/App"; // Import the SocketContext from App
 
-const StartTripCard = ({ availableRoutes, onStartTrip, userState }) => {
+const StartTripCard = ({
+  availableRoutes,
+  onStartTrip,
+  userState,
+  start,
+  setStart,
+}) => {
   const [busNumber, setBusNumber] = useState("");
   const [route, setRoute] = useState("");
   const [filteredRoutes, setFilteredRoutes] = useState(availableRoutes);
@@ -107,7 +113,7 @@ const StartTripCard = ({ availableRoutes, onStartTrip, userState }) => {
           lastRecordedLocation.longitude,
           latitude,
           longitude
-        ) >= 20;
+        ) >= 0;
 
       if (!shouldUpdate) {
         console.log("Location change is less than 20 meters. No update sent.");
@@ -215,7 +221,12 @@ const StartTripCard = ({ availableRoutes, onStartTrip, userState }) => {
       alert("Please select a route and set the passenger number.");
     }
   };
-
+  if (start) {
+    // console.log(busId);
+    // startLocationUpdates();
+  } else {
+    console.log("let's noooooot get startde");
+  }
   return (
     <div className="start-trip-card">
       <h3>Start Trip</h3>
@@ -279,6 +290,8 @@ StartTripCard.propTypes = {
   availableRoutes: PropTypes.arrayOf(PropTypes.string).isRequired,
   onStartTrip: PropTypes.func.isRequired,
   userState: PropTypes.object.isRequired,
+  start: PropTypes.bool.isRequired,
+  setStart: PropTypes.func.isRequired,
 };
 
 export default StartTripCard;

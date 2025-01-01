@@ -161,6 +161,8 @@ const Dashboard = (props) => {
           setUserState={props.setUserState}
           userState={props.userState}
           availableRoutes={["Route A", "Route B", "Route C"]}
+          start={props.start}
+          setStart={props.setStart}
         />
       </Modal>
     </Layout>
@@ -170,6 +172,8 @@ const Dashboard = (props) => {
 Dashboard.propTypes = {
   setUserState: PropTypes.func.isRequired,
   userState: PropTypes.object.isRequired,
+  start: PropTypes.bool.isRequired,
+  setStart: PropTypes.func.isRequired,
 };
 
 export default Dashboard;

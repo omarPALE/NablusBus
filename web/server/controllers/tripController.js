@@ -97,7 +97,6 @@ export const updateEndTime = async (req, res) => {
 // Get trips by worker ID
 export const getTripsByWorkerId = async (req, res) => {
   const { workerId } = req.params;
-  console.log(workerId);
   try {
     // Query to fetch trips for a specific worker ID
     const result = await pool.query(

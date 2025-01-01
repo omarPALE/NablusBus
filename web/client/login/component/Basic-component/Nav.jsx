@@ -85,7 +85,10 @@ export default function Nav(props) {
               <li>
                 <a
                   className="btn btn-outline-success"
-                  onClick={() => navigate("/trip")}
+                  onClick={() => {
+                    navigate("/trip");
+                    props.setStart(true);
+                  }}
                 >
                   Start Trip
                 </a>
@@ -138,4 +141,5 @@ export default function Nav(props) {
 Nav.propTypes = {
   setUserState: PropTypes.func.isRequired,
   userState: PropTypes.func.isRequired,
+  setStart: PropTypes.func.isRequired,
 };

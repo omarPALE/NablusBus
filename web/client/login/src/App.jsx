@@ -30,6 +30,7 @@ function App() {
   });
   const [links, setLinks] = useState([]);
   const [socket, setSocket] = useState(null);
+  const [startWorking, setStartWorking] = useState(false);
 
   useEffect(() => {
     // Initialize WebSocket connection
@@ -62,7 +63,12 @@ function App() {
   return (
     <SocketContext.Provider value={socket}>
       <div className="main-container">
-        <Nav userState={userState} setUserState={setUserState} />
+        <Nav
+          userState={userState}
+          setUserState={setUserState}
+          start={startWorking}
+          setStart={setStartWorking}
+        />
         <ScrollToTop />
         <Routes>
           <Route
@@ -101,12 +107,12 @@ function App() {
             path="/trip"
             element={
               <Dashboard
+                start={startWorking}
+                setStart={setStartWorking}
                 setUserState={setUserState}
                 userState={userState}
-                busNumber={101}
                 availableRoutes={["Route A", "Route B", "Route C"]}
                 onStartTrip={handleStartTrip}
-                driverId="12345"
               />
             }
           />

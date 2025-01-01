@@ -3,17 +3,17 @@ import PropTypes from "prop-types";
 import GoogleMaps from "../google-map-component/googleMap";
 import "./Home.css";
 
-export default function Home() {
+export default function Home(userState, setUserState) {
   const [form, setForm] = useState({
     name: "",
     address: "",
-    latitude: 24.799448,
-    longitude: 54.979021,
+    latitude: 3,
+    longitude: 1,
     radius: 500,
   });
 
-  const [latitude, setLatitude] = useState(24.799448);
-  const [longitude, setLongitude] = useState(54.979021);
+  const [latitude, setLatitude] = useState(31.94657);
+  const [longitude, setLongitude] = useState(35.302723);
   const [address, setAddress] = useState("");
 
   const mapStyles = [
@@ -48,6 +48,7 @@ export default function Home() {
         <div className="map-container">
           <GoogleMaps
             style="map-style"
+            mapId="93841342ef5456f5"
             address={address}
             setAddress={setAddress}
             radius={form.radius}
@@ -56,6 +57,7 @@ export default function Home() {
             setLatitude={setLatitude}
             setLongitude={setLongitude}
             mapStyles={mapStyles}
+            userState={userState}
           />
         </div>
         <div className="info-container">
