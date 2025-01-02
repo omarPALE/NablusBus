@@ -67,7 +67,7 @@ const StartTripCard = ({
 
   const startLocationUpdates = () => {
     let lastRecordedLocation = null; // To store the last recorded location
-
+    console.log("wellcom to fetch last location");
     const fetchLastLocation = async () => {
       try {
         const response = await axios.get(

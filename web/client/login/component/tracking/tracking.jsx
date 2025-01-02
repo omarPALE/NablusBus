@@ -48,7 +48,7 @@ export default function Home(userState, setUserState) {
         <div className="map-container">
           <GoogleMaps
             style="map-style"
-            mapId="93841342ef5456f5"
+            mapId="DEMO_MAP_ID"
             address={address}
             setAddress={setAddress}
             radius={form.radius}

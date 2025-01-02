@@ -38,14 +38,14 @@ function App() {
     console.log("Trip started:", tripDetails);
     // Send trip details to the backend or perform other actions
   };
-  socket.onAny((event, data) => {
-    console.log(`Received event: ${event}`, data);
-  });
+  // socket.onAny((event, data) => {
+  //   console.log(`Received event: ${event}`, data);
+  // });
 
-  socket.on("bus-location", (data) => {
-    console.log("from google broadcast ", data);
-    // Destructure bus_id, latitude, and longitude from the data
-  });
+  // socket.on("bus-location", (data) => {
+  //   console.log("from APP broadcast ", data);
+  //   // Destructure bus_id, latitude, and longitude from the data
+  // });
   return (
     <SocketContext.Provider value={socket}>
       <div className="main-container">
