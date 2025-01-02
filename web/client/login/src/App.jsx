@@ -1,5 +1,5 @@
-import { useState, useEffect, createContext } from "react";
-import { io } from "socket.io-client";
+import { useState, createContext } from "react";
+import { getSocket } from "../component/socket/socketService"; // Import the WebSocket singleton
 import { Route, Routes } from "react-router-dom";
 import Nav from "../component/Basic-component/Nav";
 import ScrollToTop from "../component/Basic-component/ScrolToTop";
@@ -29,37 +29,23 @@ function App() {
     work_id: 1,
   });
   const [links, setLinks] = useState([]);
-  const [socket, setSocket] = useState(null);
   const [startWorking, setStartWorking] = useState(false);
 
-  useEffect(() => {
-    // Initialize WebSocket connection
-    const newSocket = io("http://localhost:5000", {
-      transports: ["websocket"],
-    });
-
-    newSocket.on("connect", () => {
-      console.log("Connected to WebSocket server:", newSocket.id);
-    });
-
-    newSocket.on("connect_error", (err) => {
-      console.error("WebSocket connection error:", err);
-    });
-
-    setSocket(newSocket);
-
-    // Cleanup the socket on component unmount
-    return () => {
-      newSocket.disconnect();
-      console.log("Disconnected from WebSocket server");
-    };
-  }, []);
+  // Get a shared WebSocket instance
+  const socket = getSocket();
 
   const handleStartTrip = (tripDetails) => {
     console.log("Trip started:", tripDetails);
     // Send trip details to the backend or perform other actions
   };
+  socket.onAny((event, data) => {
+    console.log(`Received event: ${event}`, data);
+  });
 
+  socket.on("bus-location", (data) => {
+    console.log("from google broadcast ", data);
+    // Destructure bus_id, latitude, and longitude from the data
+  });
   return (
     <SocketContext.Provider value={socket}>
       <div className="main-container">

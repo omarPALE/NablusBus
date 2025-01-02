@@ -34,8 +34,14 @@ const io = new Server(server, {
 
 // Handle WebSocket connections
 io.on("connection", (socket) => {
+  socket.onAny((event, data) => {
+    console.log(`Received event: ${event}`, data);
+  });
+  socket.emit("update", { text: "A new user has joined!" });
   console.log("A driver connected");
-
+  socket.on("connect", () => {
+    console.log("Connected to WebSocket server");
+  });
   socket.on("location-update", async (data) => {
     console.log("Location update received from client:", data);
 
@@ -44,9 +50,9 @@ io.on("connection", (socket) => {
       await updateBusLocation({
         body: data, // Simulate the Express request object
       });
-      console.log("update location for all users ",data);
+      console.log("update location for all users ", data);
       // Optionally broadcast the location update to passengers
-      socket.broadcast.emit("bus-location", data);
+      socket.emit("bus-location", data);
       console.log("update location for all users ");
     } catch (error) {
       console.error("Error handling location update:", error);

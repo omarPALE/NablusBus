@@ -1,13 +1,11 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import PropTypes from "prop-types";
-import { GoogleMap, useLoadScript, Circle } from "@react-google-maps/api";
-import { MarkerClusterer } from "@googlemaps/markerclusterer";
-import axios from "axios";
+import { GoogleMap, useLoadScript } from "@react-google-maps/api";
+import getSocket from "../socket/socketService";
 
-const libraries = ["places"];
+const libraries = ["marker"]; // Required for AdvancedMarkerElement
 
 const GoogleMaps = ({
-  radius,
   style,
   address,
   setAddress,
@@ -18,10 +16,9 @@ const GoogleMaps = ({
   userState,
 }) => {
   const [map, setMap] = useState(null);
-  const [busLocations, setBusLocations] = useState([]);
-  const [errorMessage, setErrorMessage] = useState(null);
+  const markersRef = useRef(new Map()); // Store markers keyed by bus_id
   const { isLoaded, loadError } = useLoadScript({
-    googleMapsApiKey: "AIzaSyDOTXuigdl1ZWQw2bNYFXUhh5cgoHYJ2qQ",
+    googleMapsApiKey: "AIzaSyDOTXuigdl1ZWQw2bNYFXUhh5cgoHYJ2qQ", // Replace with your API key
     libraries,
   });
 
@@ -30,91 +27,66 @@ const GoogleMaps = ({
     [latitude, longitude]
   );
 
-  const fetchAllRecentLocations = async () => {
-    try {
-      const response = await axios.get(
-        "http://localhost:5000/api/bus-locations/recent"
-      );
-      console.log("Fetched all recent locations successfully:", response.data);
-      console.log(
-        "Invalid locations:",
-        response.data.filter(
-          (loc) =>
-            isNaN(parseFloat(loc.latitude)) || isNaN(parseFloat(loc.longitude))
-        )
-      );
-
-      setBusLocations(
-        response.data.map((loc) => ({
-          bus_id: loc.bus_id,
-          lat: parseFloat(loc.latitude),
-          lng: parseFloat(loc.longitude),
-        }))
-      );
-      setErrorMessage(null); // Clear previous errors
-    } catch (error) {
-      console.error("Error fetching all recent locations:", error);
-      setErrorMessage(
-        error.response && error.response.data
-          ? error.response.data.message
-          : "An error occurred while fetching recent bus locations."
-      );
+  useEffect(() => {
+    if (!map) {
+      console.warn("Map is not initialized yet.");
+      return;
     }
-  };
 
-  useEffect(() => {
-    fetchAllRecentLocations();
-    const interval = setInterval(fetchAllRecentLocations, 5000); // Fetch every 5 seconds
+    console.log("Map is initialized:", map);
 
-    return () => clearInterval(interval); // Cleanup interval
-  }, []);
+    // Proceed with WebSocket logic after map is ready
+    const socket = getSocket();
 
-  useEffect(() => {
-    if (map && busLocations.length > 0) {
-      const markers = busLocations.map((loc) => {
-        return new window.google.maps.Marker({
-          position: { lat: loc.lat, lng: loc.lng },
-          title: `Bus ID: ${loc.bus_id}`,
-          icon: {
-            url: "https://maps.google.com/mapfiles/kml/shapes/bus.png",
-            scaledSize: new window.google.maps.Size(40, 40),
-          },
+    socket.on("connect", () => {
+      console.log("Connected to WebSocket server:", socket.id);
+    });
+
+    socket.on("bus-location", (data) => {
+      const { bus_id, latitude, longitude } = data;
+
+      if (!markersRef.current.has(bus_id)) {
+        // Create a new AdvancedMarkerElement
+        const marker = new window.google.maps.marker.AdvancedMarkerElement({
+          position: { lat: latitude, lng: longitude },
+          map,
+          title: `Bus ID: ${bus_id}`,
         });
-      });
+        markersRef.current.set(bus_id, marker);
+      } else {
+        // Update the position of the existing marker
+        const marker = markersRef.current.get(bus_id);
+        marker.position = new window.google.maps.LatLng(latitude, longitude);
+      }
+    });
 
-      const markerCluster = new MarkerClusterer({ markers, map });
-      return () => markerCluster.clearMarkers();
-    }
-  }, [map, busLocations]);
+    return () => {
+      socket.off("bus-location");
+      markersRef.current.forEach((marker) => (marker.map = null));
+      markersRef.current.clear();
+    };
+  }, [map]);
 
   if (loadError) return <div>Error loading Google Maps</div>;
   if (!isLoaded) return <div>Loading Google Maps...</div>;
 
   return (
-    <div className="w-full height-96">
-      {errorMessage && <div className="error-message">{errorMessage}</div>}
-      <GoogleMap
-        mapContainerClassName="map-container"
-        center={center}
-        zoom={10}
-        options={{
-          styles: [{ featureType: "poi", stylers: [{ visibility: "off" }] }],
-        }}
-        onLoad={(map) => setMap(map)}
-      >
-        <Circle
-          options={{
-            fillColor: "#FF0000",
-            strokeOpacity: 0.8,
-            strokeColor: "#FF0000",
-            strokeWeight: 2,
-            fillOpacity: 0.35,
-          }}
-          center={center}
-          radius={radius}
-        />
-      </GoogleMap>
-    </div>
+    <GoogleMap
+      mapContainerStyle={{
+        width: "100%", // Set width of the container
+        height: "100vh", // Set height of the container
+      }}
+      center={center}
+      zoom={10}
+      mapId="93841342ef5456f5"
+      options={{
+        styles: [{ featureType: "poi", stylers: [{ visibility: "off" }] }],
+      }}
+      onLoad={(map) => {
+        console.log("Map loaded:", map);
+        setMap(map);
+      }}
+    />
   );
 };
 
@@ -122,7 +94,6 @@ GoogleMaps.propTypes = {
   style: PropTypes.string.isRequired,
   address: PropTypes.string.isRequired,
   setAddress: PropTypes.func.isRequired,
-  radius: PropTypes.number.isRequired,
   latitude: PropTypes.number.isRequired,
   longitude: PropTypes.number.isRequired,
   setLatitude: PropTypes.func.isRequired,

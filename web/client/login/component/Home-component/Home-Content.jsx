@@ -1,7 +1,39 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+// import getSocket from "../socket/socketService";
 
 export default function Content() {
+  // useEffect(() => {
+  //   const socket = getSocket();
+
+  //   console.log("Attempting to connect to WebSocket server...");
+
+  //   socket.on("connect", () => {
+  //     console.log("Connected to WebSocket server:", socket.id);
+  //   });
+
+  //   socket.on("bus-location", (data) => {
+  //     console.log("from google broadcast ", data);
+  //   });
+  //   socket.on("update", (data) => {
+  //     console.log("Server broadcast:", data.text);
+  //   });
+  //   socket.on("connect_error", (err) => {
+  //     console.error("WebSocket connection error:", err);
+  //   });
+
+  //   socket.on("disconnect", () => {
+  //     console.log("Disconnected from WebSocket server");
+  //   });
+
+  //   return () => {
+  //     console.log("Cleaning up WebSocket listeners...");
+  //     socket.off("connect");
+  //     socket.off("connect_error");
+  //     socket.off("disconnect");
+  //   };
+  // }, []);
+
   useEffect(() => {
     const cards = document.querySelectorAll(".content-holder");
 

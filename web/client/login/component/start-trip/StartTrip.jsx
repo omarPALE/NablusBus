@@ -153,6 +153,7 @@ const StartTripCard = ({
         const locationUpdated = await updateLocation(latitude, longitude);
 
         if (locationUpdated && socket) {
+          console.log("sendin");
           socket.emit("location-update", {
             bus_id: busId,
             latitude,
