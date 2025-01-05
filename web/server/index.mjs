@@ -27,7 +27,7 @@ app.use("/api/bus-locations", busLocationRoutes);
 const server = http.createServer(app); // Create an HTTP server
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173", // Replace with your frontend URL
+    origin: "*", // Replace with your frontend URL
     methods: ["GET", "POST"],
   },
 });
@@ -52,7 +52,7 @@ io.on("connection", (socket) => {
       });
       console.log("update location for all users ", data);
       // Optionally broadcast the location update to passengers
-      socket.emit("bus-location", data);
+      io.emit("bus-location", data);
       console.log("update location for all users ");
     } catch (error) {
       console.error("Error handling location update:", error);

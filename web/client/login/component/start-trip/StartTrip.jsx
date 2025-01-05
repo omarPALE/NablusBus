@@ -19,7 +19,7 @@ const StartTripCard = ({
   const [isFocused, setIsFocused] = useState(false);
   const [busId, setBusId] = useState(0);
   const socket = useContext(SocketContext); // Access the shared WebSocket instance
-
+  //fetch bus number
   useEffect(() => {
     const fetchBusNumber = async () => {
       try {
@@ -44,13 +44,13 @@ const StartTripCard = ({
       fetchBusNumber();
     }
   }, [userState?.work_id]);
-
+  //init trip start time
   useEffect(() => {
     const now = new Date();
     const formattedTime = now.toLocaleString();
     setStartTime(formattedTime);
   }, []);
-
+  //avaliable routes
   const handleSearch = (searchText) => {
     const filtered = availableRoutes.filter((route) =>
       route.toLowerCase().includes(searchText.toLowerCase())
@@ -147,13 +147,23 @@ const StartTripCard = ({
 
     navigator.geolocation.watchPosition(
       async (position) => {
-        const { latitude, longitude } = position.coords;
+        const { latitude, longitude, accuracy } = position.coords;
 
-        // Only update the database and emit location if distance is >= 20 meters
+        console.log(
+          `Current Position: Latitude ${latitude}, Longitude ${longitude}, Accuracy: ${accuracy} meters`
+        );
+
+        // Check if the accuracy is acceptable (e.g., less than 50 meters)
+        // if (accuracy < 5000000) {
+        //   console.warn("Location accuracy is too low. Skipping update.");
+        //   return;
+        // }
+
+        // Update only if the location has changed significantly (>= 20 meters)
         const locationUpdated = await updateLocation(latitude, longitude);
 
         if (locationUpdated && socket) {
-          console.log("sendin");
+          console.log("Sending location update via WebSocket...");
           socket.emit("location-update", {
             bus_id: busId,
             latitude,
@@ -164,8 +174,27 @@ const StartTripCard = ({
       },
       (error) => {
         console.error("Error getting location:", error);
+        // Optional: Handle specific geolocation errors
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            console.error("User denied the request for Geolocation.");
+            break;
+          case error.POSITION_UNAVAILABLE:
+            console.error("Location information is unavailable.");
+            break;
+          case error.TIMEOUT:
+            console.error("The request to get user location timed out.");
+            break;
+          default:
+            console.error("An unknown error occurred.");
+            break;
+        }
       },
-      { enableHighAccuracy: true }
+      {
+        enableHighAccuracy: true, // Requests GPS-level accuracy
+        maximumAge: 0, // Avoid using cached location data
+        timeout: 10000, // Timeout after 10 seconds
+      }
     );
   };
 
@@ -222,12 +251,7 @@ const StartTripCard = ({
       alert("Please select a route and set the passenger number.");
     }
   };
-  if (start) {
-    // console.log(busId);
-    // startLocationUpdates();
-  } else {
-    console.log("let's noooooot get startde");
-  }
+
   return (
     <div className="start-trip-card">
       <h3>Start Trip</h3>
