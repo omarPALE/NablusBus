@@ -11,6 +11,7 @@ const GoogleMaps = ({ latitude, longitude }) => {
   const mapRef = useRef(null); // Ref to store map instance
   const markersRef = useRef(new Map()); // To store markers keyed by bus_id
   const clustererRef = useRef(null); // Store the MarkerClusterer instance
+  const infoWindowRef = useRef(null); // Ref for the info window
 
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: "AIzaSyDOTXuigdl1ZWQw2bNYFXUhh5cgoHYJ2qQ", // Replace with your API key
@@ -31,6 +32,13 @@ const GoogleMaps = ({ latitude, longitude }) => {
     }
 
     const map = mapRef.current;
+
+    // Initialize the info window
+    if (!infoWindowRef.current) {
+      infoWindowRef.current = new window.google.maps.InfoWindow();
+    }
+
+    const infoWindow = infoWindowRef.current;
 
     // Clear existing markers if re-rendered
     if (clustererRef.current) {
@@ -59,18 +67,29 @@ const GoogleMaps = ({ latitude, longitude }) => {
 
       console.log(`Bus ${bus_id} location received:`, latitude, longitude);
 
+      // Custom SVG icon content
+      const busSvg = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="#4285F4">
+          <path d="M5 16v-6c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2v6h1v2h-1v1h-3v-1h-8v1h-3v-1h-1v-2h1zm2-1h2v-4h-2v4zm6 0h2v-4h-2v4zm-8-11c-1.1 0-2 .9-2 2h16c0-1.1-.9-2-2-2h-12z"/>
+        </svg>
+      `;
+
       // Add or update markers
       if (!markersRef.current.has(bus_id)) {
-        const marker = new window.google.maps.Marker({
+        const marker = new window.google.maps.marker.AdvancedMarkerElement({
           position: { lat: latitude, lng: longitude },
-          title: `Bus ID: ${bus_id}`,
+          content: new DOMParser().parseFromString(busSvg, "text/html").body
+            .firstChild, // Parse SVG to DOM element
         });
-        markersRef.current.set(bus_id, marker);
+
+        markersRef.current.set(bus_id, { marker, bus_id }); // Store marker and bus_id in markersRef
+        marker.setMap(map);
       } else {
-        const marker = markersRef.current.get(bus_id);
-        if (marker) {
-          marker.setPosition(
-            new window.google.maps.LatLng(latitude, longitude)
+        const markerData = markersRef.current.get(bus_id);
+        if (markerData?.marker) {
+          markerData.marker.position = new window.google.maps.LatLng(
+            latitude,
+            longitude
           );
         }
       }
@@ -79,11 +98,36 @@ const GoogleMaps = ({ latitude, longitude }) => {
       if (clustererRef.current) {
         clustererRef.current.clearMarkers();
       }
+
       clustererRef.current = new MarkerClusterer({
         map,
-        markers: Array.from(markersRef.current.values()),
+        markers: Array.from(markersRef.current.values()).map(
+          (data) => data.marker
+        ),
         gridSize: 60, // Adjust clustering distance
         maxZoom: 15, // Stop clustering at this zoom level
+      });
+
+      // Add click event listener to clusters
+      clustererRef.current.addListener("click", (cluster) => {
+        const markers = cluster.markers; // Get markers in the cluster
+
+        // Map marker information
+        const content = markers
+          .map((marker) => {
+            const markerData = Array.from(markersRef.current.values()).find(
+              (data) => data.marker === marker
+            );
+            return `<div>Bus ID: ${markerData?.bus_id || "Unknown Bus"}</div>`;
+          })
+          .join("");
+
+        // Use `cluster.position` instead of `getCenter`
+        infoWindow.setContent(
+          `<div><strong>Cluster Info:</strong><br/>${content}</div>`
+        );
+        infoWindow.setPosition(cluster.position);
+        infoWindow.open(map);
       });
     });
 
