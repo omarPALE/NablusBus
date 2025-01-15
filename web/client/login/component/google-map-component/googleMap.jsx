@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import { useLoadScript } from "@react-google-maps/api";
 import getSocket from "../socket/socketService";
@@ -12,11 +12,34 @@ const GoogleMaps = ({ latitude, longitude }) => {
   const markersRef = useRef(new Map()); // To store markers keyed by bus_id
   const clustererRef = useRef(null); // Store the MarkerClusterer instance
   const infoWindowRef = useRef(null); // Ref for the info window
+  const [selectedBus, setSelectedBus] = useState(null); // Store selected bus data
 
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: "AIzaSyDOTXuigdl1ZWQw2bNYFXUhh5cgoHYJ2qQ", // Replace with your API key
     libraries,
   });
+
+  // Mock trip data
+  const trips = [
+    {
+      bus_id: 1,
+      driver: "John Doe",
+      route: "Route 12",
+      passengers: 23,
+      start_time: "08:00 AM",
+      end_time: "10:30 AM",
+      stops: ["Stop A", "Stop B", "Stop C"],
+    },
+    {
+      bus_id: 2,
+      driver: "Jane Smith",
+      route: "Route 5",
+      passengers: 15,
+      start_time: "09:00 AM",
+      end_time: "11:15 AM",
+      stops: ["Stop D", "Stop E", "Stop F"],
+    },
+  ];
 
   useEffect(() => {
     if (!isLoaded || !mapContainerRef.current) return;
@@ -36,13 +59,6 @@ const GoogleMaps = ({ latitude, longitude }) => {
     // Initialize the info window
     if (!infoWindowRef.current) {
       infoWindowRef.current = new window.google.maps.InfoWindow();
-    }
-
-    const infoWindow = infoWindowRef.current;
-
-    // Clear existing markers if re-rendered
-    if (clustererRef.current) {
-      clustererRef.current.clearMarkers();
     }
 
     const socket = getSocket();
@@ -82,6 +98,13 @@ const GoogleMaps = ({ latitude, longitude }) => {
             .firstChild, // Parse SVG to DOM element
         });
 
+        marker.addListener("click", () => {
+          const tripInfo = trips.find((trip) => trip.bus_id === bus_id);
+          if (tripInfo) {
+            setSelectedBus(tripInfo); // Update the state with selected trip data
+          }
+        });
+
         markersRef.current.set(bus_id, { marker, bus_id }); // Store marker and bus_id in markersRef
         marker.setMap(map);
       } else {
@@ -107,28 +130,6 @@ const GoogleMaps = ({ latitude, longitude }) => {
         gridSize: 60, // Adjust clustering distance
         maxZoom: 15, // Stop clustering at this zoom level
       });
-
-      // Add click event listener to clusters
-      clustererRef.current.addListener("click", (cluster) => {
-        const markers = cluster.markers; // Get markers in the cluster
-
-        // Map marker information
-        const content = markers
-          .map((marker) => {
-            const markerData = Array.from(markersRef.current.values()).find(
-              (data) => data.marker === marker
-            );
-            return `<div>Bus ID: ${markerData?.bus_id || "Unknown Bus"}</div>`;
-          })
-          .join("");
-
-        // Use `cluster.position` instead of `getCenter`
-        infoWindow.setContent(
-          `<div><strong>Cluster Info:</strong><br/>${content}</div>`
-        );
-        infoWindow.setPosition(cluster.position);
-        infoWindow.open(map);
-      });
     });
 
     return () => {
@@ -144,13 +145,56 @@ const GoogleMaps = ({ latitude, longitude }) => {
   if (!isLoaded) return <div>Loading Google Maps...</div>;
 
   return (
-    <div
-      ref={mapContainerRef}
-      style={{
-        width: "100%", // Full-width container
-        height: "100vh", // Full-height container
-      }}
-    />
+    <>
+      <div
+        ref={mapContainerRef}
+        style={{
+          width: "100%", // Full-width container
+          height: "100vh", // Full-height container
+        }}
+      />
+      {selectedBus && (
+        <div
+          style={{
+            position: "absolute",
+            top: "10%",
+            right: "0",
+            width: "300px",
+            background: "#fff",
+            padding: "20px",
+            boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+            zIndex: 1000,
+          }}
+        >
+          <h3>Trip Info</h3>
+          <p>
+            <strong>Bus ID:</strong> {selectedBus.bus_id}
+          </p>
+          <p>
+            <strong>Driver:</strong> {selectedBus.driver}
+          </p>
+          <p>
+            <strong>Route:</strong> {selectedBus.route}
+          </p>
+          <p>
+            <strong>Passengers:</strong> {selectedBus.passengers}
+          </p>
+          <p>
+            <strong>Start Time:</strong> {selectedBus.start_time}
+          </p>
+          <p>
+            <strong>End Time:</strong> {selectedBus.end_time}
+          </p>
+          <h4>Stops</h4>
+          <ul>
+            {selectedBus.stops.map((stop, index) => (
+              <li key={index}>{stop}</li>
+            ))}
+          </ul>
+          <button onClick={() => setSelectedBus(null)}>Close</button>
+        </div>
+      )}
+    </>
   );
 };
 

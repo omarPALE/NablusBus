@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import axios from "axios";
 import "./start-trip.css";
 import { SocketContext } from "../../src/App"; // Import the SocketContext from App
+import ShowErrorPopup from "./showErrorPopup";
 
 const StartTripCard = ({
   availableRoutes,
@@ -18,6 +19,8 @@ const StartTripCard = ({
   const [startTime, setStartTime] = useState("");
   const [isFocused, setIsFocused] = useState(false);
   const [busId, setBusId] = useState(0);
+  const [showPopup, setShowPopup] = useState(false);
+  const [errorCode, setErrorCode] = useState(null);
   const socket = useContext(SocketContext); // Access the shared WebSocket instance
   //fetch bus number
   useEffect(() => {
@@ -148,7 +151,6 @@ const StartTripCard = ({
     navigator.geolocation.watchPosition(
       async (position) => {
         const { latitude, longitude, accuracy } = position.coords;
-
         console.log(
           `Current Position: Latitude ${latitude}, Longitude ${longitude}, Accuracy: ${accuracy} meters`
         );
@@ -175,6 +177,8 @@ const StartTripCard = ({
       (error) => {
         console.error("Error getting location:", error);
         // Optional: Handle specific geolocation errors
+        setErrorCode(error.code);
+        setShowPopup(true);
         switch (error.code) {
           case error.PERMISSION_DENIED:
             console.error("User denied the request for Geolocation.");
@@ -217,9 +221,6 @@ const StartTripCard = ({
         );
 
         if (response.status === 201) {
-          alert("Trip started successfully");
-          // onStartTrip(tripData);
-
           // Start sending location updates after trip is started
           startLocationUpdates();
         } else {
@@ -291,7 +292,12 @@ const StartTripCard = ({
             type="number"
             id="passengerCount"
             value={passengerCount}
-            onChange={(e) => setPassengerCount(e.target.value)}
+            onChange={(e) => {
+              const value = parseInt(e.target.value, 10);
+              if (value > 0 || e.target.value === "") {
+                setPassengerCount(e.target.value);
+              }
+            }}
             placeholder="Enter passenger count"
           />
         </div>
@@ -307,6 +313,14 @@ const StartTripCard = ({
           Start Trip
         </button>
       </form>
+      <div>
+        {showPopup && (
+          <ShowErrorPopup
+            errorCode={errorCode}
+            onClose={() => setShowPopup(false)}
+          />
+        )}
+      </div>
     </div>
   );
 };
