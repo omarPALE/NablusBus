@@ -22,6 +22,7 @@ const StartTripCard = ({
   const [showPopup, setShowPopup] = useState(false);
   const [errorCode, setErrorCode] = useState(null);
   const socket = useContext(SocketContext); // Access the shared WebSocket instance
+  const [tripData, setTripData] = useState({});
   //fetch bus number
   useEffect(() => {
     const fetchBusNumber = async () => {
@@ -170,6 +171,7 @@ const StartTripCard = ({
             bus_id: busId,
             latitude,
             longitude,
+            tripData,
           });
           console.log("Location update sent via WebSocket");
         }
@@ -205,14 +207,15 @@ const StartTripCard = ({
   const handleStartTrip = async () => {
     console.log("at start of start trip  the bus id is :", busId);
     if (route && passengerCount) {
-      const tripData = {
+      setTripData({
         bus_id: busNumber,
         driver_id: userState.work_id,
+        username: userState.username,
         start_time: startTime,
         passenger_count: passengerCount,
         route,
         status: "ongoing",
-      };
+      });
 
       try {
         const response = await axios.post(

@@ -13,33 +13,12 @@ const GoogleMaps = ({ latitude, longitude }) => {
   const clustererRef = useRef(null); // Store the MarkerClusterer instance
   const infoWindowRef = useRef(null); // Ref for the info window
   const [selectedBus, setSelectedBus] = useState(null); // Store selected bus data
-
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: "AIzaSyDOTXuigdl1ZWQw2bNYFXUhh5cgoHYJ2qQ", // Replace with your API key
     libraries,
   });
 
   // Mock trip data
-  const trips = [
-    {
-      bus_id: 1,
-      driver: "John Doe",
-      route: "Route 12",
-      passengers: 23,
-      start_time: "08:00 AM",
-      end_time: "10:30 AM",
-      stops: ["Stop A", "Stop B", "Stop C"],
-    },
-    {
-      bus_id: 2,
-      driver: "Jane Smith",
-      route: "Route 5",
-      passengers: 15,
-      start_time: "09:00 AM",
-      end_time: "11:15 AM",
-      stops: ["Stop D", "Stop E", "Stop F"],
-    },
-  ];
 
   useEffect(() => {
     if (!isLoaded || !mapContainerRef.current) return;
@@ -68,8 +47,8 @@ const GoogleMaps = ({ latitude, longitude }) => {
     });
 
     socket.on("bus-location", (data) => {
-      const { bus_id, latitude, longitude } = data;
-
+      const { bus_id, latitude, longitude, tripData } = data;
+      console.log("Trip data are :", tripData);
       // Validate coordinates
       if (
         typeof latitude !== "number" ||
@@ -99,9 +78,10 @@ const GoogleMaps = ({ latitude, longitude }) => {
         });
 
         marker.addListener("click", () => {
-          const tripInfo = trips.find((trip) => trip.bus_id === bus_id);
-          if (tripInfo) {
-            setSelectedBus(tripInfo); // Update the state with selected trip data
+          console.log("bus clickerd!!!!!:  ", tripData);
+
+          if (tripData) {
+            setSelectedBus(tripData); // Update the state with selected trip data
           }
         });
 
@@ -153,6 +133,7 @@ const GoogleMaps = ({ latitude, longitude }) => {
           height: "100vh", // Full-height container
         }}
       />
+
       {selectedBus && (
         <div
           style={{
@@ -171,13 +152,13 @@ const GoogleMaps = ({ latitude, longitude }) => {
             <strong>Bus ID:</strong> {selectedBus.bus_id}
           </p>
           <p>
-            <strong>Driver:</strong> {selectedBus.driver}
+            <strong>Driver:</strong> {selectedBus.username}
           </p>
           <p>
             <strong>Route:</strong> {selectedBus.route}
           </p>
           <p>
-            <strong>Passengers:</strong> {selectedBus.passengers}
+            <strong>Passengers:</strong> {selectedBus.passenger_count}
           </p>
           <p>
             <strong>Start Time:</strong> {selectedBus.start_time}
@@ -185,12 +166,12 @@ const GoogleMaps = ({ latitude, longitude }) => {
           <p>
             <strong>End Time:</strong> {selectedBus.end_time}
           </p>
-          <h4>Stops</h4>
+          {/* <h4>Stops</h4>
           <ul>
             {selectedBus.stops.map((stop, index) => (
               <li key={index}>{stop}</li>
             ))}
-          </ul>
+          </ul> */}
           <button onClick={() => setSelectedBus(null)}>Close</button>
         </div>
       )}
