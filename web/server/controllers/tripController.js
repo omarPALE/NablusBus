@@ -120,3 +120,29 @@ export const getTripsByWorkerId = async (req, res) => {
       .json({ message: "Failed to fetch trips", error: error.message });
   }
 };
+
+// Get active trip for a specific driver
+export const getActiveTrip = async (req, res) => {
+  const { driverId } = req.params;
+
+  try {
+    // Query to fetch the active trip
+    const query = `
+      SELECT * FROM trips
+      WHERE driver_id = $1 AND status = 'ongoing'
+      LIMIT 1
+    `;
+    const result = await pool.query(query, [driverId]);
+
+    if (result.rows.length > 0) {
+      res.status(200).json(result.rows[0]); // Return the active trip
+    } else {
+      res
+        .status(404)
+        .json({ message: "No active trip found for this driver." });
+    }
+  } catch (error) {
+    console.error("Error fetching active trip:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+};

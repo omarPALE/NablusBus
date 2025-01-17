@@ -48,6 +48,7 @@ export const getLastLocation = async (req, res) => {
 
 export const updateLocation = async (req, res) => {
   const { bus_id, latitude, longitude } = req.body;
+  console.log("the bus id is :", bus_id);
   try {
     await pool.query(
       `INSERT INTO bus_locations (bus_id, latitude, longitude)
@@ -56,7 +57,7 @@ export const updateLocation = async (req, res) => {
     );
     res.status(201).json({ message: "Location updated successfully" });
   } catch (error) {
-    console.error("Error saving location:", error);
+    console.error("Error saving location:");
     res.status(500).json({ message: "Server error" });
   }
 };

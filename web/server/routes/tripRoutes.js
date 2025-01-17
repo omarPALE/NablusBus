@@ -6,6 +6,7 @@ import {
   getAllTrips,
   updateEndTime,
   getTripsByWorkerId,
+  getActiveTrip,
 } from "../controllers/tripController.js";
 
 // POST endpoint to create a new trip
@@ -17,4 +18,6 @@ router.get("/alltrips", getAllTrips);
 router.get("/trip/:tripid");
 router.get("/all");
 router.put("/updateEndTime/:tripId", updateEndTime);
+// Route for fetching active trips
+router.get("/active/:driverId", getActiveTrip);
 export default router;

@@ -78,16 +78,12 @@ const GoogleMaps = ({ latitude, longitude }) => {
         });
 
         marker.addListener("click", () => {
-          console.log("bus clickerd!!!!!:  ", tripData);
+          // Get the mouse coordinates relative to the map container
           const mouseX = event.clientX;
           const mouseY = event.clientY;
 
           if (tripData) {
             setSelectedBus(tripData); // Update the state with selected trip data
-            // Get the mouse coordinates relative to the map container
-
-            console.log("mouse location is :", event.clientX, ",", mouseY);
-
             // Calculate offsets as needed
             const offsetX = 50;
             const offsetY = 10;

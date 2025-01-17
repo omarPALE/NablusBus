@@ -5,13 +5,7 @@ import "./start-trip.css";
 import { SocketContext } from "../../src/App"; // Import the SocketContext from App
 import ShowErrorPopup from "./showErrorPopup";
 
-const StartTripCard = ({
-  availableRoutes,
-  onStartTrip,
-  userState,
-  start,
-  setStart,
-}) => {
+const StartTripCard = ({ availableRoutes, userState, isTracking }) => {
   const [busNumber, setBusNumber] = useState("");
   const [route, setRoute] = useState("");
   const [filteredRoutes, setFilteredRoutes] = useState(availableRoutes);
@@ -23,6 +17,11 @@ const StartTripCard = ({
   const [errorCode, setErrorCode] = useState(null);
   const socket = useContext(SocketContext); // Access the shared WebSocket instance
   const [tripData, setTripData] = useState({});
+  useEffect(() => {
+    console.log("isTracking has changed:", isTracking);
+    // Propagate the change to other components or API calls
+  }, [isTracking]);
+
   //fetch bus number
   useEffect(() => {
     const fetchBusNumber = async () => {
@@ -39,7 +38,8 @@ const StartTripCard = ({
         }
       } catch (error) {
         alert(
-          "Error retrieving bus number. Please check your network connection."
+          "Error retrieving bus number. Please check your network connection.",
+          error
         );
       }
     };
@@ -70,8 +70,15 @@ const StartTripCard = ({
   };
 
   const startLocationUpdates = () => {
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported by your browser.");
+      return;
+    }
+
     let lastRecordedLocation = null; // To store the last recorded location
+
     console.log("wellcom to fetch last location");
+
     const fetchLastLocation = async () => {
       try {
         const response = await axios.get(
@@ -110,6 +117,9 @@ const StartTripCard = ({
     };
 
     const updateLocation = async (latitude, longitude) => {
+      console.log("tracking status is:", isTracking);
+      if (!isTracking) return; // Stop updates if tracking is disabled
+
       const shouldUpdate =
         !lastRecordedLocation ||
         haversineDistance(
@@ -125,12 +135,13 @@ const StartTripCard = ({
       }
 
       try {
+        console.log("Location update sent to database", busId);
+
         await axios.post("http://localhost:5000/api/bus-locations/update", {
           bus_id: busId,
           latitude,
           longitude,
         });
-        console.log("Location update sent to database");
 
         // Update the last recorded location
         lastRecordedLocation = { latitude, longitude };
@@ -141,21 +152,15 @@ const StartTripCard = ({
       }
     };
 
-    if (!navigator.geolocation) {
-      alert("Geolocation is not supported by your browser.");
-      return;
-    }
+    if (!isTracking) return; // Prevent location updates if tracking is disabled
 
+    // setIsTracking(true); // Enable tracking
     // Fetch the most recent location when the function starts
     fetchLastLocation();
 
     navigator.geolocation.watchPosition(
       async (position) => {
         const { latitude, longitude, accuracy } = position.coords;
-        console.log(
-          `Current Position: Latitude ${latitude}, Longitude ${longitude}, Accuracy: ${accuracy} meters`
-        );
-
         // Check if the accuracy is acceptable (e.g., less than 50 meters)
         // if (accuracy < 5000000) {
         //   console.warn("Location accuracy is too low. Skipping update.");
@@ -167,6 +172,7 @@ const StartTripCard = ({
 
         if (locationUpdated && socket) {
           console.log("Sending location update via WebSocket...");
+          console.log(tripData);
           socket.emit("location-update", {
             bus_id: busId,
             latitude,
@@ -203,50 +209,65 @@ const StartTripCard = ({
       }
     );
   };
+  // Add this function to handle active trip persistence
+  const checkActiveTrip = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/api/trips/active/${userState.work_id}`
+      );
+      if (response.status === 200 && response.data) {
+        const activeTrip = response.data;
+        setTripData(activeTrip);
+        setRoute(activeTrip.route);
+        setPassengerCount(activeTrip.passenger_count);
+        startLocationUpdates(); // Resume location updates
+      }
+    } catch (error) {
+      console.error("Error checking active trip:", error);
+    }
+  };
 
+  // Call `checkActiveTrip` when the component mounts
+  useEffect(() => {
+    if (userState?.work_id) {
+      checkActiveTrip();
+    }
+  }, [userState?.work_id, checkActiveTrip]);
+
+  // Adjust `handleStartTrip` to handle ongoing trips
   const handleStartTrip = async () => {
-    console.log("at start of start trip  the bus id is :", busId);
+    if (tripData && tripData.status === "ongoing") {
+      alert("An active trip is already in progress.");
+      return;
+    }
     if (route && passengerCount) {
-      setTripData({
-        bus_id: busNumber,
+      const newTripData = {
+        bus_id: busId,
         driver_id: userState.work_id,
         username: userState.username,
         start_time: startTime,
         passenger_count: passengerCount,
         route,
         status: "ongoing",
-      });
-
+      };
+      console.log(newTripData);
+      setTripData(newTripData); // Update state for the trip
       try {
         const response = await axios.post(
           "http://localhost:5000/api/trips/trip",
-          tripData
+          newTripData
         );
 
         if (response.status === 201) {
-          // Start sending location updates after trip is started
+          // setIsTracking(true);
+          console.log("start tracking value: ", isTracking);
           startLocationUpdates();
         } else {
           alert("Error starting the trip. Please try again.");
         }
       } catch (error) {
-        let errorMessage = "Network error. Please try again.";
-
-        if (error.response) {
-          // Errors from the server
-          errorMessage += `\nStatus: ${error.response.status}\nMessage: ${
-            error.response.data.message || error.response.statusText
-          }`;
-        } else if (error.request) {
-          // No response was received
-          errorMessage += "\nNo response received from the server.";
-        } else {
-          // Errors during request setup
-          errorMessage += `\nError Message: ${error.message}`;
-        }
-
-        console.error("Error details:", error); // Log the full error object to the console
-        alert(errorMessage);
+        console.error("Error starting trip:", error);
+        alert("Network error. Please try again.");
       }
 
       setRoute("");
@@ -334,6 +355,8 @@ StartTripCard.propTypes = {
   userState: PropTypes.object.isRequired,
   start: PropTypes.bool.isRequired,
   setStart: PropTypes.func.isRequired,
+  setIsTracking: PropTypes.func.isRequired,
+  isTracking: PropTypes.bool.isRequired,
 };
 
 export default StartTripCard;

@@ -16,9 +16,26 @@ const Dashboard = (props) => {
   const [showTrips, setShowTrips] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [loading, setLoading] = useState(false); // Add loading state
+  const [isTracking, setIsTracking] = useState(true); // Add state to control tracking trips
+
+  const stopLocationUpdates = () => {
+    setIsTracking(false); // Disable tracking
+    console.log("Tracking stopped.");
+  };
 
   const handleStartTrip = () => {
+    // setIsTracking(false); // Reset tracking state before showing modal
+    setIsTracking(true); // Disable tracking
+    console.log(
+      "from dash board fisrt button change streaming tracking values:",
+      isTracking
+    );
     setIsModalVisible(true);
+  };
+  const handleTrackingChange = (newTrackingState) => {
+    setIsTracking(newTrackingState);
+    console.log("isTracking updated:", newTrackingState);
+    // Perform other actions if necessary
   };
 
   const handleGetTrips = async () => {
@@ -45,6 +62,7 @@ const Dashboard = (props) => {
       );
       if (response.status === 200) {
         alert(`Trip ${tripId} finished at ${endTime}`);
+        stopLocationUpdates();
       } else {
         alert("Failed to finish trip. Please try again.");
       }
@@ -53,7 +71,13 @@ const Dashboard = (props) => {
       alert("Error finishing trip. Please try again.");
     }
   };
-
+  const handlesStartStreaming = () => {
+    setIsTracking(true); // Disable tracking
+    console.log(
+      "from dash board change streaming tracking values:",
+      isTracking
+    );
+  };
   const handleCancelModal = () => {
     setIsModalVisible(false);
   };
@@ -98,6 +122,9 @@ const Dashboard = (props) => {
           </Menu.Item>
           <Menu.Item key="2" onClick={handleGetTrips}>
             Get All Trips
+          </Menu.Item>
+          <Menu.Item key="3" onClick={handlesStartStreaming}>
+            Stream Location
           </Menu.Item>
         </Menu>
       </Sider>
@@ -163,6 +190,8 @@ const Dashboard = (props) => {
           availableRoutes={["Route A", "Route B", "Route C"]}
           start={props.start}
           setStart={props.setStart}
+          isTracking={isTracking}
+          setIsTracking={handleTrackingChange}
         />
       </Modal>
     </Layout>
