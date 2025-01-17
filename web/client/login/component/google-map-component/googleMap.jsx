@@ -17,8 +17,8 @@ const GoogleMaps = ({ latitude, longitude }) => {
     googleMapsApiKey: "AIzaSyDOTXuigdl1ZWQw2bNYFXUhh5cgoHYJ2qQ", // Replace with your API key
     libraries,
   });
-
   // Mock trip data
+  const [popupStyle, setPopStyles] = useState({});
 
   useEffect(() => {
     if (!isLoaded || !mapContainerRef.current) return;
@@ -79,9 +79,34 @@ const GoogleMaps = ({ latitude, longitude }) => {
 
         marker.addListener("click", () => {
           console.log("bus clickerd!!!!!:  ", tripData);
+          const mouseX = event.clientX;
+          const mouseY = event.clientY;
 
           if (tripData) {
             setSelectedBus(tripData); // Update the state with selected trip data
+            // Get the mouse coordinates relative to the map container
+
+            console.log("mouse location is :", event.clientX, ",", mouseY);
+
+            // Calculate offsets as needed
+            const offsetX = 50;
+            const offsetY = 10;
+
+            // Calculate CSS position for the popup
+            setPopStyles({
+              position: "absolute",
+              background: "#f9f9f9",
+              borderRadius: "10px",
+              padding: "15px",
+              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+              fontFamily: "'Arial', sans-serif",
+              fontSize: "14px",
+              color: "#333",
+              zIndex: 1000,
+              left: `${mouseX + offsetX}px`,
+              top: `${mouseY + offsetY}px`,
+              transform: "translate(-50%, 0)", // Optional: Center horizontally
+            });
           }
         });
 
@@ -136,18 +161,28 @@ const GoogleMaps = ({ latitude, longitude }) => {
 
       {selectedBus && (
         <div
-          style={{
-            position: "absolute",
-            top: "10%",
-            right: "0",
-            width: "300px",
-            background: "#fff",
-            padding: "20px",
-            boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
-            zIndex: 1000,
-          }}
+          className="bus-popup"
+          style={popupStyle} // Use the dynamic style here  popupStyle
         >
-          <h3>Trip Info</h3>
+          <button
+            onClick={() => setSelectedBus(null)}
+            style={{
+              position: "absolute",
+              top: "10px",
+              right: "10px",
+              background: "none",
+              border: "none",
+              fontSize: "16px",
+              cursor: "pointer",
+              color: "#999",
+            }}
+            title="Close"
+          >
+            ✖
+          </button>
+          <h4 style={{ marginBottom: "10px", fontSize: "16px", color: "#555" }}>
+            Trip Info
+          </h4>
           <p>
             <strong>Bus ID:</strong> {selectedBus.bus_id}
           </p>
@@ -161,18 +196,11 @@ const GoogleMaps = ({ latitude, longitude }) => {
             <strong>Passengers:</strong> {selectedBus.passenger_count}
           </p>
           <p>
-            <strong>Start Time:</strong> {selectedBus.start_time}
+            <strong>Start:</strong> {selectedBus.start_time}
           </p>
           <p>
-            <strong>End Time:</strong> {selectedBus.end_time}
+            <strong>End:</strong> {selectedBus.end_time}
           </p>
-          {/* <h4>Stops</h4>
-          <ul>
-            {selectedBus.stops.map((stop, index) => (
-              <li key={index}>{stop}</li>
-            ))}
-          </ul> */}
-          <button onClick={() => setSelectedBus(null)}>Close</button>
         </div>
       )}
     </>
