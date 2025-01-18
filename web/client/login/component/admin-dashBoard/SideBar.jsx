@@ -3,7 +3,6 @@ import {
   CarOutlined,
   UserOutlined,
   FileOutlined,
-  NotificationOutlined,
   TruckOutlined,
 } from "@ant-design/icons";
 import { useState } from "react";
@@ -13,7 +12,6 @@ import OverviewMetrics from "./OverviewMetrics";
 import Trips from "./sideBarItem/Trips";
 import Users from "./sideBarItem/Users";
 import Buses from "./sideBarItem/Buses";
-import Notifications from "./sideBarItem/Notifications";
 import Reports from "./sideBarItem/Reports";
 import axios from "axios";
 import "./Sidebar.css";
@@ -27,7 +25,10 @@ const Sidebar = ({ setLinks }) => {
   const [showlink1, setShowlink1] = useState("false");
   const [showlink2, setShowlink2] = useState("false");
   const [showlink3, setShowlink3] = useState("false");
+  const [showlink4, setShowlink4] = useState("false");
+
   const [busData, setBusData] = useState([]); // State to store bus data
+  // const [UserData, setUserData] = useState([]); // State to store bus data
 
   const handleMenuClick = (view) => {
     setSelectedView(view);
@@ -52,12 +53,40 @@ const Sidebar = ({ setLinks }) => {
       case "users":
         setLinks([
           {
-            label: "Something One",
-            onClick: () => console.log("Navigating to Something One"),
+            label: "Show All Users",
+            onClick: () => {
+              setShowlink1(true);
+              setShowlink2(false);
+              setShowlink3(false);
+              setShowlink4(false);
+            },
           },
           {
             label: "Something Two",
-            onClick: () => console.log("Navigating to Something Two"),
+            onClick: () => {
+              setShowlink1(false);
+              setShowlink2(true);
+              setShowlink3(false);
+              setShowlink4(false);
+            },
+          },
+          {
+            label: "Something Three",
+            onClick: () => {
+              setShowlink1(false);
+              setShowlink2(false);
+              setShowlink3(true);
+              setShowlink4(false);
+            },
+          },
+          {
+            label: "Something four",
+            onClick: () => {
+              setShowlink1(false);
+              setShowlink2(false);
+              setShowlink3(false);
+              setShowlink4(true);
+            },
           },
         ]);
         break;
@@ -87,18 +116,6 @@ const Sidebar = ({ setLinks }) => {
               setShowlink3(true);
               fetchBuses();
             },
-          },
-        ]);
-        break;
-      case "notifications":
-        setLinks([
-          {
-            label: "View All Notifications",
-            onClick: () => console.log("Navigating to Notifications"),
-          },
-          {
-            label: "Notification Settings",
-            onClick: () => console.log("Navigating to Notification Settings"),
           },
         ]);
         break;
@@ -142,7 +159,14 @@ const Sidebar = ({ setLinks }) => {
       case "trips":
         return <Trips />;
       case "users":
-        return <Users />;
+        return (
+          <Users
+            showlink2={showlink2}
+            showlink1={showlink1}
+            showlink3={showlink3}
+            showlink4={showlink4}
+          />
+        );
       case "buses":
         return (
           <Buses
@@ -152,8 +176,6 @@ const Sidebar = ({ setLinks }) => {
             busData={busData}
           />
         );
-      case "notifications":
-        return <Notifications />;
       case "reports":
         return <Reports />;
       default:
@@ -202,14 +224,6 @@ const Sidebar = ({ setLinks }) => {
             style={{ color: "black" }}
           >
             Manage Buses
-          </Menu.Item>
-          <Menu.Item
-            key="notifications"
-            icon={<NotificationOutlined />}
-            onClick={() => handleMenuClick("notifications")}
-            style={{ color: "black" }}
-          >
-            Notifications
           </Menu.Item>
           <Menu.Item
             key="reports"

@@ -1,0 +1,51 @@
+/* Users.css */
+
+.users-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.user-card-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.user-card {
+  width: 300px;
+  text-align: center;
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+  background-color: #ffffff;
+}
+
+.roles-list-container {
+  margin-top: 20px;
+}
+
+.role-card {
+  background-color: #e6f7ff;
+  border: 1px solid #91d5ff;
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.role-card:hover {
+  background-color: #bae7ff;
+}
+
+button {
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #40a9ff;
+  color: #fff;
+}
