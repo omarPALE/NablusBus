@@ -206,8 +206,9 @@ const StartTripCard = ({
 
   const handleStartTrip = async () => {
     console.log("at start of start trip  the bus id is :", busId);
+
     if (route && passengerCount) {
-      setTripData({
+      const newTripData = {
         bus_id: busNumber,
         driver_id: userState.work_id,
         username: userState.username,
@@ -215,12 +216,13 @@ const StartTripCard = ({
         passenger_count: passengerCount,
         route,
         status: "ongoing",
-      });
+      };
+      setTripData(newTripData);
 
       try {
         const response = await axios.post(
           "http://localhost:5000/api/trips/trip",
-          tripData
+          newTripData
         );
 
         if (response.status === 201) {
