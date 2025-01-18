@@ -62,7 +62,7 @@ const Sidebar = ({ setLinks }) => {
             },
           },
           {
-            label: "Something Two",
+            label: "Users",
             onClick: () => {
               setShowlink1(false);
               setShowlink2(true);
@@ -71,7 +71,7 @@ const Sidebar = ({ setLinks }) => {
             },
           },
           {
-            label: "Something Three",
+            label: "Drivers",
             onClick: () => {
               setShowlink1(false);
               setShowlink2(false);
@@ -80,7 +80,7 @@ const Sidebar = ({ setLinks }) => {
             },
           },
           {
-            label: "Something four",
+            label: "Admins",
             onClick: () => {
               setShowlink1(false);
               setShowlink2(false);

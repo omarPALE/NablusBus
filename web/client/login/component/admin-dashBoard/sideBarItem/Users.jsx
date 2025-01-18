@@ -6,6 +6,8 @@ import "./styles/User.css";
 
 const Users = ({ showlink1, showlink2, showlink3, showlink4 }) => {
   const [users, setUsers] = useState([]);
+  const [selectedRoleDetails, setSelectedRoleDetails] = useState([]);
+  const [selectedRole, setSelectedRole] = useState("");
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -39,9 +41,21 @@ const Users = ({ showlink1, showlink2, showlink3, showlink4 }) => {
     fetchUsers();
   }, []);
 
-  const filterUsersByRole = (role) => {
-    if (!Array.isArray(users)) return [];
-    return users.filter((user) => user.role === role);
+  const fetchRoleDetails = async (role) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/api/admin/users/${role}`
+      );
+      if (response.status === 200) {
+        setSelectedRoleDetails(response.data);
+        setSelectedRole(role);
+      } else {
+        message.error("Failed to fetch role details.");
+      }
+    } catch (error) {
+      console.error(`Error fetching details for role: ${role}`, error);
+      message.error("Failed to fetch role details. Please try again later.");
+    }
   };
 
   const renderUsersList = (userList) => {
@@ -54,7 +68,16 @@ const Users = ({ showlink1, showlink2, showlink3, showlink4 }) => {
       <p>No users available.</p>
     ) : (
       userList.map((user, index) => (
-        <Card key={index} className="user-item" bordered>
+        <Card
+          key={index}
+          className="user-item"
+          bordered
+          onClick={() =>
+            user.role === "administrator" || user.role === "driver"
+              ? fetchRoleDetails(user.role)
+              : null
+          }
+        >
           <p>
             <strong>Role:</strong> {user.role}
           </p>
@@ -63,6 +86,33 @@ const Users = ({ showlink1, showlink2, showlink3, showlink4 }) => {
           </p>
         </Card>
       ))
+    );
+  };
+
+  const renderRoleDetails = () => {
+    if (selectedRoleDetails.length === 0) {
+      return <p>No details available for the selected role.</p>;
+    }
+
+    return (
+      <div className="role-details">
+        <h3>{`Details for ${
+          selectedRole.charAt(0).toUpperCase() + selectedRole.slice(1)
+        }s`}</h3>
+        {selectedRoleDetails.map((detail, index) => (
+          <Card key={index} className="role-item" bordered>
+            <p>
+              <strong>ID:</strong> {detail.work_id || detail.id}
+            </p>
+            <p>
+              <strong>Name:</strong> {detail.username}
+            </p>
+            <p>
+              <strong>Email:</strong> {detail.email}
+            </p>
+          </Card>
+        ))}
+      </div>
     );
   };
 
@@ -83,24 +133,31 @@ const Users = ({ showlink1, showlink2, showlink3, showlink4 }) => {
         {/* Display Passengers */}
         {!showlink1 && showlink2 && !showlink3 && !showlink4 && (
           <Card className="users-card" title="Passengers" bordered>
-            {renderUsersList(filterUsersByRole("passenger"))}
+            {renderUsersList(users.filter((user) => user.role === "passenger"))}
           </Card>
         )}
 
         {/* Display Drivers */}
         {!showlink1 && !showlink2 && showlink3 && !showlink4 && (
           <Card className="users-card" title="Drivers" bordered>
-            {renderUsersList(filterUsersByRole("driver"))}
+            {renderUsersList(users.filter((user) => user.role === "driver"))}
           </Card>
         )}
 
         {/* Display Admins */}
         {!showlink1 && !showlink2 && !showlink3 && showlink4 && (
           <Card className="users-card" title="Admins" bordered>
-            {renderUsersList(filterUsersByRole("administrator"))}
+            {renderUsersList(
+              users.filter((user) => user.role === "administrator")
+            )}
           </Card>
         )}
       </div>
+
+      {/* Role Details Section */}
+      {selectedRole && (
+        <div className="role-details-section">{renderRoleDetails()}</div>
+      )}
     </div>
   );
 };

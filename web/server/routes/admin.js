@@ -12,6 +12,7 @@ import {
   addBus,
   updateBus,
   getAllBuses,
+  getUsersByRole,
 } from "../controllers/adminController.js";
 
 // Admin metrics
@@ -27,5 +28,5 @@ router.get("/driver/:id", checkDriverIdExists);
 router.post("/addBus", addBus);
 router.get("/getBuses", getAllBuses);
 router.put("/updateBus", updateBus);
-
+router.get("/users/:role", getUsersByRole);
 export default router;

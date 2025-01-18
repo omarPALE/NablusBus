@@ -227,3 +227,29 @@ export const getAllBuses = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch buses" });
   }
 };
+
+// Controller function to get users by role
+export const getUsersByRole = async (req, res) => {
+  const { role } = req.params; // Get the role from the URL parameter
+
+  try {
+    // Query to get users based on their role
+    const result = await pool.query("SELECT * FROM users WHERE role = $1", [
+      role,
+    ]);
+
+    if (result.rows.length === 0) {
+      return res
+        .status(404)
+        .json({ message: `No users found for the role: ${role}` });
+    }
+
+    // Respond with the list of users
+    return res.status(200).json(result.rows);
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    return res
+      .status(500)
+      .json({ message: "Failed to fetch users. Please try again later." });
+  }
+};
