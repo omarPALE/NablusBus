@@ -49,3 +49,69 @@ button:hover {
   background-color: #40a9ff;
   color: #fff;
 }
+
+/* Style for User cards */
+.users-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.user-item {
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.user-item:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.role-details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.role-item {
+  transition: opacity 0.5s ease;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.role-item.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.role-details-section {
+  margin-top: 20px;
+  transition: transform 0.3s ease;
+}
+
+.users-card {
+  margin-top: 20px;
+}
+
+/* Animation for when a user card is clicked */
+.user-item.active {
+  transform: scale(1.05);
+}
+
+/* Define a smooth transition for the role details */
+.role-item {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  opacity: 0;
+  transform: translateY(20px); /* Start the card below and fade in */
+}
+
+.role-item.visible {
+  opacity: 1;
+  transform: translateY(0); /* Move the card to its normal position */
+}
+
+/* Optional: Add some hover effect for role details card */
+.role-item:hover {
+  transform: translateY(-5px); /* Slight hover effect */
+}

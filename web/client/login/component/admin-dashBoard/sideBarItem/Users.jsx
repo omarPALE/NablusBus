@@ -1,4 +1,4 @@
-import { Card, Button, message } from "antd";
+import { Card, message } from "antd";
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
@@ -8,6 +8,7 @@ const Users = ({ showlink1, showlink2, showlink3, showlink4 }) => {
   const [users, setUsers] = useState([]);
   const [selectedRoleDetails, setSelectedRoleDetails] = useState([]);
   const [selectedRole, setSelectedRole] = useState("");
+  const [activeRole, setActiveRole] = useState(null); // Track the currently active role card
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -49,6 +50,7 @@ const Users = ({ showlink1, showlink2, showlink3, showlink4 }) => {
       if (response.status === 200) {
         setSelectedRoleDetails(response.data);
         setSelectedRole(role);
+        setActiveRole(role); // Set the clicked role as active
       } else {
         message.error("Failed to fetch role details.");
       }
@@ -70,7 +72,7 @@ const Users = ({ showlink1, showlink2, showlink3, showlink4 }) => {
       userList.map((user, index) => (
         <Card
           key={index}
-          className="user-item"
+          className={`user-item ${activeRole === user.role ? "active" : ""}`} // Add active class
           bordered
           onClick={() =>
             user.role === "administrator" || user.role === "driver"
@@ -100,7 +102,13 @@ const Users = ({ showlink1, showlink2, showlink3, showlink4 }) => {
           selectedRole.charAt(0).toUpperCase() + selectedRole.slice(1)
         }s`}</h3>
         {selectedRoleDetails.map((detail, index) => (
-          <Card key={index} className="role-item" bordered>
+          <Card
+            key={index}
+            className={`role-item ${
+              activeRole === selectedRole ? "visible" : ""
+            }`} // Add visible class when the role is active
+            bordered
+          >
             <p>
               <strong>ID:</strong> {detail.work_id || detail.id}
             </p>
