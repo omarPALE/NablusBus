@@ -100,7 +100,7 @@ const isEmailValid = (email) => {
 };
 
 const isPhoneValid = (phone) => {
-  const re = /^\+?[1-9]\d{1,3}?[-.\s]?(\d{1,4}[-.\s]?){1,3}\d{1,4}$/;
+  const re = /^(056|059)\d{7}$/;
   return re.test(phone);
 };
 
@@ -182,46 +182,38 @@ const SignupForm = (props) => {
     // Validate form fields
     let isUsernameValid = checkUsername("firstnameEl", "First Name"),
       isLastNameValid = checkUsername("lastnameEl", "Last Name"),
-      isBirthdayValid = checkUsername("date", "Birth date"),
       isEmailValid = checkEmail(),
       isPasswordValid = checkPassword(),
       isConfirmPasswordValid = checkConfirmPassword(),
-      isPhoneValid = checkPhone();
-
+      isPhoneValid = checkPhone(),
+      isBirthdayValid = checkBirthDate();
     // Check the overall form validity
     let isFormValid =
-      isUsernameValid &&
-      isEmailValid &&
-      isBirthdayValid &&
-      isLastNameValid &&
-      isPhoneValid &&
-      isPasswordValid &&
+      isUsernameValid &&isEmailValid &&
+      isBirthdayValid &&isLastNameValid &&
+      isPhoneValid &&isPasswordValid &&
       isConfirmPasswordValid;
-
     // Submit to the server if the form is valid
     if (isFormValid) {
       try {
         const formData = {
           username:
-            formRefs.current.firstnameEl.value + // Replace with the actual ref for username
-            formRefs.current.lastnameEl.value, // Replace with the actual ref for
+          formRefs.current.firstnameEl.value + // Replace with the actual ref for username
+          formRefs.current.lastnameEl.value, // Replace with the actual ref for
           phone: formRefs.current.phoneEl.value, // Replace with the actual ref for email
           email: formRefs.current.emailEl.value, // Replace with the actual ref for email
           password: formRefs.current.passwordEl.value, // Replace with the actual ref for password
           work_id: formRefs.current.workIdEl.value,
           role:
-            values.userType.charAt(0).toLowerCase() + values.userType.slice(1),
+            values.userType.charAt(0).toLowerCase() +
+             values.userType.slice(1),
         };
         props.setUserState(() => ({
           ...props.userState,
           loggedIn: true,
         }));
         console.log("the data from web site is :", formData);
-        const response = await axios.post(
-          "http://localhost:5000/users/add",
-          formData
-        );
-
+        await axios.post("http://localhost:5000/users/add", formData);
         navigate("/home");
         setMessage("Sign up successful!");
       } catch (err) {
@@ -265,7 +257,7 @@ const SignupForm = (props) => {
     }
     checkUsername("firstnameEl", "First Name"),
       checkUsername("lastnameEl", "Last Name"),
-      checkUsername("date", "Birth date"),
+      checkBirthDate(),
       checkEmail(),
       checkPassword(),
       checkConfirmPassword(),
@@ -405,7 +397,37 @@ const SignupForm = (props) => {
     }
     return valid;
   };
+  const checkBirthDate = () => {
+    let valid = false;
+    const birthDate = formRefs.current.date.value.trim();
 
+    if (!isRequired(birthDate)) {
+      showError(formRefs.current.date, "Birth Date cannot be blank.");
+    } else {
+      const dateObj = new Date(birthDate);
+      const today = new Date();
+      const age = today.getFullYear() - dateObj.getFullYear();
+      const isBeforeBirthday =
+        today.getMonth() < dateObj.getMonth() ||
+        (today.getMonth() === dateObj.getMonth() &&
+          today.getDate() < dateObj.getDate());
+
+      const adjustedAge = isBeforeBirthday ? age - 1 : age;
+
+      if (isNaN(dateObj.getTime())) {
+        showError(formRefs.current.date, "Invalid date format.");
+      } else if (adjustedAge < 10) {
+        showError(formRefs.current.date, "You must be at least 10 years old.");
+      } else if (adjustedAge > 100) {
+        showError(formRefs.current.date, "Age must be 100 years or less.");
+      } else {
+        showSuccess(formRefs.current.date);
+        valid = true;
+      }
+    }
+
+    return valid;
+  };
   return (
     <form
       id="form"
@@ -549,7 +571,6 @@ const SignupForm = (props) => {
               type={type}
               value={values[name] || ""}
               onFocus={() => name !== "date" && handleFocus(name)}
-              // onBlur={handleSubmit}
               onChange={(e) => handleChange(name, e.target.value)}
             />
             <small style={{ fontSize: "5" }}></small>
