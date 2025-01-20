@@ -110,6 +110,7 @@ const isPasswordSecure = (password) => {
   );
   return re.test(password);
 };
+const isWorkIdValid = (workId) => /^\d{5}$/.test(workId);
 
 const showError = (input, message) => {
   // get the form-field element
@@ -167,7 +168,16 @@ const SignupForm = (props) => {
    */
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    let isWorkIdValid = true;
+    if (values.userType === "Driver") {
+      isWorkIdValid = isWorkIdValid(formRefs.current.workIdEl.value.trim());
+      if (!isWorkIdValid) {
+        showError(
+          formRefs.current.workIdEl,
+          "Work ID must be a 5-digit number."
+        );
+      }
+    }
     // Log the formRefs object
     // Validate form fields
     let isUsernameValid = checkUsername("firstnameEl", "First Name"),
@@ -242,6 +252,17 @@ const SignupForm = (props) => {
 
   const handleChange = (field, value) => {
     setValues({ ...values, [field]: value });
+
+    if (field === "workId" && values.userType === "Driver") {
+      if (!isWorkIdValid(value)) {
+        showError(
+          formRefs.current.workIdEl,
+          "Work ID must be a 5-digit number."
+        );
+      } else {
+        showSuccess(formRefs.current.workIdEl);
+      }
+    }
     checkUsername("firstnameEl", "First Name"),
       checkUsername("lastnameEl", "Last Name"),
       checkUsername("date", "Birth date"),

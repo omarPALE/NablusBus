@@ -52,14 +52,18 @@ export default function Nav(props) {
                 Subscription
               </a>
             </li>
-            <li>
-              <a
-                className="btn btn-outline-success"
-                onClick={() => navigate("tracking")}
-              >
-                track
-              </a>
-            </li>
+            {props.userState.loggedIn &&
+              (props.userState.role === "passenger" ||
+                props.userState.role === "adminstrater") && (
+                <li>
+                  <a
+                    className="btn btn-outline-success"
+                    onClick={() => navigate("tracking")}
+                  >
+                    Tracking
+                  </a>
+                </li>
+              )}
             {props.userState.loggedIn &&
               props.userState.role === "passenger" && (
                 <li>
@@ -106,7 +110,7 @@ export default function Nav(props) {
                 </li>
               )}
             <li>
-              <TrackingDropdown />
+              <TrackingDropdown onClick={() => navigate("tracking")} />
             </li>
           </ul>
           {!props.userState?.loggedIn && (
