@@ -189,24 +189,26 @@ const SignupForm = (props) => {
       isBirthdayValid = checkBirthDate();
     // Check the overall form validity
     let isFormValid =
-      isUsernameValid &&isEmailValid &&
-      isBirthdayValid &&isLastNameValid &&
-      isPhoneValid &&isPasswordValid &&
+      isUsernameValid &&
+      isEmailValid &&
+      isBirthdayValid &&
+      isLastNameValid &&
+      isPhoneValid &&
+      isPasswordValid &&
       isConfirmPasswordValid;
     // Submit to the server if the form is valid
     if (isFormValid) {
       try {
         const formData = {
           username:
-          formRefs.current.firstnameEl.value + // Replace with the actual ref for username
-          formRefs.current.lastnameEl.value, // Replace with the actual ref for
+            formRefs.current.firstnameEl.value + // Replace with the actual ref for username
+            formRefs.current.lastnameEl.value, // Replace with the actual ref for
           phone: formRefs.current.phoneEl.value, // Replace with the actual ref for email
           email: formRefs.current.emailEl.value, // Replace with the actual ref for email
           password: formRefs.current.passwordEl.value, // Replace with the actual ref for password
           work_id: formRefs.current.workIdEl.value,
           role:
-            values.userType.charAt(0).toLowerCase() +
-             values.userType.slice(1),
+            values.userType.charAt(0).toLowerCase() + values.userType.slice(1),
         };
         props.setUserState(() => ({
           ...props.userState,

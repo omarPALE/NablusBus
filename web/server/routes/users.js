@@ -79,7 +79,6 @@ router.delete("/delete/:id", async (req, res) => {
 //get by email
 router.post("/email", async (req, res) => {
   const { email, password } = req.body;
-
   try {
     const result = await pool.query(
       "SELECT email, password, username, role, id, work_id FROM users WHERE email = $1",
@@ -93,7 +92,8 @@ router.post("/email", async (req, res) => {
       );
       console.log("hi from back end ", result.rows[0]);
       if (isPasswordValid) {
-        console.log("from data base response on email " + result.rows[0].id);
+        console.log("from data base response on email "
+           + result.rows[0].id);
         return res.status(200).json({
           message: "Authentication successful",
           email: result.rows[0].email,
@@ -103,10 +103,12 @@ router.post("/email", async (req, res) => {
           work_id: result.rows[0].work_id,
         });
       } else {
-        return res.status(401).json({ message: "Invalid password" });
+        return res.status(401).
+        json({ message: "Invalid password" });
       }
     } else {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).
+      json({ message: "User not found" });
     }
   } catch (err) {
     console.error(err.message);

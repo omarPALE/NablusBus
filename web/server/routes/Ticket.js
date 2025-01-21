@@ -11,20 +11,14 @@ router.use(cors());
 // Endpoint to add a ticket
 router.post("/addticket", async (req, res) => {
   const { user_id, ticketType, model, price, rides_left, qr_code } = req.body;
-
   try {
     // Validate input data
     if (
-      !user_id ||
-      !ticketType ||
-      !model ||
-      !price ||
-      !rides_left ||
-      !qr_code
+      !user_id ||!ticketType || !model ||
+      !price   ||!rides_left  ||!qr_code
     ) {
       return res.status(400).json({ message: "All fields are required." });
     }
-
     // Insert data into the database
     const result = await pool.query(
       `INSERT INTO tickets (user_id, type, model, price, rides_left, qr_code)
@@ -32,7 +26,6 @@ router.post("/addticket", async (req, res) => {
        RETURNING id`,
       [user_id, ticketType, model, price, rides_left, qr_code]
     );
-
     // Send success response
     res
       .status(201)

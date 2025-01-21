@@ -2,10 +2,8 @@ import "./ticket-popups.css"; // Import your CSS
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
-// import QRCode from "react-qr-code"; // Using react-qr-code
 
 const TicketPopUp = ({
-  isPopupOpen,
   setIsPopupOpen,
   ticketData,
   setTicketData,
@@ -15,14 +13,19 @@ const TicketPopUp = ({
 }) => {
   const [responseMessage, setResponseMessage] = useState("");
   const [isTicketCreated, setIsTicketCreated] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+
+  const selectedTicket = pricingData.find((ticket) => ticket.touched) || {};
+
+  const isConfirmDisabled = !(
+    selectedTicket &&
+    (selectedTicket.ticketType === "half" ||
+      selectedTicket.ticketType === "full")
+  );
 
   useEffect(() => {
     console.log("TicketSection qrCode received:", qrCode);
   }, [qrCode]); // Log qrCode when it changes
-
-  if (!isPopupOpen) return null; // Don't render the popup if it's not open
-
-  const selectedTicket = pricingData.find((ticket) => ticket.touched);
 
   const qrValue = JSON.stringify({
     price: selectedTicket.ticketPrice,
@@ -35,6 +38,12 @@ const TicketPopUp = ({
   });
 
   const handleGenerateTicket = async () => {
+    if (isConfirmDisabled) {
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000); // Hide the toast after 3 seconds
+      return;
+    }
+
     const undefinedFields = Object.entries(ticketData)
       .filter(([value]) => value === undefined)
       .map(([key]) => key);
@@ -87,6 +96,13 @@ const TicketPopUp = ({
         error.response?.data || error.message
       );
     }
+  };
+
+  const handleCancel = () => {
+    setIsPopupOpen(false);
+    setIsTicketCreated(false);
+    setResponseMessage("");
+    setShowToast(false);
   };
 
   return (
@@ -146,13 +162,17 @@ const TicketPopUp = ({
               <button className="confirm-button" onClick={handleGenerateTicket}>
                 Confirm
               </button>
-              <button
-                className="cancel-button"
-                onClick={() => setIsPopupOpen(false)}
-              >
+              <button className="cancel-button" onClick={handleCancel}>
                 Cancel
               </button>
             </div>
+
+            {/* Toast Popup */}
+            {showToast && (
+              <div className="toast-popup">
+                Please select a valid ticket type (half or full) to proceed.
+              </div>
+            )}
 
             {/* Response Message */}
             {responseMessage && (
@@ -166,7 +186,6 @@ const TicketPopUp = ({
 };
 
 TicketPopUp.propTypes = {
-  isPopupOpen: PropTypes.bool.isRequired,
   setIsPopupOpen: PropTypes.func.isRequired,
   pricingData: PropTypes.array.isRequired,
   ticketData: PropTypes.object.isRequired,
