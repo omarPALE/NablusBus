@@ -13,6 +13,7 @@ import Trips from "./sideBarItem/Trips";
 import Users from "./sideBarItem/Users";
 import Buses from "./sideBarItem/Buses";
 import Reports from "./sideBarItem/Reports";
+import TripStatistcs from "./TripStatistics";
 import axios from "axios";
 import "./Sidebar.css";
 
@@ -42,13 +43,14 @@ const Sidebar = ({ setLinks }) => {
         setLinks([
           {
             label: "Show All Trips",
-            onClick: () => console.log("Navigating to Show All Trips"),
+            onClick: () => {},
           },
           {
             label: "Weekly Trips",
             onClick: () => console.log("Navigating to Weekly Trips"),
           },
         ]);
+
         break;
       case "users":
         setLinks([
@@ -157,7 +159,12 @@ const Sidebar = ({ setLinks }) => {
       case "overview":
         return <OverviewMetrics />;
       case "trips":
-        return <Trips />;
+        return (
+          <>
+            <Trips />
+            <TripStatistcs />;
+          </>
+        );
       case "users":
         return (
           <Users

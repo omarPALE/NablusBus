@@ -103,7 +103,6 @@ const OverviewMetrics = () => {
               style={{
                 fontSize: "18px",
                 fontWeight: "bold",
-                marginTop: "10px",
               }}
             >
               Total:{" "}

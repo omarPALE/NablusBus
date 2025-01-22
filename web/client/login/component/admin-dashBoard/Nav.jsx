@@ -41,7 +41,7 @@ const Navbar = ({ links }) => {
           <Menu.Item
             key={index}
             onClick={link.onClick}
-            ononMouseLeave={() => link.onClick(false)}
+            onMouseLeave={() => link.onClick(false)}
           >
             {link.label}
           </Menu.Item>

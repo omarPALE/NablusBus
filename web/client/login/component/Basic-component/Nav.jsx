@@ -54,7 +54,7 @@ export default function Nav(props) {
             </li>
             {props.userState.loggedIn &&
               (props.userState.role === "passenger" ||
-                props.userState.role === "adminstrater") && (
+                props.userState.role === "administrator") && (
                 <li>
                   <a
                     className="btn btn-outline-success"
