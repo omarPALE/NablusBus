@@ -27,9 +27,9 @@ const OverviewMetrics = () => {
 
         const { total_users, roles = [] } = userResponse.data || {};
         const { tickets = [] } = ticketResponse.data;
-
+        console.log("nuber of respnce are ", userResponse.data);
         // Set states
-        setMetrics([{ title: "Total Users", value: total_users }]);
+        setMetrics([{ title: "Users", value: total_users }]);
         setRoles(roles);
         setTickets(tickets);
 
@@ -52,16 +52,15 @@ const OverviewMetrics = () => {
   return (
     <div>
       {/* Main Metrics */}
-      <Row gutter={16} style={{ margin: "20px 0" }}>  
+      <Row gutter={16} style={{ margin: "20px 0" }}>
         {metrics.map((metric, index) => (
           <Col span={6} key={index}>
             <Card
               style={{
-                border:
-                  metric.title === "Total Users" ? "2px solid #1890ff" : "",
+                border: metric.title === "Users" ? "2px solid #1890ff" : "",
               }}
             >
-              {metric.title === "Total Users" ? (
+              {metric.title === "Users" ? (
                 <Button
                   type="link"
                   aria-label="Toggle User Roles"
@@ -78,7 +77,7 @@ const OverviewMetrics = () => {
                 <h3>{metric.title}</h3>
               )}
               <p style={{ fontSize: "18px", fontWeight: "bold" }}>
-                {metric.value}
+                Total: {metric.value}
               </p>
             </Card>
           </Col>
@@ -109,7 +108,7 @@ const OverviewMetrics = () => {
             >
               Total:{" "}
               {tickets.reduce(
-                (total, ticket) => total + (ticket.count || 0),
+                (total, ticket) => total + Number(ticket.count || 0),
                 0
               )}
             </p>

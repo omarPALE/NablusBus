@@ -4,13 +4,14 @@ export const getUsersAndRolesCount = async (req, res) => {
   try {
     const query = `
       SELECT 
-        COUNT(*) OVER() AS total_users,
-        role,
-        COUNT(*) AS role_count
+            (SELECT COUNT(*) FROM users) AS total_users,
+            role,
+            COUNT(*) AS role_count
       FROM 
-        users
-      GROUP BY 
-        role;
+              users
+            GROUP BY 
+              role;
+
     `;
 
     const result = await pool.query(query);
