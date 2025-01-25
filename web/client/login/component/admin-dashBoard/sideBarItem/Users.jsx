@@ -2,13 +2,14 @@ import { Card, message } from "antd";
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import axios from "axios";
+import { useSprings, animated, config } from "@react-spring/web";
 import "./styles/User.css";
 
 const Users = ({ showlink1, showlink2, showlink3, showlink4 }) => {
   const [users, setUsers] = useState([]);
   const [selectedRoleDetails, setSelectedRoleDetails] = useState([]);
   const [selectedRole, setSelectedRole] = useState("");
-  const [activeRole, setActiveRole] = useState(null); // Track the currently active role card
+  const [activeRole, setActiveRole] = useState(null);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -50,7 +51,7 @@ const Users = ({ showlink1, showlink2, showlink3, showlink4 }) => {
       if (response.status === 200) {
         setSelectedRoleDetails(response.data);
         setSelectedRole(role);
-        setActiveRole(role); // Set the clicked role as active
+        setActiveRole(role);
       } else {
         message.error("Failed to fetch role details.");
       }
@@ -59,6 +60,19 @@ const Users = ({ showlink1, showlink2, showlink3, showlink4 }) => {
       message.error("Failed to fetch role details. Please try again later.");
     }
   };
+
+  // Precompute animations for all cards
+  const springs = useSprings(
+    users.length,
+    users.map((user) => ({
+      transform: activeRole === user.role ? "scale(1.05)" : "scale(1)",
+      boxShadow:
+        activeRole === user.role
+          ? "0px 10px 30px rgba(0, 0, 0, 0.3)"
+          : "0px 4px 15px rgba(0, 0, 0, 0.1)",
+      config: config.wobbly,
+    }))
+  );
 
   const renderUsersList = (userList) => {
     if (!Array.isArray(userList)) {
@@ -70,23 +84,24 @@ const Users = ({ showlink1, showlink2, showlink3, showlink4 }) => {
       <p>No users available.</p>
     ) : (
       userList.map((user, index) => (
-        <Card
-          key={index}
-          className={`user-item ${activeRole === user.role ? "active" : ""}`} // Add active class
-          bordered
-          onClick={() =>
-            user.role === "administrator" || user.role === "driver"
-              ? fetchRoleDetails(user.role)
-              : null
-          }
-        >
-          <p>
-            <strong>Role:</strong> {user.role}
-          </p>
-          <p>
-            <strong>Count:</strong> {user.count}
-          </p>
-        </Card>
+        <animated.div style={springs[index]} key={index}>
+          <Card
+            className={`user-item ${activeRole === user.role ? "active" : ""}`}
+            bordered
+            onClick={() =>
+              user.role === "administrator" || user.role === "driver"
+                ? fetchRoleDetails(user.role)
+                : null
+            }
+          >
+            <p>
+              <strong>Role:</strong> {user.role}
+            </p>
+            <p>
+              <strong>Count:</strong> {user.count}
+            </p>
+          </Card>
+        </animated.div>
       ))
     );
   };
@@ -106,7 +121,7 @@ const Users = ({ showlink1, showlink2, showlink3, showlink4 }) => {
             key={index}
             className={`role-item ${
               activeRole === selectedRole ? "visible" : ""
-            }`} // Add visible class when the role is active
+            }`}
             bordered
           >
             <p>
@@ -131,28 +146,24 @@ const Users = ({ showlink1, showlink2, showlink3, showlink4 }) => {
         View and manage users based on their roles.
       </p>
       <div className="users-cards">
-        {/* Display All Users */}
         {showlink1 && !showlink2 && !showlink3 && !showlink4 && (
           <Card className="users-card" title="All Users" bordered>
             {renderUsersList(users)}
           </Card>
         )}
 
-        {/* Display Passengers */}
         {!showlink1 && showlink2 && !showlink3 && !showlink4 && (
           <Card className="users-card" title="Passengers" bordered>
             {renderUsersList(users.filter((user) => user.role === "passenger"))}
           </Card>
         )}
 
-        {/* Display Drivers */}
         {!showlink1 && !showlink2 && showlink3 && !showlink4 && (
           <Card className="users-card" title="Drivers" bordered>
             {renderUsersList(users.filter((user) => user.role === "driver"))}
           </Card>
         )}
 
-        {/* Display Admins */}
         {!showlink1 && !showlink2 && !showlink3 && showlink4 && (
           <Card className="users-card" title="Admins" bordered>
             {renderUsersList(
@@ -162,7 +173,6 @@ const Users = ({ showlink1, showlink2, showlink3, showlink4 }) => {
         )}
       </div>
 
-      {/* Role Details Section */}
       {selectedRole && (
         <div className="role-details-section">{renderRoleDetails()}</div>
       )}

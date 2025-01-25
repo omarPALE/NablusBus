@@ -13,7 +13,6 @@ import Trips from "./sideBarItem/Trips";
 import Users from "./sideBarItem/Users";
 import Buses from "./sideBarItem/Buses";
 import Reports from "./sideBarItem/Reports";
-import TripStatistcs from "./TripStatistics";
 import axios from "axios";
 import "./Sidebar.css";
 
@@ -124,12 +123,22 @@ const Sidebar = ({ setLinks }) => {
       case "reports":
         setLinks([
           {
-            label: "Daily Reports",
-            onClick: () => console.log("Navigating to Daily Reports"),
+            label: "Most Used Route",
+            onClick: () => {
+              setShowlink1(true);
+              setShowlink2(false);
+              setShowlink3(false);
+              setShowlink4(false);
+            },
           },
           {
-            label: "Monthly Reports",
-            onClick: () => console.log("Navigating to Monthly Reports"),
+            label: "Ticket Report",
+            onClick: () => {
+              setShowlink1(false);
+              setShowlink2(true);
+              setShowlink3(false);
+              setShowlink4(false);
+            },
           },
         ]);
         break;
@@ -162,14 +171,13 @@ const Sidebar = ({ setLinks }) => {
         return (
           <>
             <Trips />
-            <TripStatistcs />;
           </>
         );
       case "users":
         return (
           <Users
-            showlink2={showlink2}
             showlink1={showlink1}
+            showlink2={showlink2}
             showlink3={showlink3}
             showlink4={showlink4}
           />
@@ -177,14 +185,20 @@ const Sidebar = ({ setLinks }) => {
       case "buses":
         return (
           <Buses
+            showlink1={showlink1}
             showlink2={showlink2}
             showlink3={showlink3}
-            showlink1={showlink1}
             busData={busData}
           />
         );
       case "reports":
-        return <Reports />;
+        return (
+          <Reports
+            showlink1={showlink1}
+            showlink2={showlink2}
+            showlink3={showlink3}
+          />
+        );
       default:
         return <OverviewMetrics />;
     }
@@ -199,6 +213,7 @@ const Sidebar = ({ setLinks }) => {
           className="sidebar-menu"
           style={{ backgroundColor: "#ff6000" }}
           selectedKeys={[selectedView]}
+          onClick={(e) => handleMenuClick(e.key)}
         >
           <Menu.Item
             key="overview"
