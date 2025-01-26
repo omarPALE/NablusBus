@@ -169,7 +169,10 @@ router.post("/forgot-password", resetPasswordRateLimiter, async (req, res) => {
 
     await transporter.sendMail(mailOptions);
 
-    res.status(200).json({ message: "Reset code sent to email." });
+    res.status(200).json({
+      message: "Reset code sent to email.",
+      resetCode, // Include the reset code in the response
+    });
   } catch (error) {
     console.error("Error sending reset code:", error);
     res
@@ -177,4 +180,28 @@ router.post("/forgot-password", resetPasswordRateLimiter, async (req, res) => {
       .json({ error: "An error occurred while processing your request." });
   }
 });
+
+// Endpoint to reset the password
+router.post("/reset-password", async (req, res) => {
+  const { email, newPassword } = req.body;
+
+  try {
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update the user's password in the database
+    await pool.query("UPDATE users SET password = $1 WHERE email = $2", [
+      hashedPassword,
+      email,
+    ]);
+
+    res.status(200).json({ message: "Password reset successfully." });
+  } catch (error) {
+    console.error("Error resetting password:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while resetting the password." });
+  }
+});
+
 export default router;

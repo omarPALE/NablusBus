@@ -10,7 +10,12 @@ export default function LoginContent(props) {
   const [isPasswordInvalid, setIsPasswordInvalid] = useState(false);
   const [isEmailInvalid, setIsEmailInvalid] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  const [resetAttempts, setResetAttempts] = useState(0);
+  const [resetCode, setResetCode] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [serverResetCode, setServerResetCode] = useState("");
+  const [currentStep, setCurrentStep] = useState(1); // 1: Verify Reset Code, 2: Reset Password
+  const [passwordError, setPasswordError] = useState("");
 
   useEffect(() => {
     const savedUser =
@@ -40,10 +45,10 @@ export default function LoginContent(props) {
     setIsEmailInvalid(false);
   };
 
-  const handlePasswordChange = (e) => {
-    setSignInInfo((prevState) => ({ ...prevState, password: e.target.value }));
-    setError("");
-    setIsPasswordInvalid(false);
+  const validatePassword = (password) => {
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return passwordRegex.test(password);
   };
 
   const handleRememberMeChange = (e) => {
@@ -108,48 +113,98 @@ export default function LoginContent(props) {
       return;
     }
 
-    if (resetAttempts >= 3) {
-      setError(
-        "You have been blocked for 24 hours due to multiple failed attempts."
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/users/forgot-password",
+        {
+          email: signInInfo.email,
+        }
       );
+
+      if (response.status === 200) {
+        setServerResetCode(response.data.resetCode); // Save reset code from response
+        setError("");
+        setIsModalOpen(true); // Open modal for reset code verification
+      }
+    } catch (err) {
+      if (err.response?.status === 404) {
+        setError("This email is not registered.");
+        setIsEmailInvalid(true);
+      } else {
+        console.log(err);
+        setError("Failed to send reset code. Please try again.");
+      }
+    }
+  };
+
+  const handleVerifyResetCode = () => {
+    if (resetCode !== serverResetCode) {
+      setError("Invalid reset code. Please try again.");
+      return;
+    }
+
+    // Password reset successful
+    setError("Password reset successful. You can log in now.");
+    setIsModalOpen(false);
+  };
+  const handlePasswordChange = (e) => {
+    const password = e.target.value;
+    setNewPassword(password);
+
+    // Validate password and set error message
+    if (!validatePassword(password)) {
+      setPasswordError(
+        "Password must be at least 8 characters long, include an uppercase letter, a lowercase letter, a number, and a special character."
+      );
+    } else {
+      setPasswordError(""); // Clear error if valid
+    }
+  };
+
+  const handleResetPassword = async () => {
+    if (passwordError) {
+      setError("Please fix the password validation errors.");
       return;
     }
 
     try {
-      await axios.post("http://localhost:5000/users/forgot-password", {
+      await axios.post("http://localhost:5000/users/reset-password", {
         email: signInInfo.email,
+        newPassword,
       });
-      setResetAttempts((prev) => prev + 1);
-      setError("A reset code has been sent to your email.");
+
+      setError("Password reset successful. You can log in now.");
+      setIsModalOpen(false); // Close modal after successful reset
     } catch (err) {
       console.log(err);
-      setError("Failed to send reset code. Please try again.", err);
+      setError(
+        "An error occurred while resetting your password. Please try again."
+      );
     }
   };
 
   return (
     <div className="content">
       <div className="mb-3">
-        <label htmlFor="exampleFormControlInput1" className="form-label">
+        <label htmlFor="email" className="form-label">
           Email address
         </label>
         <input
           type="email"
           className={`form-control ${isEmailInvalid ? "error" : ""}`}
-          id="exampleFormControlInput1"
+          id="email"
           placeholder="name@example.com"
           value={signInInfo.email}
           onChange={handleEmailChange}
         />
 
-        <label htmlFor="inputPassword5" className="form-label">
+        <label htmlFor="password" className="form-label">
           Password
         </label>
         <input
           type="password"
-          id="inputPassword5"
           className={`form-control ${isPasswordInvalid ? "error" : ""}`}
-          aria-describedby="passwordHelpBlock"
+          id="password"
           value={signInInfo.password}
           onChange={handlePasswordChange}
         />
@@ -167,14 +222,7 @@ export default function LoginContent(props) {
           </label>
         </div>
 
-        <div
-          id="passwordHelpBlock"
-          className={`form-text ${
-            isPasswordInvalid || isEmailInvalid ? "error" : ""
-          }`}
-        >
-          {error || ""}
-        </div>
+        <div className="form-text text-danger">{error}</div>
 
         <button type="button" className="btn btn-primary" onClick={handleLogIn}>
           Log in
@@ -191,12 +239,105 @@ export default function LoginContent(props) {
         <p>Don&apos;t have an account?</p>
         <button
           className="btn btn-primary"
-          type="submit"
+          type="button"
           onClick={() => navigate("/signup")}
         >
           Sign up
         </button>
       </div>
+
+      {isModalOpen && (
+        <div
+          className="modal"
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0,0,0,0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+          }}
+        >
+          <div
+            className="modal-content"
+            style={{
+              backgroundColor: "white",
+              padding: "20px",
+              borderRadius: "8px",
+              width: "400px",
+              textAlign: "center",
+            }}
+          >
+            {currentStep === 1 && (
+              <>
+                <h3>Verify Reset Code</h3>
+                <label htmlFor="resetCode" className="form-label mt-2">
+                  Enter Reset Code:
+                </label>
+                <input
+                  type="text"
+                  id="resetCode"
+                  className="form-control mb-3"
+                  value={resetCode}
+                  onChange={(e) => setResetCode(e.target.value)}
+                />
+                {error && <p className="text-danger">{error}</p>}
+                <button
+                  className="btn btn-primary mt-2"
+                  onClick={handleVerifyResetCode}
+                >
+                  Verify Reset Code
+                </button>
+                <button
+                  className="btn btn-secondary mt-2"
+                  onClick={() => setIsModalOpen(false)}
+                  style={{ marginLeft: "10px" }}
+                >
+                  Cancel
+                </button>
+              </>
+            )}
+
+            {currentStep === 2 && (
+              <>
+                <h3>Reset Password</h3>
+                <label htmlFor="newPassword" className="form-label mt-2">
+                  Enter New Password:
+                </label>
+                <input
+                  type="password"
+                  id="newPassword"
+                  className={`form-control mb-3 ${
+                    passwordError ? "is-invalid" : ""
+                  }`}
+                  value={newPassword}
+                  onChange={handlePasswordChange}
+                />
+                {passwordError && (
+                  <p className="text-danger">{passwordError}</p>
+                )}
+                <button
+                  className="btn btn-primary mt-2"
+                  onClick={handleResetPassword}
+                >
+                  Reset Password
+                </button>
+                <button
+                  className="btn btn-secondary mt-2"
+                  onClick={() => setIsModalOpen(false)}
+                  style={{ marginLeft: "10px" }}
+                >
+                  Cancel
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
