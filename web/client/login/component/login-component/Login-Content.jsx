@@ -5,63 +5,45 @@ import axios from "axios";
 
 export default function LoginContent(props) {
   const navigate = useNavigate();
-  // State to manage sign-in information, errors, "Remember Me", and logged-in state
-  const [signInInfo, setSignInInfo] = useState({
-    email: "",
-    password: "",
-  });
-  const [error, setError] = useState(""); // State to manage error message
-  const [isPasswordInvalid, setIsPasswordInvalid] = useState(false); // State for red border
-  const [isEmailInvalid, setIsEmailInvalid] = useState(false); // State for red border
-  const [rememberMe, setRememberMe] = useState(false); // State for "Remember Me"
-  // Load user from localStorage or sessionStorage
+  const [signInInfo, setSignInInfo] = useState({ email: "", password: "" });
+  const [error, setError] = useState("");
+  const [isPasswordInvalid, setIsPasswordInvalid] = useState(false);
+  const [isEmailInvalid, setIsEmailInvalid] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+  const [resetAttempts, setResetAttempts] = useState(0);
+
   useEffect(() => {
     const savedUser =
       localStorage.getItem("user") || sessionStorage.getItem("user");
 
-    // Check if savedUser exists
     if (savedUser) {
       const userData = JSON.parse(savedUser);
 
-      // Debug saved user data
+      props.setUserState((prevState) => ({
+        ...prevState,
+        loggedIn: true,
+        email: userData.email,
+        username: userData.username,
+        user_id: userData.id,
+        role: userData.role,
+        work_id: userData.work_id,
+      }));
 
-      // Attempt to set the user state
-      props.setUserState((prevState) => {
-        const updatedState = {
-          ...prevState,
-          loggedIn: true,
-          email: userData.email,
-          username: userData.username,
-          user_id: userData.id,
-          role: userData.role,
-          work_id: userData.work_id,
-        };
-
-        return updatedState;
-      });
-
-      // Redirect to home after setting the state
       navigate("/home");
     }
   }, [navigate, props]);
 
   const handleEmailChange = (e) => {
-    setSignInInfo((prevState) => ({
-      ...prevState,
-      email: e.target.value,
-    }));
-    setError(""); // Clear error message when user types
-    setIsPasswordInvalid(false); // Reset red border
-    setIsEmailInvalid(false); // Reset red border
+    setSignInInfo((prevState) => ({ ...prevState, email: e.target.value }));
+    setError("");
+    setIsPasswordInvalid(false);
+    setIsEmailInvalid(false);
   };
 
   const handlePasswordChange = (e) => {
-    setSignInInfo((prevState) => ({
-      ...prevState,
-      password: e.target.value,
-    }));
-    setError(""); // Clear error message when user types
-    setIsPasswordInvalid(false); // Reset red border
+    setSignInInfo((prevState) => ({ ...prevState, password: e.target.value }));
+    setError("");
+    setIsPasswordInvalid(false);
   };
 
   const handleRememberMeChange = (e) => {
@@ -72,7 +54,6 @@ export default function LoginContent(props) {
     e.preventDefault();
 
     try {
-      // Send POST request
       const response = await axios.post("http://localhost:5000/users/email", {
         email: signInInfo.email,
         password: signInInfo.password,
@@ -80,21 +61,20 @@ export default function LoginContent(props) {
 
       if (response.status === 200) {
         const { email, username, id, role, work_id } = response.data;
-        // Save user data to storage
         const userData = { email, username, id, role, work_id };
         if (rememberMe) {
-          localStorage.setItem("user", JSON.stringify(userData)); // Save to localStorage for persistence
+          localStorage.setItem("user", JSON.stringify(userData));
         } else {
-          sessionStorage.setItem("user", JSON.stringify(userData)); // Save to sessionStorage for temporary persistence
+          sessionStorage.setItem("user", JSON.stringify(userData));
         }
-        // Update user state
+
         props.setUserState(() => ({
           ...props.userState,
           loggedIn: true,
           email: email,
           username: username,
           user_id: id,
-          role: role, // Add role to user state for additional functionalities
+          role: role,
           work_id: work_id,
         }));
 
@@ -109,8 +89,40 @@ export default function LoginContent(props) {
         setIsEmailInvalid(true);
       } else {
         setError("An error occurred. Please try again later.");
-        console.error("An error occurred:", err.message);
       }
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!signInInfo.email) {
+      setError("Email field cannot be empty.");
+      setIsEmailInvalid(true);
+      return;
+    }
+
+    if (!emailRegex.test(signInInfo.email)) {
+      setError("Please enter a valid email address.");
+      setIsEmailInvalid(true);
+      return;
+    }
+
+    if (resetAttempts >= 3) {
+      setError(
+        "You have been blocked for 24 hours due to multiple failed attempts."
+      );
+      return;
+    }
+
+    try {
+      await axios.post("http://localhost:5000/users/forgot-password", {
+        email: signInInfo.email,
+      });
+      setResetAttempts((prev) => prev + 1);
+      setError("A reset code has been sent to your email.");
+    } catch (err) {
+      setError("Failed to send reset code. Please try again.");
     }
   };
 
@@ -167,6 +179,14 @@ export default function LoginContent(props) {
           Log in
         </button>
 
+        <button
+          type="button"
+          className="btn btn-secondary mt-2"
+          onClick={handleForgotPassword}
+        >
+          Forgot Password?
+        </button>
+
         <p>Don&apos;t have an account?</p>
         <button
           className="btn btn-primary"
@@ -182,5 +202,5 @@ export default function LoginContent(props) {
 
 LoginContent.propTypes = {
   setUserState: PropTypes.func.isRequired,
-  userState: PropTypes.func.isRequired,
+  userState: PropTypes.obj.isRequired,
 };

@@ -81,17 +81,17 @@ const Footer = () => {
         <div className="footer-section">
           <h6 className="footer-title">Contact Us</h6>
           <p className="footer-text">
-            <FontAwesomeIcon icon={faHome} /> 123 Business Street, City Name,
+            <FontAwesomeIcon icon={faHome} /> Abdel Moujer Street, Nablus,
             Country
           </p>
           <p className="footer-text">
-            <FontAwesomeIcon icon={faEnvelope} /> support@company.com
+            <FontAwesomeIcon icon={faEnvelope} /> NablusBus@gmail.com
           </p>
           <p className="footer-text">
-            <FontAwesomeIcon icon={faPhone} /> +123 456 7890
+            <FontAwesomeIcon icon={faPhone} /> 0593111720
           </p>
           <p className="footer-text">
-            <FontAwesomeIcon icon={faPrint} /> +123 456 7891
+            <FontAwesomeIcon icon={faPrint} /> 09-2370044
           </p>
         </div>
 

@@ -21,7 +21,6 @@ const TicketBenefits = () => {
     }
 
     return () => {
-     
       if (sectionRef.current) observer.unobserve(sectionRef.current); // Cleanup observer
     };
   }, []);
@@ -59,7 +58,6 @@ const TicketBenefits = () => {
           <ul>
             <li>✔ Unlimited rides during the semester</li>
             <li>✔ Ideal for students commuting daily</li>
-            <li>✔ 50% discount for verified student accounts</li>
             <li>✔ Full access to bus network</li>
           </ul>
         </div>

@@ -2,6 +2,10 @@ import express from "express";
 import pool from "../db.js";
 import cors from "cors";
 import bcrypt from "bcrypt";
+import crypto from "crypto";
+import nodemailer from "nodemailer";
+import RateLimiter from "../middleware/rateLimiter.js"; // Optional: Middleware for rate-limiting
+
 const router = express.Router();
 // Middleware
 router.use(express.json());
@@ -92,8 +96,7 @@ router.post("/email", async (req, res) => {
       );
       console.log("hi from back end ", result.rows[0]);
       if (isPasswordValid) {
-        console.log("from data base response on email "
-           + result.rows[0].id);
+        console.log("from data base response on email " + result.rows[0].id);
         return res.status(200).json({
           message: "Authentication successful",
           email: result.rows[0].email,
@@ -103,12 +106,10 @@ router.post("/email", async (req, res) => {
           work_id: result.rows[0].work_id,
         });
       } else {
-        return res.status(401).
-        json({ message: "Invalid password" });
+        return res.status(401).json({ message: "Invalid password" });
       }
     } else {
-      return res.status(404).
-      json({ message: "User not found" });
+      return res.status(404).json({ message: "User not found" });
     }
   } catch (err) {
     console.error(err.message);
@@ -116,4 +117,64 @@ router.post("/email", async (req, res) => {
   }
 });
 
+// Rate limiter to prevent abuse (if implemented)
+const resetPasswordRateLimiter = RateLimiter({
+  windowMs: 24 * 60 * 60 * 1000, // 24 hours
+  max: 3, // Limit to 3 requests per window
+});
+
+// Configure nodemailer for sending emails
+const transporter = nodemailer.createTransport({
+  service: "Gmail", // Change to your email service
+  auth: {
+    user: process.env.EMAIL, // Your email
+    pass: process.env.EMAIL_PASSWORD, // Your email password or app-specific password
+  },
+});
+
+// POST /forgot-password
+router.post("/forgot-password", resetPasswordRateLimiter, async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    // Check if the email exists in the database
+    const { rows } = await pool.query("SELECT * FROM users WHERE email = $1", [
+      email,
+    ]);
+
+    if (rows.length === 0) {
+      return res
+        .status(404)
+        .json({ error: "User with this email does not exist." });
+    }
+
+    const user = rows[0];
+
+    // Generate a random reset code
+    const resetCode = crypto.randomBytes(3).toString("hex");
+
+    // Store the reset code and its expiration time in the database
+    await pool.query(
+      "UPDATE users SET reset_password_code = $1, reset_password_expiry = $2 WHERE email = $3",
+      [resetCode, Date.now() + 15 * 60 * 1000, email]
+    );
+
+    // Send the reset code via email
+    const mailOptions = {
+      from: process.env.EMAIL,
+      to: email,
+      subject: "Password Reset Request",
+      text: `Your password reset code is: ${resetCode}. It is valid for 15 minutes. If you didn't request this, please ignore this email.`,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.status(200).json({ message: "Reset code sent to email." });
+  } catch (error) {
+    console.error("Error sending reset code:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while processing your request." });
+  }
+});
 export default router;

@@ -95,7 +95,7 @@ const isBetween = (length, min, max) =>
   length < min || length > max ? false : true;
 
 const isEmailValid = (email) => {
-  const re = /^^[\w-.]+@([\w-]+\.)+[\w-]{2,5}$/;
+  const re = /^[\w-.]+@([\w-]+\.)+[\w-]{2,5}$/;
   return re.test(email);
 };
 
@@ -140,8 +140,8 @@ const SignupForm = (props) => {
   const navigate = useNavigate();
   const [focusStates, setFocusStates] = useState({});
   const [values, setValues] = useState({});
-  const [showPassword, setShowPassword] = useState([true]);
-  const [confirmShowPassword, setConfirmShowPassword] = useState([false]);
+  const [showPassword, setShowPassword] = useState(true);
+  const [confirmShowPassword, setConfirmShowPassword] = useState(false);
   const [message, setMessage] = useState("");
 
   // props.setUserState(() => ({
@@ -156,6 +156,7 @@ const SignupForm = (props) => {
     passwordEl: null,
     confirmPasswordEl: null,
     formEl: null,
+    workIdEl: null,
   });
 
   /**
@@ -168,10 +169,12 @@ const SignupForm = (props) => {
    */
   const handleSubmit = async (e) => {
     e.preventDefault();
-    let isWorkIdValid = true;
+    let isWorkIdValidResult = true;
     if (values.userType === "Driver") {
-      isWorkIdValid = isWorkIdValid(formRefs.current.workIdEl.value.trim());
-      if (!isWorkIdValid) {
+      isWorkIdValidResult = isWorkIdValid(
+        formRefs.current.workIdEl.value.trim()
+      );
+      if (!isWorkIdValidResult) {
         showError(
           formRefs.current.workIdEl,
           "Work ID must be a 5-digit number."
@@ -197,7 +200,10 @@ const SignupForm = (props) => {
       isPasswordValid &&
       isConfirmPasswordValid;
     // Submit to the server if the form is valid
+    console.log(isFormValid);
     if (isFormValid) {
+      console.log("Form Refs: ", formRefs.current);
+
       try {
         const formData = {
           username:
@@ -513,7 +519,12 @@ const SignupForm = (props) => {
             </label>
           </div>
           {values.userType === "Driver" && (
-            <div className="work-id-field">
+            <div
+              className="work-id-field"
+              style={{
+                display: values.userType === "Driver" ? "block" : "none",
+              }}
+            >
               <InputWrapper>
                 <Placeholder
                   isFocusedOrFilled={focusStates.workId || values.workId}
@@ -521,7 +532,7 @@ const SignupForm = (props) => {
                   Work ID
                 </Placeholder>
                 <InputField
-                  ref={(el) => (formRefs.current.workIdEl = el)}
+                  ref={(el) => (formRefs.current.workIdEl = el || null)}
                   type="text"
                   value={values.workId || ""}
                   onFocus={() => handleFocus("workId")}

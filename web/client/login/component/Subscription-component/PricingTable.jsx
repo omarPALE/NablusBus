@@ -30,7 +30,7 @@ const PricingTable = (props) => {
           model: "multi",
           price: 30,
           TicketType: "Half or Full",
-          rides_left: 10,
+          rides_left: 12,
           touched: false, // Add touched flag
         },
         {
@@ -50,7 +50,7 @@ const PricingTable = (props) => {
           model: "package",
           price: 299.99,
           TicketType: "full",
-          rides_left: 100,
+          rides_left: 200,
           touched: false, // Add touched flag
         },
       ];
