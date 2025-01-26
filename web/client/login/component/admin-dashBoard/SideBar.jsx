@@ -140,6 +140,15 @@ const Sidebar = ({ setLinks }) => {
               setShowlink4(false);
             },
           },
+          {
+            label: "Revenue Report",
+            onClick: () => {
+              setShowlink1(false);
+              setShowlink2(false);
+              setShowlink3(true);
+              setShowlink4(false);
+            },
+          },
         ]);
         break;
       default:
