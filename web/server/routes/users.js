@@ -4,7 +4,7 @@ import cors from "cors";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
-import RateLimiter from "../middleware/rateLimiter.js"; // Optional: Middleware for rate-limiting
+import RateLimiter from "../rateLimiter.js"; // Optional: Middleware for rate-limiting
 
 const router = express.Router();
 // Middleware
@@ -154,10 +154,10 @@ router.post("/forgot-password", resetPasswordRateLimiter, async (req, res) => {
     const resetCode = crypto.randomBytes(3).toString("hex");
 
     // Store the reset code and its expiration time in the database
-    await pool.query(
-      "UPDATE users SET reset_password_code = $1, reset_password_expiry = $2 WHERE email = $3",
-      [resetCode, Date.now() + 15 * 60 * 1000, email]
-    );
+    // await pool.query(
+    //   "UPDATE users SET reset_password_code = $1, reset_password_expiry = $2 WHERE email = $3",
+    //   [resetCode, Date.now() + 15 * 60 * 1000, email]
+    // );
 
     // Send the reset code via email
     const mailOptions = {

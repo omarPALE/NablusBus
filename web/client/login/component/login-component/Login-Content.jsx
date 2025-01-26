@@ -122,7 +122,8 @@ export default function LoginContent(props) {
       setResetAttempts((prev) => prev + 1);
       setError("A reset code has been sent to your email.");
     } catch (err) {
-      setError("Failed to send reset code. Please try again.");
+      console.log(err);
+      setError("Failed to send reset code. Please try again.", err);
     }
   };
 
@@ -202,5 +203,5 @@ export default function LoginContent(props) {
 
 LoginContent.propTypes = {
   setUserState: PropTypes.func.isRequired,
-  userState: PropTypes.obj.isRequired,
+  userState: PropTypes.func.isRequired,
 };
