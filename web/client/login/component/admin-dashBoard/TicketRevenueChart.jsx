@@ -117,27 +117,24 @@ const TicketRevenueChart = () => {
 
           {/* Table */}
           <div className="overflow-x-auto">
-            <table className="table-auto border-collapse border border-gray-300 w-full text-lg">
+            <table className="table-auto border-collapse border border-gray-300 w-3/4 mx-auto text-xl">
               <thead>
                 <tr>
-                  <th className="border border-gray-300 px-6 py-3"> Type </th>
-                  <th className="border border-gray-300 px-6 py-3">
-                    {" "}
-                    Revenue{" "}
-                  </th>
-                  <th className="border border-gray-300 px-6 py-3"> Count </th>
+                  <th className="border border-gray-300 px-8 py-4">Type</th>
+                  <th className="border border-gray-300 px-8 py-4">Revenue</th>
+                  <th className="border border-gray-300 px-8 py-4">Count</th>
                 </tr>
               </thead>
               <tbody>
                 {tableData.map((item, index) => (
                   <tr key={index}>
-                    <td className="border border-gray-300 px-6 py-3 text-center">
+                    <td className="border border-gray-300 px-8 py-4 text-center">
                       {item.type}
                     </td>
-                    <td className="border border-gray-300 px-6 py-3 text-center">
+                    <td className="border border-gray-300 px-8 py-4 text-center">
                       ${item.revenue.toFixed(2)}
                     </td>
-                    <td className="border border-gray-300 px-6 py-3 text-center">
+                    <td className="border border-gray-300 px-8 py-4 text-center">
                       {item.count}
                     </td>
                   </tr>

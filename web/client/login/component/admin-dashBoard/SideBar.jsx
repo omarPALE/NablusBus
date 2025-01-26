@@ -38,19 +38,19 @@ const Sidebar = ({ setLinks }) => {
       case "overview":
         setLinks([]);
         break;
-      case "trips":
-        setLinks([
-          {
-            label: "Show All Trips",
-            onClick: () => {},
-          },
-          {
-            label: "Weekly Trips",
-            onClick: () => console.log("Navigating to Weekly Trips"),
-          },
-        ]);
+      // case "trips":
+      //   setLinks([
+      //     {
+      //       label: "Show All Trips",
+      //       onClick: () => {},
+      //     },
+      //     {
+      //       label: "Weekly Trips",
+      //       onClick: () => console.log("Navigating to Weekly Trips"),
+      //     },
+      //   ]);
 
-        break;
+      //   break;
       case "users":
         setLinks([
           {
@@ -232,14 +232,14 @@ const Sidebar = ({ setLinks }) => {
           >
             Dashboard Overview
           </Menu.Item>
-          <Menu.Item
+          {/* <Menu.Item
             key="trips"
             icon={<CarOutlined />}
             onClick={() => handleMenuClick("trips")}
             style={{ color: "black" }}
           >
             Manage Trips
-          </Menu.Item>
+          </Menu.Item> */}
           <Menu.Item
             key="users"
             icon={<UserOutlined />}
