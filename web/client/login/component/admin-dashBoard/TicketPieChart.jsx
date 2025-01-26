@@ -77,7 +77,7 @@ const TicketPieChart = () => {
       ) : error ? (
         <p className="text-red-500 font-semibold">{error}</p>
       ) : (
-        <div className="w-1/32 md:w-1/32 lg:w-1/32">
+        <div className="w-1/4 md:w-1/8 lg:w-1/16">
           <Pie
             data={ticketData}
             options={{
