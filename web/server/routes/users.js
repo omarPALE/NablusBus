@@ -88,7 +88,6 @@ router.post("/email", async (req, res) => {
       "SELECT email, password, username, role, id, work_id FROM users WHERE email = $1",
       [email]
     );
-
     if (result.rows.length > 0) {
       const isPasswordValid = await bcrypt.compare(
         password,
@@ -152,12 +151,6 @@ router.post("/forgot-password", resetPasswordRateLimiter, async (req, res) => {
 
     // Generate a random reset code
     const resetCode = crypto.randomBytes(3).toString("hex");
-
-    // Store the reset code and its expiration time in the database
-    // await pool.query(
-    //   "UPDATE users SET reset_password_code = $1, reset_password_expiry = $2 WHERE email = $3",
-    //   [resetCode, Date.now() + 15 * 60 * 1000, email]
-    // );
 
     // Send the reset code via email
     const mailOptions = {

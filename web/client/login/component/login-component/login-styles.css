@@ -50,6 +50,16 @@ body {
   width: 100%;
   padding: 10px;
 }
+
+.btn.btn-light {
+  margin-top: 30px;
+  width: 100%;
+  padding: 10px;
+}
+.btn.btn-light:hover {
+  background-color: #ff6600;
+}
+
 .header {
   display: flex;
   flex-direction: row;

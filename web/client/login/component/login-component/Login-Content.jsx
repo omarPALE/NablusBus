@@ -7,15 +7,15 @@ export default function LoginContent(props) {
   const navigate = useNavigate();
   const [signInInfo, setSignInInfo] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
-  const [isPasswordInvalid, setIsPasswordInvalid] = useState(false);
   const [isEmailInvalid, setIsEmailInvalid] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [resetCode, setResetCode] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [serverResetCode, setServerResetCode] = useState("");
-  const [currentStep, setCurrentStep] = useState(1); // 1: Verify Reset Code, 2: Reset Password
   const [passwordError, setPasswordError] = useState("");
+  const [isLoading, setIsLoading] = useState(false); // For loading animation
+  const [isCodeVerified, setIsCodeVerified] = useState(false); // Track if the reset code is verified
 
   useEffect(() => {
     const savedUser =
@@ -41,7 +41,6 @@ export default function LoginContent(props) {
   const handleEmailChange = (e) => {
     setSignInInfo((prevState) => ({ ...prevState, email: e.target.value }));
     setError("");
-    setIsPasswordInvalid(false);
     setIsEmailInvalid(false);
   };
 
@@ -57,7 +56,6 @@ export default function LoginContent(props) {
 
   const handleLogIn = async (e) => {
     e.preventDefault();
-
     try {
       const response = await axios.post("http://localhost:5000/users/email", {
         email: signInInfo.email,
@@ -88,7 +86,6 @@ export default function LoginContent(props) {
     } catch (err) {
       if (err.response?.status === 401) {
         setError("Incorrect password. Please try again.");
-        setIsPasswordInvalid(true);
       } else if (err.response?.status === 404) {
         setError("User not found. Please sign up.");
         setIsEmailInvalid(true);
@@ -112,7 +109,7 @@ export default function LoginContent(props) {
       setIsEmailInvalid(true);
       return;
     }
-
+    setIsLoading(true); // Start loading animation
     try {
       const response = await axios.post(
         "http://localhost:5000/users/forgot-password",
@@ -130,10 +127,13 @@ export default function LoginContent(props) {
       if (err.response?.status === 404) {
         setError("This email is not registered.");
         setIsEmailInvalid(true);
+      } else if (err.response?.status === 429) {
+        setError("Too many attempts. Please try again later.");
       } else {
-        console.log(err);
         setError("Failed to send reset code. Please try again.");
       }
+    } finally {
+      setIsLoading(false); // Stop loading animation
     }
   };
 
@@ -144,13 +144,13 @@ export default function LoginContent(props) {
     }
 
     // Password reset successful
-    setError("Password reset successful. You can log in now.");
-    setIsModalOpen(false);
+    setError("");
+    setIsCodeVerified(true);
   };
   const handlePasswordChange = (e) => {
     const password = e.target.value;
     setNewPassword(password);
-
+    setSignInInfo((prevState) => ({ ...prevState, password: e.target.value }));
     // Validate password and set error message
     if (!validatePassword(password)) {
       setPasswordError(
@@ -175,6 +175,7 @@ export default function LoginContent(props) {
 
       setError("Password reset successful. You can log in now.");
       setIsModalOpen(false); // Close modal after successful reset
+      setIsCodeVerified(false);
     } catch (err) {
       console.log(err);
       setError(
@@ -203,9 +204,9 @@ export default function LoginContent(props) {
         </label>
         <input
           type="password"
-          className={`form-control ${isPasswordInvalid ? "error" : ""}`}
-          id="password"
-          value={signInInfo.password}
+          id="newPassword"
+          className={`form-control mb-3 ${passwordError ? "is-invalid" : ""}`}
+          value={newPassword} // Controlled value
           onChange={handlePasswordChange}
         />
 
@@ -221,10 +222,19 @@ export default function LoginContent(props) {
             Remember Me
           </label>
         </div>
-
+        {isLoading && (
+          <div className="spinner-border text-primary mt-2" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        )}
         <div className="form-text text-danger">{error}</div>
 
-        <button type="button" className="btn btn-primary" onClick={handleLogIn}>
+        <button
+          type="button"
+          className="btn btn-light mt-2"
+          onClick={handleLogIn}
+          style={{}}
+        >
           Log in
         </button>
 
@@ -238,7 +248,7 @@ export default function LoginContent(props) {
 
         <p>Don&apos;t have an account?</p>
         <button
-          className="btn btn-primary"
+          className="btn btn-light mt-2"
           type="button"
           onClick={() => navigate("/signup")}
         >
@@ -272,7 +282,7 @@ export default function LoginContent(props) {
               textAlign: "center",
             }}
           >
-            {currentStep === 1 && (
+            {!isCodeVerified ? (
               <>
                 <h3>Verify Reset Code</h3>
                 <label htmlFor="resetCode" className="form-label mt-2">
@@ -300,9 +310,7 @@ export default function LoginContent(props) {
                   Cancel
                 </button>
               </>
-            )}
-
-            {currentStep === 2 && (
+            ) : (
               <>
                 <h3>Reset Password</h3>
                 <label htmlFor="newPassword" className="form-label mt-2">
