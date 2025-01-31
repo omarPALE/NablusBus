@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import "./TicketManagement.css";
 import axios from "axios";
 
-const TicketManagement = ({ userState, setUserState }) => {
+const TicketManagement = ({ userState }) => {
   const [tickets, setTickets] = useState([]); // State to hold tickets data
   const [loading, setLoading] = useState(true); // State to handle loading
   const [error, setError] = useState(""); // State to handle errors

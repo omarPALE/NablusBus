@@ -15,20 +15,39 @@ const MyTicketsScreen = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const fetchTickets = async () => {
+    const fetchTicket = async () => {
+      if (!userState?.user_id) {
+        setError("User ID is missing");
+        setLoading(false);
+        return;
+      }
+
       try {
-        const response = await axios.get("http://192.168.1.4:5000/api/tickets");
-        setTickets(response.data);
+        const response = await axios.get(
+          `http://localhost:5000/api/ticket/${userState.user_id}`
+        );
+        console.log(response.data);
+
+        if (response.status === 200) {
+          setTickets(response.data); // Should be just the `qrCode` based on your backend
+        } else {
+          setError("Ticket not found.");
+        }
       } catch (err) {
-        setError("Failed to load tickets. Please try again.");
+        if (err.response && err.response.status === 404) {
+          setError("No active ticket found. Please buy a ticket to continue.");
+        } else {
+          setError(
+            "Failed to fetch ticket. Please try again later. " + err.message
+          );
+        }
       } finally {
         setLoading(false);
       }
     };
 
-    fetchTickets();
-  }, []);
-
+    fetchTicket();
+  }, [userState?.user_id]);
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
