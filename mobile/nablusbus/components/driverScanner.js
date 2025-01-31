@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import { View, Text, Button, Alert, StyleSheet, TouchableOpacity } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
 

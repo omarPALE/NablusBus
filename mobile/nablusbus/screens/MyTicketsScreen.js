@@ -17,7 +17,7 @@ const MyTicketsScreen = () => {
   useEffect(() => {
     const fetchTickets = async () => {
       try {
-        const response = await axios.get("http://192.168.1.7:5000/api/tickets");
+        const response = await axios.get("http://192.168.1.4:5000/api/tickets");
         setTickets(response.data);
       } catch (err) {
         setError("Failed to load tickets. Please try again.");

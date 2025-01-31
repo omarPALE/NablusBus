@@ -151,7 +151,7 @@ export default function SignupForm() {
       try {
         // Send data to the server
         const response = await axios.post(
-          "http://192.168.1.7:5000/users/add",
+          "http://192.168.1.4:5000/users/add",
           payload
         );
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
@@ -21,7 +21,7 @@ export default function SignInComponent() {
   const handleSignIn = async () => {
     try {
       // Send POST request to the server
-      const response = await axios.post("http://192.168.1.7:5000/users/email", {
+      const response = await axios.post("http://192.168.1.4:5000/users/email", {
         email,
         password,
       });

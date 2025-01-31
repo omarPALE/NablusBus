@@ -16,6 +16,7 @@ app.post("/validate-ticket", async (req, res) => {
 
     if (result.rows.length > 0) {
       const ticket = result.rows[0];
+      console.log("ticket info from db: ", ticket);
 
       if (ticket.valid) {
         // Update the ticket as used

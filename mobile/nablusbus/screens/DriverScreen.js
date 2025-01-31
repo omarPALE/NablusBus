@@ -7,7 +7,7 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
-import { Camera } from "expo-camera";
+import { CameraView, CameraType } from "expo-camera";
 
 const DriverScreen = () => {
   const [hasPermission, setHasPermission] = useState(null);
@@ -22,16 +22,17 @@ const DriverScreen = () => {
   const [scannerVisible, setScannerVisible] = useState(false);
 
   React.useEffect(() => {
-    (async () => {
+    async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
       setHasPermission(status === "granted");
-    })();
+      console.log("hi with", hasPermission);
+    };
   }, []);
 
   const handleBarCodeScanned = ({ data }) => {
     setScanned(true);
     const ticketData = JSON.parse(data);
-
+    console.log(ticketData);
     if (ticketData.rides_left > 0) {
       setRidesLeft(ticketData.rides_left - 1);
       Alert.alert(
@@ -46,9 +47,9 @@ const DriverScreen = () => {
     }
   };
 
-  if (hasPermission === null) {
-    return <Text>Requesting camera permission...</Text>;
-  }
+  // if (hasPermission === null) {
+  //   return <Text>Requesting camera permission...</Text>;
+  // }
 
   if (hasPermission === false) {
     return <Text>No access to camera</Text>;
@@ -74,10 +75,14 @@ const DriverScreen = () => {
 
       {scannerVisible && (
         <View style={styles.scannerContainer}>
-          <Camera
-            onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+          <CameraView
+            barCodeScannerSettings={{
+              barCodeTypes: ["qr"], // Enable only QR codes
+            }}
+            onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
             style={StyleSheet.absoluteFillObject}
           />
+
           <TouchableOpacity
             style={styles.exitButton}
             onPress={() => setScannerVisible(false)}
