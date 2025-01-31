@@ -57,6 +57,9 @@ const TicketSection = (props) => {
           <div className="ticket-details">
             <div className="ticket-info">
               <p>
+                <strong>Ticket ID:</strong> {props.ticket.id || 0}
+              </p>
+              <p>
                 <strong>Departure:</strong>{" "}
                 {props.ticket.departure || ticketInfo?.departure}
               </p>
@@ -111,8 +114,15 @@ const TicketSection = (props) => {
             <h3>QR Code for Ticket</h3>
             {
               <QRCode
-                value={props.ticket.qr_code} // QR Code dat
-                size={200} // Size of the QR Code
+                value={JSON.stringify({
+                  ticket_id: props.ticket_id, // Include ticket ID
+                  departure: props.ticket.departure || ticketInfo.departure,
+                  destination:
+                    props.ticket.destination || ticketInfo.destination,
+                  seatNumber: props.ticket.seatNumber || ticketInfo.seatNumber,
+                  date: props.date || ticketInfo.date,
+                })}
+                size={200}
               />
             }
             <p>
@@ -130,7 +140,7 @@ const TicketSection = (props) => {
 TicketSection.propTypes = {
   setQRcode: PropTypes.func.isRequired, // Function to set QR code value
   key: PropTypes.string.isRequired, // Unique key for the ticket
-  ticketID: PropTypes.string.isRequired, // Unique key for the ticket
+  ticket_id: PropTypes.string.isRequired, // Unique key for the ticket
   isMyTicket: PropTypes.bool.isRequired, // Flag to show or hide the QR code section
   date: PropTypes.string.isRequired,
 };

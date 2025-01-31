@@ -5,6 +5,7 @@ import ticketRoutes from "./routes/Ticket.js";
 import adminRoutes from "./routes/admin.js";
 import tripRoutes from "./routes/tripRoutes.js";
 import busRoutes from "./routes/busRoutes.js";
+import scanQR from "./routes/scanQR.js";
 import busLocationRoutes from "./routes/busLocationRoutes.js";
 import updateBusLocation from "./controllers/busLocationController.js";
 import cors from "cors";
@@ -22,6 +23,7 @@ app.use("/api", ticketRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/trips", tripRoutes);
 app.use("/api/buses", busRoutes);
+app.use("/api/scanner", scanQR);
 app.use("/api/bus-locations", busLocationRoutes);
 
 const server = http.createServer(app); // Create an HTTP server

@@ -10,27 +10,50 @@ const DriverScanner = () => {
   const handleScan = async (result) => {
     if (result) {
       try {
-        // Call the backend API to validate the QR code
-        const response = await axios.post(
-          "http://localhost:5000/validate-ticket",
-          {
-            qrCode: result.text,
-          }
+        const scannedData = JSON.parse(result.text); // Parse QR Code Data
+        const { ticketID } = scannedData; // Extract ticket_id
+
+        if (!ticketID) {
+          setMessage("❌ Invalid QR Code: Missing Ticket ID");
+          return;
+        }
+
+        // Step 1: Validate the ticket
+        const validationResponse = await axios.post(
+          "http://localhost:5000/api/validate-ticket",
+          { ticket_id: ticketID }
         );
 
-        if (response.data.valid) {
-          setPassengerCount((prevCount) => prevCount + 1); // Increment passenger count
-          setMessage("✅ Ticket validated successfully!");
-        } else {
+        if (!validationResponse.data.valid) {
           setMessage("❌ Invalid ticket. Please try again.");
+          return;
+        }
+
+        // Step 2: Check rides_left
+        const { rides_left } = validationResponse.data;
+        if (rides_left <= 0) {
+          setMessage("⚠️ No rides left on this ticket.");
+          return;
+        }
+
+        // Step 3: Reduce rides_left by 1
+        const updateResponse = await axios.post(
+          "http://localhost:5000/api/reduce-ride",
+          { ticket_id: ticketID }
+        );
+
+        if (updateResponse.data.success) {
+          setPassengerCount((prevCount) => prevCount + 1); // Increment passenger count
+          setMessage("✅ Ticket validated successfully! Ride deducted.");
+        } else {
+          setMessage("⚠️ Failed to update ticket. Try again.");
         }
       } catch (error) {
-        console.error("Error validating ticket:", error);
-        setMessage("⚠️ Error connecting to the server.");
+        console.error("Error processing QR Code:", error);
+        setMessage("⚠️ Error processing QR Code. Try again.");
       }
     }
   };
-
   const handleError = (err) => {
     console.error("Scanner Error:", err);
     setMessage("⚠️ Error accessing the camera.");

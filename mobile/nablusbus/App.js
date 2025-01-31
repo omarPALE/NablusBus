@@ -49,8 +49,17 @@ export default function App() {
       </Stack.Screen>
       <Stack.Screen name="Subscription" component={SubscriptionScreen} />
       {userState.loggedIn && (
-        <Stack.Screen name="MyTicketsScreen" component={MyTicketsScreen} />
+        <Stack.Screen name="MyTicketsScreen">
+          {(props) => (
+            <MyTicketsScreen
+              {...props}
+              setUserState={setUserState}
+              userState={userState}
+            />
+          )}
+        </Stack.Screen>
       )}
+
       <Stack.Screen name="Scanner" component={DriverScreen} />
       {/* <Stack.Screen name="Tracking" component={TrackingScreen} /> */}
       {/* <Stack.Screen name="Dashboard">

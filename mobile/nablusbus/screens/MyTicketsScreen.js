@@ -9,7 +9,7 @@ import {
 import axios from "axios";
 import Ticket from "../components/Ticket"; // Import the Ticket component
 
-const MyTicketsScreen = () => {
+const MyTicketsScreen = ({ userState, setUserStates }) => {
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -21,12 +21,13 @@ const MyTicketsScreen = () => {
         setLoading(false);
         return;
       }
+      console.log("id is :", userState.user_id);
 
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/ticket/${userState.user_id}`
+          `http://192.168.1.4:5000/api/ticket/${userState.user_id}`
         );
-        console.log(response.data);
+        console.log("hi :", response.data);
 
         if (response.status === 200) {
           setTickets(response.data); // Should be just the `qrCode` based on your backend
@@ -71,7 +72,7 @@ const MyTicketsScreen = () => {
       <FlatList
         data={tickets}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => <Ticket ticket={item} />}
+        renderItem={({ item }) => <Ticket ticket={item} ticket_id={item.id} />}
       />
     </View>
   );

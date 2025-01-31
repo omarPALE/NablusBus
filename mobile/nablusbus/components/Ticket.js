@@ -13,6 +13,7 @@ const Ticket = ({ ticket }) => {
     <View style={styles.card}>
       <Text style={styles.heading}>Bus Ticket</Text>
       <Text>Departure: {ticket.departure}</Text>
+      <Text>Ticket ID: {ticket.id}</Text>
       <Text>Destination: {ticket.destination}</Text>
       <Text>Class: {ticket.class}</Text>
       <Text>Seat Number: {ticket.seatNumber}</Text>
@@ -27,7 +28,13 @@ const Ticket = ({ ticket }) => {
       <Modal visible={isQrVisible} transparent={true} animationType="slide">
         <View style={styles.modalContainer}>
           <View style={styles.qrContainer}>
-            <QRCode value={ticket.qr_code} size={200} />
+            <QRCode
+              value={JSON.stringify({
+                ticketID: ticket.id, // Include Ticket ID
+                qr: ticket.qr, // Include Ticket QR value
+              })}
+              size={200}
+            />
             <TouchableOpacity
               style={styles.closeButton}
               onPress={handleQrCodeToggle}

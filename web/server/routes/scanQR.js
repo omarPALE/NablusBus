@@ -1,42 +1,51 @@
-const express = require("express");
-const db = require("../db"); // Import the database connection
-const app = express();
+import { Router } from "express";
+import pool from "../db.js";
+import cors from "cors";
+import express from "express";
 
-app.use(express.json()); // Middleware to parse JSON request bodies
+// Create a new PostgreSQL pool instance
+const router = express.Router();
+// Middleware
+router.use(express.json());
+router.use(cors());
 
 // Endpoint to validate the ticket
-app.post("/validate-ticket", async (req, res) => {
-  const { qrCode } = req.body;
+router.post("/validate-ticket", async (req, res) => {
+  const { ticket_id } = req.body; // Extract ticket_id from request
 
   try {
-    // Query to find the ticket by QR code
-    const result = await db.query("SELECT * FROM tickets WHERE qr_code = $1", [
-      qrCode,
+    // Query to find the ticket by ticket_id
+    const result = await pool.query("SELECT * FROM tickets WHERE id = $1", [
+      ticket_id,
     ]);
 
-    if (result.rows.length > 0) {
-      const ticket = result.rows[0];
-      console.log("ticket info from db: ", ticket);
-
-      if (ticket.valid) {
-        // Update the ticket as used
-        await db.query("UPDATE tickets SET valid = FALSE WHERE qr_code = $1", [
-          qrCode,
-        ]);
-        res.json({ valid: true });
-      } else {
-        res.json({ valid: false, message: "Ticket already used." });
-      }
-    } else {
-      res.json({ valid: false, message: "Ticket not found." });
+    if (result.rows.length === 0) {
+      return res.json({ valid: false, message: "Ticket not found." });
     }
+
+    const ticket = result.rows[0];
+
+    console.log("Ticket info from DB:", ticket);
+
+    if (ticket.rides_left <= 0) {
+      return res.json({ valid: false, message: "No rides left on this ticket." });
+    }
+
+    // Reduce rides_left by 1
+    await pool.query("UPDATE tickets SET rides_left = rides_left - 1 WHERE id = $1", [
+      ticket_id,
+    ]);
+
+    res.json({
+      valid: true,
+      message: "Ticket validated successfully!",
+      rides_left: ticket.rides_left - 1,
+    });
   } catch (error) {
     console.error("Error validating ticket:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
 
-// Start the server
-app.listen(5000, () => {
-  console.log("Server running on http://localhost:5000");
-});
+
+export default router;

@@ -1,55 +1,50 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  Button,
-  Alert,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
-import { CameraView, CameraType } from "expo-camera";
+import { useState, useEffect } from "react";
+import { View, Text, Button, StyleSheet, TouchableOpacity } from "react-native";
+import { CameraView } from "expo-camera";
+import axios from "axios";
 
-const DriverScreen = ({ userState }) => {
+const DriverScreen = () => {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
-  const [tripInfo, setTripInfo] = useState({
-    route: "Route A",
-    status: "Ongoing",
-    passengerCount: 12,
-  });
-
-  const [ridesLeft, setRidesLeft] = useState(null);
+  const [message, setMessage] = useState("");
   const [scannerVisible, setScannerVisible] = useState(false);
 
-  React.useEffect(() => {
-    async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
+  useEffect(() => {
+    (async () => {
+      const { status } = await CameraView.requestCameraPermissionsAsync();
       setHasPermission(status === "granted");
-      console.log("hi with", hasPermission);
-    };
+    })();
   }, []);
 
-  const handleBarCodeScanned = ({ data }) => {
+  const handleBarCodeScanned = async ({ data }) => {
     setScanned(true);
-    const ticketData = JSON.parse(data);
-    console.log(ticketData);
-    if (ticketData.rides_left > 0) {
-      setRidesLeft(ticketData.rides_left - 1);
-      Alert.alert(
-        "Success",
-        `Ride validated! Rides left: ${ticketData.rides_left - 1}`,
-        [{ text: "OK", onPress: () => setScanned(false) }]
+    setMessage("Processing...");
+    try {
+      const scannedData = JSON.parse(data); // Parse JSON from QR Code
+      const ticketID = scannedData.ticket_id; // Extract ticket_id
+      console.log("hi from back end :validate");
+      if (!ticketID) {
+        setMessage("❌ Invalid QR Code: Missing Ticket ID");
+        return;
+      }
+
+      const response = await axios.post(
+        "http://192.168.1.4:5000/api/scanner/validate-ticket",
+        { ticket_id: ticketID }
       );
-    } else {
-      Alert.alert("Failure", "No rides left on this ticket.", [
-        { text: "OK", onPress: () => setScanned(false) },
-      ]);
+      console.log("the responce is :", ticketID);
+      if (response.data.valid) {
+        setMessage(
+          `✅ Ticket validated successfully! Remaining rides: ${response.data.rides_left}`
+        );
+      } else {
+        setMessage(`❌ ${response.data.message}`);
+      }
+    } catch (error) {
+      setMessage("⚠️ Error processing QR Code. Try again.");
+      console.error("Error processing QR Code:", error);
     }
   };
-
-  // if (hasPermission === null) {
-  //   return <Text>Requesting camera permission...</Text>;
-  // }
 
   if (hasPermission === false) {
     return <Text>No access to camera</Text>;
@@ -58,15 +53,8 @@ const DriverScreen = ({ userState }) => {
   return (
     <View style={styles.container}>
       <View style={styles.tripCard}>
-        <Text style={styles.title}>Trip Management</Text>
-        <Text>Route: {tripInfo.route}</Text>
-        <Text>Status: {tripInfo.status}</Text>
-        <Text>Passenger Count: {tripInfo.passengerCount}</Text>
-        <Button
-          title="Finish Trip"
-          color="red"
-          onPress={() => Alert.alert("Trip Finished", "This trip has ended.")}
-        />
+        <Text style={styles.title}>Driver QR Scanner</Text>
+        {message && <Text style={styles.message}>{message}</Text>}
         <Button
           title="Scan Passenger Ticket"
           onPress={() => setScannerVisible(true)}
@@ -76,18 +64,18 @@ const DriverScreen = ({ userState }) => {
       {scannerVisible && (
         <View style={styles.scannerContainer}>
           <CameraView
-            barCodeScannerSettings={{
-              barCodeTypes: ["qr"], // Enable only QR codes
-            }}
+            barCodeScannerSettings={{ barCodeTypes: ["qr"] }}
             onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
             style={StyleSheet.absoluteFillObject}
           />
-
           <TouchableOpacity
             style={styles.exitButton}
-            onPress={() => setScannerVisible(false)}
+            onPress={() => {
+              setScannerVisible(false);
+              setScanned(false);
+            }}
           >
-            <Text style={styles.exitButtonText}>Exit Scanner</Text>
+            <Text style={styles.exitButtonText}>Scan Again</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -116,6 +104,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 10,
+  },
+  message: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "blue",
+    marginVertical: 10,
   },
   scannerContainer: {
     flex: 1,

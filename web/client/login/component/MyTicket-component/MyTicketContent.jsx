@@ -56,23 +56,27 @@ const TicketManagement = ({ userState }) => {
     <div className="ticket-management-container">
       <h1>Ticket Management</h1>
       <div className="ticket-list">
-        {tickets.map((ticket) => (
-          <TicketSection
-            key={ticket.id} // Use ticket.id for unique key
-            ticket={ticket} // Pass individual ticket object
-            date={
-              ticket.created_at
-                ? new Date(ticket.created_at).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })
-                : "N/A"
-            }
-            status={ticket.status || "N/A"} // Status of the ticket
-            isMyTicket={isTicketPage} // Flag to determine if the ticket belongs to the user
-          />
-        ))}
+        {tickets.map((ticket) => {
+          console.log(ticket.id);
+          return (
+            <TicketSection
+              key={ticket.id} // Use ticket.id for unique key
+              ticket_id={ticket.id}
+              ticket={ticket} // Pass individual ticket object
+              date={
+                ticket.created_at
+                  ? new Date(ticket.created_at).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })
+                  : "N/A"
+              }
+              status={ticket.status || "N/A"} // Status of the ticket
+              isMyTicket={isTicketPage} // Flag to determine if the ticket belongs to the user
+            />
+          );
+        })}
       </div>
     </div>
   );
