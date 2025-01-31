@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
@@ -11,7 +11,7 @@ import {
   Switch,
 } from "react-native";
 
-export default function SignInComponent() {
+export default function SignInComponent({ userState, setUserState }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
@@ -35,6 +35,16 @@ export default function SignInComponent() {
         if (rememberMe) {
           await AsyncStorage.setItem("user", JSON.stringify(userData)); // Persistent storage
         }
+
+        setUserState(() => ({
+          ...userState,
+          loggedIn: true,
+          email: email,
+          username: username,
+          user_id: id,
+          role: role,
+          work_id: work_id,
+        }));
 
         // Navigate to Home screen
         navigation.navigate("Home");

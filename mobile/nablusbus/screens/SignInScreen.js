@@ -2,10 +2,10 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 import SignInComponent from "../components/SignInComponent";
 
-const SignInScreen = () => {
+const SignInScreen = ({ setUserState }) => {
   return (
     <View style={styles.container}>
-      <SignInComponent />
+      <SignInComponent setUserState={setUserState} />
     </View>
   );
 };

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { View, Text, ScrollView, ActivityIndicator, StyleSheet } from "react-native";
 import axios from "axios";
 import TicketSection from "./TicketSection";
-import * as BarCodeScanner from 'expo-barcode-scanner';
 
 const MyTicketContent = () => {
   const [tickets, setTickets] = useState([]); // State to hold tickets data

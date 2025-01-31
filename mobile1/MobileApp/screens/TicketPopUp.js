@@ -1,9 +1,16 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Card } from 'react-native-paper';
-import * as BarCodeScanner from 'expo-barcode-scanner';
+import React from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { Card } from "react-native-paper";
 
-const TicketPopUp = ({ setIsPopupOpen, ticketData, userState, setTicketData, pricingData, qr_code, setQRcode }) => {
+const TicketPopUp = ({
+  setIsPopupOpen,
+  ticketData,
+  userState,
+  setTicketData,
+  pricingData,
+  qr_code,
+  setQRcode,
+}) => {
   return (
     <View style={styles.popupOverlay}>
       <View style={styles.popupContent}>
@@ -17,7 +24,10 @@ const TicketPopUp = ({ setIsPopupOpen, ticketData, userState, setTicketData, pri
         <Text style={styles.popupText}>
           <Text style={styles.label}>Rides Left:</Text> {ticketData.rides_left}
         </Text>
-        <TouchableOpacity style={styles.closeButton} onPress={() => setIsPopupOpen(false)}>
+        <TouchableOpacity
+          style={styles.closeButton}
+          onPress={() => setIsPopupOpen(false)}
+        >
           <Text style={styles.closeButtonText}>Close</Text>
         </TouchableOpacity>
       </View>
@@ -27,42 +37,42 @@ const TicketPopUp = ({ setIsPopupOpen, ticketData, userState, setTicketData, pri
 
 const styles = StyleSheet.create({
   popupOverlay: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   popupContent: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     padding: 20,
     borderRadius: 10,
-    width: '80%',
-    alignItems: 'center',
+    width: "80%",
+    alignItems: "center",
   },
   popupTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 16,
   },
   popupText: {
     marginTop: 8,
   },
   label: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   closeButton: {
-    backgroundColor: '#ff6600',
+    backgroundColor: "#ff6600",
     padding: 10,
     borderRadius: 5,
     marginTop: 16,
   },
   closeButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
+    color: "#fff",
+    fontWeight: "bold",
   },
 });
 

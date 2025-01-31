@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { Card, Text } from 'react-native-paper';
-import * as BarCodeScanner from 'expo-barcode-scanner';
 
 const TicketBenefits = () => {
   const [isVisible, setIsVisible] = useState(false);

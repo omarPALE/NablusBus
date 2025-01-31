@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { CameraView, CameraType } from "expo-camera";
 
-const DriverScreen = () => {
+const DriverScreen = ({ userState }) => {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
   const [tripInfo, setTripInfo] = useState({

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
 import { Card, RadioButton } from 'react-native-paper';
 import TicketPopUp from './TicketPopUp';
-import * as BarCodeScanner from 'expo-barcode-scanner';
 
 const PricingTable = ({ route, navigation }) => {
   console.log('route.params in PricingTable:', route.params);

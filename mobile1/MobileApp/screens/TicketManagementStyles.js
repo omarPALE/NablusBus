@@ -1,5 +1,4 @@
 import { StyleSheet } from "react-native";
-import * as BarCodeScanner from 'expo-barcode-scanner';
 
 const styles = StyleSheet.create({
   ticketCard: {

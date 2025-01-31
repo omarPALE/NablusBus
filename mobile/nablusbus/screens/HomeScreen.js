@@ -21,8 +21,8 @@ const HomeScreen = ({ navigation }) => {
         color="#ff6000"
       />
       <Button
-        title="My Ticket"
-        onPress={() => navigation.navigate("MyTicket")}
+        title="MyTicketsScreen"
+        onPress={() => navigation.navigate("MyTicketsScreen")}
         color="#ff6000"
       />
       <Button
