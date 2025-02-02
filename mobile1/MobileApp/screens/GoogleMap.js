@@ -17,7 +17,7 @@ const GoogleMaps = ({ latitude, longitude }) => {
 
     socket.on("bus-location", (data) => {
       const { bus_id, latitude, longitude, tripData } = data;
-
+      console.log("sending trip data", data.tripData);
       if (isNaN(latitude) || isNaN(longitude)) {
         console.error(`Invalid coordinates for bus ID ${bus_id}:`, data);
         return;
@@ -56,7 +56,10 @@ const GoogleMaps = ({ latitude, longitude }) => {
         {markers.map((marker) => (
           <Marker
             key={marker.bus_id}
-            coordinate={{ latitude: marker.latitude, longitude: marker.longitude }}
+            coordinate={{
+              latitude: marker.latitude,
+              longitude: marker.longitude,
+            }}
             onPress={() => setSelectedBus(marker.tripData)}
           />
         ))}

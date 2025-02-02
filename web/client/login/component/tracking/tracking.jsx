@@ -31,20 +31,9 @@ export default function Home(userState, setUserState) {
 
   return (
     <div className="home-container">
-      {/* Sidebar */}
-      <div className="sidebar">
-        <h1 className="sidebar-title">Admin Dashboard</h1>
-        <ul className="sidebar-list">
-          <li className="sidebar-item">Overview</li>
-          <li className="sidebar-item">Manage Users</li>
-          <li className="sidebar-item">Reports</li>
-          <li className="sidebar-item">Settings</li>
-        </ul>
-      </div>
-
       {/* Main Content */}
       <div className="main-content">
-        <span className="main-title">Next.js Google Maps!</span>
+        <span className="main-title">Tracking Buses Network</span>
         <div className="map-container">
           <GoogleMaps
             style="map-style"

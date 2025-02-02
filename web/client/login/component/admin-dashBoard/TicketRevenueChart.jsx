@@ -29,8 +29,7 @@ const TicketRevenueChart = () => {
         }
 
         const revenueByType = tickets.reduce((acc, ticket) => {
-          const ticketRevenue =
-            parseInt(ticket.rides_left, 10) * parseFloat(ticket.price || 0);
+          const ticketRevenue = parseFloat(ticket.price || 0);
           acc[ticket.model] = acc[ticket.model] || { revenue: 0, count: 0 };
           acc[ticket.model].revenue += ticketRevenue;
           acc[ticket.model].count += 1;

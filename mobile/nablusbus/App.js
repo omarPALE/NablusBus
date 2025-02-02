@@ -1,88 +1,107 @@
-import React, { useState, createContext, useEffect } from "react";
+import React, { useState } from "react";
+import { View, Text, TouchableOpacity } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-// import { getSocket } from "./service/socketService"; // WebSocket singleton
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Ionicons } from "@expo/vector-icons";
+
 import HomeScreen from "./screens/HomeScreen";
 import SignInScreen from "./screens/SignInScreen";
 import SignUpScreen from "./screens/SignUpScreen";
 import SubscriptionScreen from "./screens/SubscriptionScreen";
 import MyTicketsScreen from "./screens/MyTicketsScreen";
 import DriverScreen from "./screens/DriverScreen";
-// import TrackingScreen from "./screens/TrackingScreen";
-// import DashboardScreen from "./screens/DashboardScreen";
-// import AdminDashboardScreen from "./screens/AdminDashboardScreen";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
-// export const SocketContext = createContext();
 
 export default function App() {
   const [userState, setUserState] = useState({
     loggedIn: false,
     email: "",
-    username: "",
+    username: "User",
     userID: 0,
     role: "passenger",
     work_id: 1,
   });
-  const [startWorking, setStartWorking] = useState(false);
-  // const socket = getSocket();
 
-  // useEffect(() => {
-  //   socket.on("bus-location", (data) => {
-  //     console.log("Bus Location Update:", data);
-  //   });
-  //   return () => {
-  //     socket.off("bus-location");
-  //   };
-  // }, []);
+  const handleLogout = () => {
+    setUserState({
+      loggedIn: false,
+      email: "",
+      username: "",
+      userID: 0,
+      role: "passenger",
+      work_id: 1,
+    });
+  };
 
-  const MainStack = () => (
-    <Stack.Navigator initialRouteName="Home">
-      <Stack.Screen name="Home" component={HomeScreen} />
+  const ProfileMenu = () => (
+    <View
+      style={{
+        position: "absolute",
+        top: 80,
+        right: 10,
+        backgroundColor: "white",
+        padding: 10,
+        borderRadius: 5,
+        elevation: 5,
+      }}
+    >
+      <Text>{userState.username}</Text>
+      <Text>{userState.role}</Text>
+      <TouchableOpacity onPress={handleLogout}>
+        <Text style={{ color: "red" }}>Logout</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+  const AuthStack = () => (
+    <Stack.Navigator>
       <Stack.Screen name="SignIn">
         {(props) => <SignInScreen {...props} setUserState={setUserState} />}
       </Stack.Screen>
       <Stack.Screen name="SignUp">
         {(props) => <SignUpScreen {...props} setUserState={setUserState} />}
       </Stack.Screen>
-      <Stack.Screen name="Subscription" component={SubscriptionScreen} />
-      {userState.loggedIn && (
-        <Stack.Screen name="MyTicketsScreen">
-          {(props) => (
-            <MyTicketsScreen
-              {...props}
-              setUserState={setUserState}
-              userState={userState}
-            />
-          )}
-        </Stack.Screen>
-      )}
-
-      <Stack.Screen name="Scanner" component={DriverScreen} />
-      {/* <Stack.Screen name="Tracking" component={TrackingScreen} /> */}
-      {/* <Stack.Screen name="Dashboard">
-        {(props) => (
-          <DashboardScreen
-            {...props}
-            start={startWorking}
-            setStart={setStartWorking}
-          />
-        )}
-      </Stack.Screen> */}
     </Stack.Navigator>
   );
 
+  const MainTabs = () => {
+    const [showProfile, setShowProfile] = useState(false);
+
+    return (
+      <>
+        <Tab.Navigator>
+          <Tab.Screen name="Home" component={HomeScreen} />
+          <Tab.Screen name="Subscription" component={SubscriptionScreen} />
+          {userState.loggedIn && (
+            <Tab.Screen name="My Tickets">
+              {(props) => (
+                <MyTicketsScreen
+                  {...props}
+                  setUserState={setUserState}
+                  userState={userState}
+                />
+              )}
+            </Tab.Screen>
+          )}
+          <Tab.Screen name="Scanner" component={DriverScreen} />
+        </Tab.Navigator>
+        <TouchableOpacity
+          style={{ position: "absolute", top: 10, right: 10 }}
+          onPress={() => setShowProfile(!showProfile)}
+        >
+          <Ionicons name="person-circle-outline" size={30} color="black" />
+        </TouchableOpacity>
+        {showProfile && <ProfileMenu />}
+      </>
+    );
+  };
+
   return (
-    // <SocketContext.Provider value={socket}>
     <NavigationContainer>
-      {/* {userState.role === "administrator" ? ( */}
-      {/* <AdminDashboardScreen /> */}
-      {/* ) :  */}
-      (
-      <MainStack />){/* } */}
+      {userState.loggedIn ? <MainTabs /> : <AuthStack />}
     </NavigationContainer>
-    // </SocketContext.Provider>
   );
 }

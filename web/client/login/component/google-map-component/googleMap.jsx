@@ -47,8 +47,8 @@ const GoogleMaps = ({ latitude, longitude }) => {
     });
 
     socket.on("bus-location", (data) => {
-      const { bus_id, latitude, longitude, tripData } = data;
-      console.log("Trip data are :", tripData);
+      const { bus_id, latitude, longitude, newTripData } = data;
+      console.log("Trip data are :");
       // Validate coordinates
       if (
         typeof latitude !== "number" ||
@@ -60,7 +60,12 @@ const GoogleMaps = ({ latitude, longitude }) => {
         return;
       }
 
-      console.log(`Bus ${bus_id} location received:`, latitude, longitude);
+      console.log(
+        `Bus ${bus_id} location received:`,
+        latitude,
+        longitude,
+        data
+      );
 
       // Custom SVG icon content
       const busSvg = `
@@ -77,16 +82,16 @@ const GoogleMaps = ({ latitude, longitude }) => {
             .firstChild, // Parse SVG to DOM element
         });
 
-        marker.addListener("click", () => {
-          console.log("bus clickerd!!!!!:  ", tripData);
-          const mouseX = event.clientX;
-          const mouseY = event.clientY;
+        marker.addListener("click", (mapsMouseEvent) => {
+          console.log("bus clickerd!!!!!:  ", newTripData);
+          const mouseX = mapsMouseEvent.domEvent.clientX;
+          const mouseY = mapsMouseEvent.domEvent.clientY;
 
-          if (tripData) {
-            setSelectedBus(tripData); // Update the state with selected trip data
+          if (newTripData) {
+            setSelectedBus(newTripData); // Update the state with selected trip data
             // Get the mouse coordinates relative to the map container
-
-            console.log("mouse location is :", event.clientX, ",", mouseY);
+            console.log("trip info", newTripData);
+            console.log("mouse location is :", mouseX, ",", mouseY);
 
             // Calculate offsets as needed
             const offsetX = 50;

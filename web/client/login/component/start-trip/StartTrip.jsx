@@ -69,9 +69,10 @@ const StartTripCard = ({
     setIsFocused(false);
   };
 
-  const startLocationUpdates = () => {
+  const startLocationUpdates = (newTripData) => {
+    const tripDataForCallback = { ...newTripData };
     let lastRecordedLocation = null; // To store the last recorded location
-    console.log("wellcom to fetch last location");
+    console.log("wellcom to fetch last location", tripDataForCallback);
     const fetchLastLocation = async () => {
       try {
         const response = await axios.get(
@@ -166,12 +167,15 @@ const StartTripCard = ({
         const locationUpdated = await updateLocation(latitude, longitude);
 
         if (locationUpdated && socket) {
-          console.log("Sending location update via WebSocket...");
+          console.log(
+            "Sending location update via WebSocket....................",
+            tripDataForCallback
+          );
           socket.emit("location-update", {
             bus_id: busId,
             latitude,
             longitude,
-            tripData,
+            tripDataForCallback,
           });
           console.log("Location update sent via WebSocket");
         }
@@ -205,9 +209,14 @@ const StartTripCard = ({
   };
 
   const handleStartTrip = async () => {
-    console.log("at start of start trip  the bus id is :", busId);
+    console.log(
+      "at start of start trip  the bus id is :",
+      busId,
+      route,
+      passengerCount
+    );
 
-    if (route && passengerCount) {
+    if (route || passengerCount) {
       const newTripData = {
         bus_id: busNumber,
         driver_id: userState.work_id,
@@ -218,6 +227,7 @@ const StartTripCard = ({
         status: "ongoing",
       };
       setTripData(newTripData);
+      console.log("from driver", newTripData);
 
       try {
         const response = await axios.post(
@@ -227,7 +237,7 @@ const StartTripCard = ({
 
         if (response.status === 201) {
           // Start sending location updates after trip is started
-          startLocationUpdates();
+          startLocationUpdates(newTripData);
         } else {
           alert("Error starting the trip. Please try again.");
         }
