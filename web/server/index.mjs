@@ -39,6 +39,13 @@ io.on("connection", (socket) => {
   socket.onAny((event, data) => {
     console.log(`Received event: ${event}`, data);
   });
+
+  socket.on("join-user-room", ({ userId }) => {
+    const roomName = `user-${userId}`;
+    socket.join(roomName);
+    console.log(`User ${userId} joined room: ${roomName}`);
+  });
+
   socket.emit("update", { text: "A new user has joined!" });
   console.log("A driver connected");
   socket.on("connect", () => {
@@ -46,7 +53,7 @@ io.on("connection", (socket) => {
   });
   socket.on("location-update", async (data) => {
     console.log("Location update received from client:", data);
-
+    const { bus_id, latitude, longitude } = data;
     try {
       // Call the controller to handle the logic
       await updateBusLocation({
@@ -56,6 +63,39 @@ io.on("connection", (socket) => {
       // Optionally broadcast the location update to passengers
       io.emit("bus-location", data);
       console.log("update location for all users ");
+      // 1) Get all active subscriptions for this bus
+      const { rows: subscriptions } = await pool.query(
+        `SELECT user_id, lat, lng
+         FROM notifications
+         WHERE bus_id = $1 AND is_active = TRUE`,
+        [bus_id]
+      );
+
+      // 2) For each subscription, calculate distance
+      for (let sub of subscriptions) {
+        console.log(sub);
+        const distance = haversine(
+          { lat: latitude, lng: longitude },
+          { lat: sub.lat, lng: sub.lng }
+        );
+        console.log("bus  is far away by :", distance);
+        // If bus is within 300 meters, send notification
+        if (distance < 40) {
+          // 0.3 km = 300 meters
+          // 3) Insert row in `notifications` table
+          const message = `Bus #${bus_id} is near your location!`;
+          await pool.query(
+            `UPDATE notifications 
+             SET message = $1, sent_at = NOW()
+             WHERE user_id = $2`,
+            [message, sub.user_id]
+          );
+
+          // console.log("i am here!!!");
+          const roomName = `user-${sub.user_id}`;
+          io.to(roomName).emit("bus-nearby", { bus_id, message });
+        }
+      }
     } catch (error) {
       console.error("Error handling location update:", error);
     }
@@ -78,6 +118,27 @@ pool.query("SELECT NOW()", (err, res) => {
     console.log("Database connected successfully:", res.rows[0]);
   }
 });
+
+function haversine(coord1, coord2) {
+  console.log("first point", coord1);
+  console.log("second point", coord2);
+
+  const R = 6371; // Earth radius in km
+  const dLat = toRad(coord2.lat - coord1.lat);
+  const dLon = toRad(coord2.lng - coord1.lng);
+  const lat1 = toRad(coord1.lat);
+  const lat2 = toRad(coord2.lat);
+  console.log();
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.sin(dLon / 2) ** 2 * Math.cos(lat1) * Math.cos(lat2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c; // distance in km
+}
+
+function toRad(value) {
+  return (value * Math.PI) / 180;
+}
 
 // Start the server
 const PORT = process.env.PORT || 5000;

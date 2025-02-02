@@ -116,6 +116,22 @@ router.post("/email", async (req, res) => {
   }
 });
 
+router.post("/subscribe", async (req, res) => {
+  try {
+    const { busId, passengerId, userLat, userLng } = req.body;
+    // Insert into DB
+    await pool.query(
+      `INSERT INTO notifications (user_id, bus_id, lat, lng) 
+       VALUES ($1, $2, $3, $4)`,
+      [passengerId, busId, userLat, userLng]
+    );
+    res.json({ message: "Subscribed successfully" });
+  } catch (error) {
+    console.error("Error in /api/subscribe:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 // Rate limiter to prevent abuse (if implemented)
 const resetPasswordRateLimiter = RateLimiter({
   windowMs: 24 * 60 * 60 * 1000, // 24 hours

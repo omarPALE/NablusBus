@@ -3,23 +3,98 @@ import PropTypes from "prop-types";
 import { useLoadScript } from "@react-google-maps/api";
 import getSocket from "../socket/socketService";
 import { MarkerClusterer } from "@googlemaps/markerclusterer";
-
+import axios from "axios";
 const libraries = ["marker"]; // Required for AdvancedMarkerElement
 
-const GoogleMaps = ({ latitude, longitude }) => {
+const GoogleMaps = ({ latitude, longitude, userState }) => {
   const mapContainerRef = useRef(null); // Ref for map container
   const mapRef = useRef(null); // Ref to store map instance
   const markersRef = useRef(new Map()); // To store markers keyed by bus_id
   const clustererRef = useRef(null); // Store the MarkerClusterer instance
   const infoWindowRef = useRef(null); // Ref for the info window
+  const [sendRequest, setSendRequest] = useState(false);
   const [selectedBus, setSelectedBus] = useState(null); // Store selected bus data
+  const [tempBusId, setBusId] = useState();
   const { isLoaded, loadError } = useLoadScript({
     googleMapsApiKey: "AIzaSyDOTXuigdl1ZWQw2bNYFXUhh5cgoHYJ2qQ", // Replace with your API key
     libraries,
   });
   // Mock trip data
   const [popupStyle, setPopStyles] = useState({});
+  const handleNotifyMe = async (busId) => {
+    setSendRequest(true);
+    try {
+      // (A) Get Passenger’s Current Location
+      if (!navigator.geolocation) {
+        alert("Geolocation is not supported by your browser.");
+        return;
+      }
 
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const userLat = position.coords.latitude;
+          const userLng = position.coords.longitude;
+
+          // If you have a logged-in user, you might have a "userId" from context or props
+          const passengerId = userState.userState.user_id; // Example ID; replace with real passenger ID
+          // console.log(
+          //   busId,
+          //   passengerId,
+          //   userLat,
+          //   userLng,
+          //   userState.userState.user_id
+          // );
+          // (B) Send subscription to the server
+          // Example: POST /api/subscribe with busId & passenger location
+          if (sendRequest) {
+            // Check if latitude or longitude is null or undefined
+            if (userLat == null || userLng == null) {
+              console.warn(
+                "Subscription request not sent due to missing location data."
+              );
+              alert("Cannot subscribe: Missing location data.");
+              setSendRequest(false);
+              return;
+            }
+
+            try {
+              const response = await axios.post(
+                "http://localhost:5000/users/subscribe",
+                {
+                  busId,
+                  passengerId,
+                  userLat,
+                  userLng,
+                }
+              );
+
+              if (response.status !== 200) {
+                console.error("Subscription failed:", response.data);
+                alert("Failed to subscribe for notifications");
+                return;
+              }
+
+              alert("You will be notified when the bus is near your location!");
+            } catch (error) {
+              console.error("Subscription error:", error);
+              alert("An error occurred while subscribing for notifications.");
+            }
+
+            setSendRequest(false);
+          }
+        },
+        (error) => {
+          console.error("Error getting location:", error);
+          alert(
+            "Could not retrieve your location. Please allow location access."
+          );
+        }
+      );
+    } catch (err) {
+      console.error("Error in handleNotifyMe:", err);
+      alert("An error occurred while subscribing for notifications.");
+    }
+  };
   useEffect(() => {
     if (!isLoaded || !mapContainerRef.current) return;
 
@@ -44,11 +119,18 @@ const GoogleMaps = ({ latitude, longitude }) => {
 
     socket.on("connect", () => {
       console.log("Connected to WebSocket server:", socket.id);
+      socket.emit("join-user-room", { userId: userState.userState.user_id });
     });
-
+    socket.on("bus-nearby", (data) => {
+      console.log("hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiihhhhhhhhhhhhhhhhh");
+      // Display a toast or modal
+      alert("i am here");
+      console.log("Bus near:", data);
+      // toast.success(`Bus #${data.bus_id} is near your location!`);
+    });
     socket.on("bus-location", (data) => {
-      const { bus_id, latitude, longitude, newTripData } = data;
-      console.log("Trip data are :");
+      const { bus_id, latitude, longitude, tripDataForCallback } = data;
+      // console.log("Trip data are :", data);
       // Validate coordinates
       if (
         typeof latitude !== "number" ||
@@ -59,12 +141,12 @@ const GoogleMaps = ({ latitude, longitude }) => {
         console.error(`Invalid coordinates for bus ID ${bus_id}:`, data);
         return;
       }
-
+      setBusId(data.bus_id);
       console.log(
         `Bus ${bus_id} location received:`,
         latitude,
         longitude,
-        data
+        tripDataForCallback
       );
 
       // Custom SVG icon content
@@ -83,14 +165,14 @@ const GoogleMaps = ({ latitude, longitude }) => {
         });
 
         marker.addListener("click", (mapsMouseEvent) => {
-          console.log("bus clickerd!!!!!:  ", newTripData);
+          console.log("bus clickerd!!!!!:  ", tripDataForCallback);
           const mouseX = mapsMouseEvent.domEvent.clientX;
           const mouseY = mapsMouseEvent.domEvent.clientY;
 
-          if (newTripData) {
-            setSelectedBus(newTripData); // Update the state with selected trip data
+          if (tripDataForCallback) {
+            setSelectedBus(tripDataForCallback); // Update the state with selected trip data
             // Get the mouse coordinates relative to the map container
-            console.log("trip info", newTripData);
+            console.log("trip info", tripDataForCallback);
             console.log("mouse location is :", mouseX, ",", mouseY);
 
             // Calculate offsets as needed
@@ -206,6 +288,20 @@ const GoogleMaps = ({ latitude, longitude }) => {
           <p>
             <strong>End:</strong> {selectedBus.end_time}
           </p>
+          <button
+            style={{
+              marginTop: "10px",
+              padding: "8px 12px",
+              backgroundColor: "#4285F4",
+              color: "#fff",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
+            }}
+            onClick={() => handleNotifyMe(tempBusId)}
+          >
+            Notify Me
+          </button>
         </div>
       )}
     </>
@@ -215,6 +311,7 @@ const GoogleMaps = ({ latitude, longitude }) => {
 GoogleMaps.propTypes = {
   latitude: PropTypes.number.isRequired,
   longitude: PropTypes.number.isRequired,
+  userState: PropTypes.object.isRequired,
 };
 
 export default GoogleMaps;
