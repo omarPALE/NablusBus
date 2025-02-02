@@ -15,7 +15,7 @@ import Tracking from "../component/tracking/tracking";
 import { Layout } from "antd";
 import Navbar from "../component/admin-dashBoard/Nav";
 import Sidebar from "../component/admin-dashBoard/SideBar";
-
+import ProfilePage from "../component/Home-component/ProfilePage";
 // Create a WebSocket Context
 export const SocketContext = createContext();
 
@@ -89,6 +89,13 @@ function App() {
               <Subscription setUserState={setUserState} userState={userState} />
             }
           />
+          <Route
+            path="/profile"
+            element={
+              <ProfilePage setUserState={setUserState} userState={userState} />
+            }
+          />
+
           <Route
             path="/trip"
             element={

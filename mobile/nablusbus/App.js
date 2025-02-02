@@ -72,7 +72,31 @@ export default function App() {
 
     return (
       <>
-        <Tab.Navigator>
+        <Tab.Navigator
+          screenOptions={({ route }) => ({
+            // Define the tabBarIcon for each route
+            tabBarIcon: ({ focused, color, size }) => {
+              let iconName;
+
+              // Choose an icon based on the route name
+              if (route.name === "Home") {
+                iconName = focused ? "home" : "home-outline";
+              } else if (route.name === "Subscription") {
+                iconName = focused ? "albums" : "albums-outline";
+              } else if (route.name === "My Tickets") {
+                iconName = focused ? "ticket" : "ticket-outline";
+              } else if (route.name === "Scanner") {
+                iconName = focused ? "scan" : "scan-outline";
+              }
+
+              // Return the icon component
+              return <Ionicons name={iconName} size={size} color={color} />;
+            },
+            // Optional: Customize active/inactive colors
+            tabBarActiveTintColor: "tomato",
+            tabBarInactiveTintColor: "gray",
+          })}
+        >
           <Tab.Screen name="Home" component={HomeScreen} />
           <Tab.Screen name="Subscription" component={SubscriptionScreen} />
           {userState.loggedIn && (

@@ -378,22 +378,23 @@ export default function SignupForm() {
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
+    flex: 1,
     backgroundColor: "#f9f9f9",
     justifyContent: "center",
     paddingVertical: 30,
   },
   card: {
-    backgroundColor: "#fff", // Card background
-    borderRadius: 10, // Rounded corners
-    padding: 20, // Inner padding
-    shadowColor: "#000", // Shadow color
-    shadowOffset: { width: 0, height: 2 }, // Shadow offset
-    shadowOpacity: 0.25, // Shadow opacity
-    shadowRadius: 3.84, // Shadow radius
-    elevation: 5, // Shadow for Android
-    width: "90%", // Card width
-    alignSelf: "center", // Center card
+    flexGrow: 1,
+    backgroundColor: "#fff",
+    // borderRadius: 10,
+    padding: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    width: "90%",
+    alignSelf: "center",
   },
   title: {
     fontSize: 24,
@@ -402,40 +403,44 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   inputContainer: {
-    marginVertical: 15,
-    borderWidth: 2,
+    marginVertical: 10,
+    borderWidth: 1,
     borderRadius: 8,
+    borderColor: "#ccc",
     position: "relative",
-    height: 45,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    width: "90%",
   },
   input: {
-    padding: 15,
-    fontSize: 14,
+    fontSize: 12,
+    flex: 1,
+    color: "#333",
   },
   placeholder: {
     position: "absolute",
-    left: 15,
+    left: 12,
     top: 14,
     fontSize: 14,
     color: "#aaa",
   },
   placeholderFocused: {
-    top: -20,
+    top: -10,
     fontSize: 12,
     color: "#555",
   },
   invalidInput: {
     borderColor: "red",
   },
-  showPasswordIcon: {
-    position: "absolute",
-    right: 15, // Distance from the right side of the input container
-    top: "50%", // Vertically align in the center
-    transform: [{ translateY: -12 }], // Adjust for perfect centering
-    zIndex: 10, // Make sure it stays on top
-  },
   validInput: {
     borderColor: "green",
+  },
+  showPasswordIcon: {
+    position: "absolute",
+    right: 15,
+    top: "50%",
+    transform: [{ translateY: -10 }],
+    zIndex: 10,
   },
   userTypeContainer: {
     marginVertical: 20,
@@ -481,7 +486,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // Dimmed background
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalContainer: {
     width: "80%",
@@ -492,7 +497,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5, // For Android shadow
+    elevation: 5,
   },
   successBackground: {
     backgroundColor: "green",

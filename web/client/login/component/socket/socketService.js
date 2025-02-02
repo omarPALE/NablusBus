@@ -12,6 +12,10 @@ export const getSocket = () => {
       console.log("Connected to WebSocket server:", socket.id);
     });
 
+    // socket.on("bus-nearby", () => {
+    //   console.log("hi from i am here ");
+    // });
+
     socket.on("connect_error", (err) => {
       console.error("WebSocket connection error:", err);
     });

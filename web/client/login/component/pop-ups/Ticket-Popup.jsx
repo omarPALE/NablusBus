@@ -97,7 +97,11 @@ const TicketPopUp = ({
       );
     }
   };
-
+  const maskCardNumber = (cardNumber) => {
+    const digits = cardNumber.replace(/[\s-]/g, ""); // remove spaces and dashes
+    const last4 = digits.slice(-4);
+    return "**** **** **** " + last4;
+  };
   const handleCancel = () => {
     setIsPopupOpen(false);
     setIsTicketCreated(false);
@@ -150,12 +154,18 @@ const TicketPopUp = ({
             )}
 
             {/* Payment Details Card */}
-            <div className="payment-card">
-              <h3>Payment Method</h3>
-              <p>Card Number: **** **** **** 1234</p>
-              <p>Card Holder: John Doe</p>
-              <p>Expiry Date: 12/25</p>
-            </div>
+            {userState.paymentMethods && userState.paymentMethods.length > 0 ? (
+              <>
+                <p>
+                  Card Number:{" "}
+                  {maskCardNumber(userState.paymentMethods[0].cardNumber)}
+                </p>
+                <p>Card Holder: {userState.paymentMethods[0].cardHolderName}</p>
+                <p>Expiry Date: {userState.paymentMethods[0].expiry}</p>
+              </>
+            ) : (
+              <p>No payment method saved.</p>
+            )}
 
             {/* Confirm and Cancel Buttons */}
             <div className="popup-buttons">

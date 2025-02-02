@@ -54,11 +54,11 @@ const SubscriptionScreen = () => {
     <Animated.View style={[styles.card, { opacity: fadeAnim }]} key={plan.id}>
       <Text style={styles.title}>{plan.title}</Text>
       <Text style={styles.price}>{plan.price}</Text>
-      {plan.features.map((feature, index) => (
+      {/* {plan.features.map((feature, index) => (
         <Text key={index} style={styles.feature}>
           {feature}
         </Text>
-      ))}
+      ))} */}
       <View style={styles.switchContainer}>
         <Text style={styles.switchLabel}>Half</Text>
         <Switch

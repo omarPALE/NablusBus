@@ -1,12 +1,14 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, ScrollView } from "react-native";
 import SignInComponent from "../components/SignUpComponent";
 
 const SignUpScreen = () => {
   return (
-    <View style={styles.container}>
-      <SignInComponent />
-    </View>
+    <ScrollView contentContainerStyle={styles.scrollview}>
+      <View style={styles.container}>
+        <SignInComponent />
+      </View>
+    </ScrollView>
   );
 };
 
@@ -17,6 +19,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#f9f9f9",
   },
+  scrollview: { flexGrow: 1 },
 });
 
 export default SignUpScreen;

@@ -2,6 +2,7 @@ import { useState } from "react";
 import "./profileMenu.css";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
+import ProfilePage from "./ProfilePage";
 
 export default function ProfileMenu(props) {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -49,7 +50,14 @@ export default function ProfileMenu(props) {
             <p>{props?.email || "guest@example.com"}</p>
           </div>
           <hr />
-          <button className="profile-dropdown-item">Settings</button>
+          <button
+            className="profile-dropdown-item"
+            onClick={() => {
+              navigate("/profile");
+            }}
+          >
+            Settings
+          </button>
           <button className="profile-dropdown-item" onClick={logOut}>
             Log out
           </button>
