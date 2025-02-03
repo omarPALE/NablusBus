@@ -30,8 +30,8 @@ const PricingTable = (props) => {
           model: "multi",
           price: 30,
           TicketType: "Half or Full",
-          rides_left: 12,
-          touched: false, // Add touched flag
+          rides_left: 10 + 2,
+          touched: false,
         },
         {
           id: 2,
@@ -41,7 +41,7 @@ const PricingTable = (props) => {
           price: 3,
           TicketType: "Half or Full",
           rides_left: 1,
-          touched: false, // Add touched flag
+          touched: false,
         },
         {
           id: 3,
@@ -50,11 +50,19 @@ const PricingTable = (props) => {
           model: "package",
           price: 299.99,
           TicketType: "full",
-          rides_left: 200,
-          touched: false, // Add touched flag
+          rides_left: 200 + 10,
+          touched: false,
         },
       ];
-      setPricingData(data);
+      // Update price based on ticket type
+      const updatedData = data.map((ticket) => ({
+        ...ticket,
+        price:
+          ticket.TicketType.toLowerCase() === "half"
+            ? ticket.rides_left * 2.5
+            : ticket.rides_left * 3,
+      }));
+      setPricingData(updatedData);
     };
 
     fetchData();
@@ -62,8 +70,8 @@ const PricingTable = (props) => {
 
   useEffect(() => {
     const observerOptions = {
-      threshold: 0.4, // 50% of the element must be visible to trigger the animation
-      rootMargin: "0px 0px -100px 0px", // Adds an offset to delay animation triggering
+      threshold: 0.4,
+      rootMargin: "0px 0px -100px 0px",
     };
 
     const observer = new IntersectionObserver((entries) => {
@@ -90,10 +98,9 @@ const PricingTable = (props) => {
       setIsMsgPopupOpen(true);
       setTimeout(() => {
         setIsMsgPopupOpen(false);
-        navigate("/login"); // Redirect to the sign-in page after showing the popup
-      }, 1500); // Adjust the timeout as needed
+        navigate("/login");
+      }, 1500);
     } else {
-      // Proceed with creating the ticket
       setPricingData((prevData) =>
         prevData.map((ticket) =>
           ticket.id === id
@@ -107,11 +114,27 @@ const PricingTable = (props) => {
 
   const handleTicketTypeChange = (id, value) => {
     setPricingData((prevData) =>
-      prevData.map((ticket) =>
-        ticket.id === id ? { ...ticket, ticketType: value } : ticket
-      )
+      prevData.map((ticket) => {
+        if (ticket.id === id) {
+          const updatedPrice =
+            value === "half"
+              ? ticket.model === "multi"
+                ? (ticket.rides_left - 2) * 2.5
+                : ticket.model === "package"
+                ? (ticket.rides_left - 10) * 2.5
+                : ticket.rides_left * 2.5
+              : ticket.model === "package"
+              ? (ticket.rides_left - 10) * 3
+              : ticket.model === "multi"
+              ? (ticket.rides_left - 2) * 3
+              : ticket.rides_left * 3;
+          return { ...ticket, ticketType: value, price: updatedPrice };
+        }
+        return ticket;
+      })
     );
   };
+
   return (
     <div id="generic_price_table">
       <section className="pricing-section" ref={pricingRef}>
@@ -211,26 +234,17 @@ const PricingTable = (props) => {
         </div>
       </section>
 
-      {/* Render the PopUp component */}
-
-      {
-        isPopupOpen && (
-          // props.qrCode ? (
-
-          <TicketPopUp
-            setIsPopupOpen={setIsPopupOpen}
-            ticketData={ticketData}
-            userState={props.userState}
-            setTicketData={setTicketData}
-            pricingData={pricingData}
-            qr_code={props.qrCode}
-            setQRcode={props.setQRcode}
-          />
-        )
-        // ) : (
-        // <p>Loading QR Code...</p>
-        // ) // Show a loading message until qrCode is defined)
-      }
+      {isPopupOpen && (
+        <TicketPopUp
+          setIsPopupOpen={setIsPopupOpen}
+          ticketData={ticketData}
+          userState={props.userState}
+          setTicketData={setTicketData}
+          pricingData={pricingData}
+          qr_code={props.qrCode}
+          setQRcode={props.setQRcode}
+        />
+      )}
 
       {isMsgPopupOpen && (
         <div className="popup-overlay">

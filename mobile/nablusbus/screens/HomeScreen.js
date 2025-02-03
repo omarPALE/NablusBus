@@ -4,8 +4,13 @@ import { View, Text, Button, StyleSheet } from "react-native";
 const HomeScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome to My New App!</Text>
-      <Button
+      <Text style={styles.title}>Welcome to Nablus Bus App!</Text>
+      <Text style={styles.subtitle}>
+        Your Safe, Smart, and Reliable Travel Partner
+      </Text>
+      <Text style={styles.subtitle}>Enjoy a Hassle-Free Ride Every Time</Text>
+
+      {/* <Button
         title="Sign In"
         onPress={() => navigation.navigate("SignIn")}
         color="#ff6000"
@@ -29,7 +34,7 @@ const HomeScreen = ({ navigation }) => {
         title="Scanner"
         onPress={() => navigation.navigate("Scanner")}
         color="#ff6000"
-      />
+      /> */}
     </View>
   );
 };
@@ -46,6 +51,13 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: 20,
     textAlign: "center",
+  },
+  subtitle: {
+    fontSize: 18,
+    fontWeight: "500",
+    textAlign: "center",
+    marginTop: 10,
+    color: "#555", // Soft gray for a professional look
   },
 });
 

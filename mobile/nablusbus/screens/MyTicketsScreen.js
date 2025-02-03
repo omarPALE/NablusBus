@@ -25,7 +25,7 @@ const MyTicketsScreen = ({ userState, setUserStates }) => {
 
       try {
         const response = await axios.get(
-          `http://192.168.1.4:5000/api/ticket/${userState.user_id}`
+          `http://192.168.1.3:5000/api/ticket/${userState.user_id}`
         );
         console.log("hi :", response.data);
 

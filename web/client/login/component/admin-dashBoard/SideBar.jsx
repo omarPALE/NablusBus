@@ -54,7 +54,7 @@ const Sidebar = ({ setLinks }) => {
       case "users":
         setLinks([
           {
-            label: "Show All Users",
+            label: "Display All Users",
             onClick: () => {
               setShowlink1(true);
               setShowlink2(false);
@@ -110,7 +110,7 @@ const Sidebar = ({ setLinks }) => {
             },
           },
           {
-            label: "Show All Buses",
+            label: "Display All Buses",
             onClick: () => {
               setShowlink1(false);
               setShowlink2(false);

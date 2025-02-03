@@ -21,7 +21,7 @@ export default function SignInComponent({ userState, setUserState }) {
   const handleSignIn = async () => {
     try {
       // Send POST request to the server
-      const response = await axios.post("http://192.168.1.4:5000/users/email", {
+      const response = await axios.post("http://192.168.1.3:5000/users/email", {
         email,
         password,
       });
