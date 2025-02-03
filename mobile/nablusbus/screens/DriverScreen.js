@@ -29,7 +29,7 @@ const DriverScreen = () => {
       }
 
       const response = await axios.post(
-        "http://192.168.1.4:5000/api/scanner/validate-ticket",
+        "http://192.168.1.3:5000/api/scanner/validate-ticket",
         { ticket_id: ticketID }
       );
       console.log("the responce is :", ticketID);
